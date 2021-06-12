@@ -31,8 +31,6 @@ namespace ft
 			Node *	_prev;
 
 			_Tp		_data;
-
-			reference getDataRef(void) { return _data; }
 		
 			void	setNext(Node *pt) { _next = pt; }
 			void	setPrev(Node *pt) {	_prev = pt; }
@@ -62,37 +60,38 @@ namespace ft
 
 			_List_Iterator(const Tnode * src) : _node(src) {}
 			
-			reference operator*() { return _node->getDataRef(); }
+			reference	operator*() { return _node->_data; }
+			pointer		operator->() {return &(_node->_data); }
 
-			//Tnode* operator->() {return _node;};
-
-			_Self& operator=(_Self const & ref)
+			_Self& operator=(const _Self & ref)
 			{
 				_node = ref._node;
 				return *this;
 			}
 
-			_Self operator++(int)
+			//Tnode* operator->() {return _node;};
+
+			_Self& operator++()
 			{
 				_node = _node->_next;
 				return *this;
 			}
 
-			_Self& operator++()
+			_Self operator++(int)
 			{
 				_Self _tmp = *this;
-				_node = _node->_next;
+				++*this;
 				return _tmp;
 			}
 
-			_Self operator--(int)
+			_Self& operator--()
 			{
 				_node = _node->_prev;
 				return *this;
 
 			}
 
-			_Self& operator--()
+			_Self operator--(int)
 			{
 				_Self _tmp = *this;
 				_node = _node->_prev;
@@ -132,9 +131,9 @@ namespace ft
 		typedef Node<_Tp>	Tnode;
 
 
-		list<_Tp>() : _size(0), _begin(NULL), _end(NULL)
+		list<_Tp>() : _size(0)
 		{
-			_last._node = new_node(0);
+			_last._node = new Tnode();
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
 		};
@@ -144,16 +143,24 @@ namespace ft
 			_last._node = new Tnode();
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
-
-			//insert(_last, src);
-			//_last._node->_next = _last._node->_prev;
-			//n--;
-
 			insert(_last, n, src);
-
 		};
+		
+		// todo
+		~list<_Tp>()
+		{
+			while (_size != 0)
+			{
+				pop_back();
+			}
+			delete _last._node;
+		}
 
-		iterator begin(void) const
+		/*
+			** Iterators **
+		*/
+
+		iterator begin(void)
 		{
 			iterator begin;
 			begin = _last;
@@ -161,13 +168,84 @@ namespace ft
 			return begin;
 		}
 
-		iterator end(void) const { return _last; }
+		// todo const_iterator begin(void) const {}
 
-		size_type size(void) const { return _size; }
+		iterator end(void) { return _last; }
+
+		// todo const_iterator end(void) const { return _last; }
+
 
 		/*
-		 * Insert single element before pos
+			** Capacity **
 		*/
+
+		size_type	size(void) const { return _size; }
+		
+		// to do
+		size_type	max_size(void) const { return _size; }
+
+		bool	 	empty(void) const { return (!_size); }
+
+
+		/*
+			** Elements access **
+		*/
+
+		reference front() { return *begin();}
+		const_reference front() const { return *begin();}
+
+		reference back() 
+		{
+			iterator it = end();
+			it--;
+			return *it;
+		}
+		const_reference back() const {return *end(); }
+		
+
+		/*
+			** Modifier **
+		*/
+		
+		void push_front(const value_type & val)
+		{
+			insert(begin(), val);
+		}
+
+		void pop_front(void)
+		{
+			if (_size > 0)
+			{
+				iterator pop = begin();
+				iterator nbegin = ++begin();
+
+				nbegin._node->_prev = _last._node;
+				_last._node->_next = nbegin._node;
+
+				delete pop._node;
+				_size--;
+			}
+		}
+
+		void push_back(const value_type & val)
+		{
+			insert(end(), val);
+		}
+
+		void pop_back(void)
+		{
+			if (_size > 0)
+			{
+				iterator pop = --end();
+
+				_last._node->_prev = pop._node->_prev;
+				pop._node->_prev->_next = _last._node;
+
+				delete pop._node;
+				_size--;
+			}
+		}
+
 		iterator insert (iterator pos, const value_type& val)
 		{
 			iterator tmp;
@@ -180,27 +258,18 @@ namespace ft
 			tmp._node->_next = pos._node;
 			pos._node->_prev = tmp._node;
 
-			
 			_size++;
 			return pos;
 		}
 
-		/*
-		 * Insert n element before pos
-		*/
 		iterator insert (iterator pos, size_type n, const value_type& val)
 		{
-			while (n)
+			while (n--)
 			{
-				//std::cout <<"Segfault" << std::endl;
 				insert(pos, val);
-				n--;
 			}
 			return pos;
 		}
-
-	
-		~list<_Tp>() {}
 
 	private:
 		iterator		data;
