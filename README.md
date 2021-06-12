@@ -6,4 +6,5 @@
 | ---------  | ----------------- | ----------------- | ----- |
 |constructor | list()            | default | :heavy_check_mark: |
 | constructor| list(uint n, val) | fill constructor | :heavy_check_mark: |
-|function    | push_back()       | add el at end     | :x: |
+| Modifier   | push_back()       | add el at end     | :x: |
+| Modifier   | pop_back()        | delete el at end     | :x: |
