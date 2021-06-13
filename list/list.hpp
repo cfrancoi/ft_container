@@ -35,8 +35,6 @@ namespace ft
 			void	setNext(Node *pt) { _next = pt; }
 			void	setPrev(Node *pt) {	_prev = pt; }
 
-			/*bool operator==(const _Self& __x, const _Self& __y)	{ return _data == _data; }
-			bool operator==(const _Self& __x, const _Self& __y)	{ return _data != _data; }*/
 	};
 
 	/*
@@ -116,7 +114,6 @@ namespace ft
 		typedef	_Tp								value_type;
 		typedef Allocator						allocator_type;
 		
-
 		typedef typename allocator_type::reference			reference;
 		typedef typename allocator_type::const_reference	const_reference;
 		
@@ -146,7 +143,19 @@ namespace ft
 			insert(_last, n, src);
 		};
 		
-		// todo
+		template <class InputIterator>
+		list<_Tp>(InputIterator st, InputIterator end)
+		{
+			_last._node = new Tnode();
+			_last._node->_next = _last._node;
+			_last._node->_prev = _last._node;
+			while (st != end)
+			{
+				push_back(*st);
+				st++;
+			}
+		}
+
 		~list<_Tp>()
 		{
 			while (_size != 0)
@@ -268,6 +277,20 @@ namespace ft
 			{
 				insert(pos, val);
 			}
+			return pos;
+		}
+
+		iterator erase(iterator pos)
+		{
+			iterator tmp = pos;
+
+			pos++;
+
+			pos._node->_prev = tmp._node->_prev;
+			tmp._node->_prev->_next = pos._node;
+			
+			_size--;
+			delete tmp._node;
 			return pos;
 		}
 
