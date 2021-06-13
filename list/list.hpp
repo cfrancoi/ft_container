@@ -128,14 +128,15 @@ namespace ft
 		typedef Node<_Tp>	Tnode;
 
 
-		list<_Tp>() : _size(0)
+		explicit list<_Tp>() : _size(0)
 		{
 			_last._node = new Tnode();
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
 		};
-
-		list<_Tp>(size_t n, const _Tp& src) : _size(0)
+		
+		//TODO
+		explicit list<_Tp>(int n, const value_type& src = value_type(), const allocator_type& alloc = allocator_type()) : _size(0)
 		{
 			_last._node = new Tnode();
 			_last._node->_next = _last._node;
@@ -144,7 +145,7 @@ namespace ft
 		};
 		
 		template <class InputIterator>
-		list<_Tp>(InputIterator st, InputIterator end)
+		list<_Tp>(InputIterator st, InputIterator end, const allocator_type& alloc = allocator_type()) : _size(0)
 		{
 			_last._node = new Tnode();
 			_last._node->_next = _last._node;
@@ -156,11 +157,20 @@ namespace ft
 			}
 		}
 
+		list(const list& x)
+		{
+			_last._node = new Tnode();
+			_last._node->_next = _last._node;
+			_last._node->_prev = _last._node;
+			for (iterator it = x.begin(); it != x.end(); it++)
+				push_back(*it);
+		}
+
 		~list<_Tp>()
 		{
 			while (_size != 0)
 			{
-				pop_back();
+				pop_front();
 			}
 			delete _last._node;
 		}
@@ -177,11 +187,18 @@ namespace ft
 			return begin;
 		}
 
-		// todo const_iterator begin(void) const {}
+		//TODO
+		const_iterator begin(void) const
+		{
+			iterator begin;
+			begin = _last;
+			begin++;
+			return begin;
+		}
 
 		iterator end(void) { return _last; }
 
-		// todo const_iterator end(void) const { return _last; }
+		const_iterator end(void) const { return _last; }
 
 
 		/*
