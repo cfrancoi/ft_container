@@ -133,19 +133,10 @@ namespace ft
 			_last._node = new Tnode();
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
-		};
+		}
 		
-		//TODO
-		explicit list<_Tp>(int n, const value_type& src = value_type(), const allocator_type& alloc = allocator_type()) : _size(0)
-		{
-			_last._node = new Tnode();
-			_last._node->_next = _last._node;
-			_last._node->_prev = _last._node;
-			insert(_last, n, src);
-		};
-		
-		template <class InputIterator>
-		list<_Tp>(InputIterator st, InputIterator end, const allocator_type& alloc = allocator_type()) : _size(0)
+		template < class InputIterator >
+		list<value_type>(InputIterator st, InputIterator end, const allocator_type& alloc = allocator_type()) : _size(0)
 		{
 			_last._node = new Tnode();
 			_last._node->_next = _last._node;
@@ -157,9 +148,26 @@ namespace ft
 			}
 		}
 
+		//TODO
+		explicit list<_Tp>(size_t n, const value_type& src = value_type(), const allocator_type& alloc = allocator_type()) : _size(0)
+		{
+			_last._node = new_node(src);
+			_last._node->_next = _last._node;
+			_last._node->_prev = _last._node;
+			insert(_last, n, src);
+		}
+		
+		explicit list<_Tp>(int n, const value_type& src = value_type(), const allocator_type& alloc = allocator_type()) : _size(0)
+		{
+			_last._node = new_node(src);
+			_last._node->_next = _last._node;
+			_last._node->_prev = _last._node;
+			insert(_last, n, src);
+		}	
+
 		list(const list& x)
 		{
-			_last._node = new Tnode();
+			_last._node = new_node(value_type());
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
 			for (iterator it = x.begin(); it != x.end(); it++)
@@ -172,7 +180,7 @@ namespace ft
 			{
 				pop_front();
 			}
-			delete _last._node;
+			delete_node(_last._node);
 		}
 
 		/*
@@ -218,6 +226,7 @@ namespace ft
 		*/
 
 		reference front() { return *begin();}
+		
 		const_reference front() const { return *begin();}
 
 		reference back() 
@@ -248,7 +257,7 @@ namespace ft
 				nbegin._node->_prev = _last._node;
 				_last._node->_next = nbegin._node;
 
-				delete pop._node;
+				delete_node(pop._node);
 				_size--;
 			}
 		}
@@ -267,7 +276,7 @@ namespace ft
 				_last._node->_prev = pop._node->_prev;
 				pop._node->_prev->_next = _last._node;
 
-				delete pop._node;
+				delete_node(pop._node);
 				_size--;
 			}
 		}
@@ -307,8 +316,28 @@ namespace ft
 			tmp._node->_prev->_next = pos._node;
 			
 			_size--;
-			delete tmp._node;
+			delete_node(tmp._node);
 			return pos;
+		}
+		
+		void resize(size_type n, value_type val = value_type())
+		{
+			if (n < size())
+			{
+				while (n != size())
+					pop_front();
+			}
+			else
+			{
+				while (n != size())
+					push_back(val);
+			}
+		}
+
+		void clear()
+		{
+			while (size())
+				pop_back();
 		}
 
 	private:
@@ -318,12 +347,18 @@ namespace ft
 		iterator		_last;
 		iterator		_end;
 		
-
 	private:
+		std::allocator<Tnode> _alloc;
 		Tnode * new_node(const value_type& src)
 		{
-			Tnode * tmp = new Tnode(src);
+			Tnode * tmp =  _alloc.allocate(1);
+			_alloc.construct(tmp, src);
 			return tmp;
+		}
+		void	delete_node(Tnode * node)
+		{
+			_alloc.deallocate(node, 1);
+			//delete node;
 		}
 
 
