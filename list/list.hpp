@@ -52,6 +52,10 @@ namespace ft
 			typedef	_Tp		value_type;
 			typedef	_Tp*	pointer;
 			typedef	_Tp&	reference;
+			typedef _Self	iterator_type;
+			typedef std::bidirectional_iterator_tag iterator_category;
+			//typedef typename std::iterator_traits<_Self>::value_type value_type;
+			typedef ptrdiff_t difference_type;
 			
 
 			_List_Iterator() : _node(NULL) {}
@@ -125,6 +129,8 @@ namespace ft
 
 		typedef	size_t										size_type;
 
+		typedef typename iterator::difference_type  difference_type;
+
 		typedef Node<_Tp>	Tnode;
 
 
@@ -165,7 +171,7 @@ namespace ft
 			insert(_last, n, src);
 		}	
 
-		list(const list& x)
+		list(const list& x) : _size(0)
 		{
 			_last._node = new_node(value_type());
 			_last._node->_next = _last._node;
@@ -176,10 +182,8 @@ namespace ft
 
 		~list<_Tp>()
 		{
-			while (_size != 0)
-			{
+			while (_size)
 				pop_front();
-			}
 			delete_node(_last._node);
 		}
 
@@ -306,6 +310,25 @@ namespace ft
 			return pos;
 		}
 
+		//TODO
+		iterator insert (iterator pos, int n, const value_type& val)
+		{
+			while (n--)
+			{
+				insert(pos, val);
+			}
+			return pos;
+		}
+
+		template <class InputIterator>
+    	void insert (iterator position, InputIterator first, InputIterator last)
+		{
+			while (first != last)
+			{
+				insert(position, *first++);
+			}
+		}
+		
 		iterator erase(iterator pos)
 		{
 			iterator tmp = pos;
@@ -318,6 +341,20 @@ namespace ft
 			_size--;
 			delete_node(tmp._node);
 			return pos;
+		}
+
+		iterator erase(iterator first, iterator last)
+		{
+			while (first != last)
+				erase(first++);
+			return first;
+		}
+
+		void swap(list &x)
+		{
+			iterator it = begin();
+			splice(it, x); // x -> at start of y // x {0 1 2} y {1 2 3} = x {} y {0 1 2 1 2 3}
+			x.splice(x.end() , *this, it, end()); // it.y -> x
 		}
 		
 		void resize(size_type n, value_type val = value_type())
@@ -336,8 +373,52 @@ namespace ft
 
 		void clear()
 		{
-			while (size())
+			while (size() != 0)
 				pop_back();
+		}
+
+		/*
+		 * operation
+		*/
+
+		void splice(iterator pos, list& x)
+		{
+			 insert(pos, x.begin(), x.end());
+			 x.clear();
+		}
+
+		void splice(iterator pos, list& x, iterator it)
+		{
+			insert(pos, *it);
+			x.erase(it);
+		}
+
+		void splice(iterator pos, list& x, iterator first, iterator last)
+		{
+			iterator it = first;
+
+			while (it != last)
+				insert(pos, *it++);
+			x.erase(first, last);
+		}
+
+		void remove(const value_type& val)
+		{
+			for (iterator it = begin(); it != end(); it++)
+			{
+				if (*it == val)
+					erase(it);
+			}
+		}
+
+		template <class Predicate>
+		void remove_if(Predicate pre)
+		{
+			for (iterator it = begin(); it != end(); it++)
+			{
+				if (pre(*it))
+					erase(it);
+			}
 		}
 
 	private:
@@ -360,8 +441,21 @@ namespace ft
 			_alloc.deallocate(node, 1);
 			//delete node;
 		}
-
-
 	};
-}
+};
+
+
+
+namespace std // work but is good ??
+{
+	
+	template <class T, class Alloc>
+	void swap (ft::list<T,Alloc>& x, ft::list<T,Alloc>& y)
+	{
+		x.swap(y);
+	}
+};
+
+
+
 #endif // __LIST_H__
