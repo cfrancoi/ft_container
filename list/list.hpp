@@ -31,16 +31,102 @@ namespace ft
 			Node *	_prev;
 
 			_Tp		_data;
-		
-			void	setNext(Node *pt) { _next = pt; }
-			void	setPrev(Node *pt) {	_prev = pt; }
-
 	};
 
 	/*
 		struct for List::iterator
 			fuction overload
 	*/
+
+/*	template <class _Tp>
+	class _List_iterator_base
+	{
+		public:
+			typedef	_List_iterator_base<_Tp>			_Self;
+			typedef Node<_Tp>							Tnode;
+			typedef	_Tp									value_type;
+			typedef	std::bidirectional_iterator_tag 	iterator_category;
+			typedef	ptrdiff_t 							difference_type;
+
+			_List_iterator_base<_Tp>() : _node(NULL) {}
+			_List_iterator_base<_Tp>(Tnode * ptr) : _node(ptr) {}
+			virtual ~_List_iterator_base<_Tp>() {}
+
+			virtual
+			_Self& operator=(const _Self & ref)
+			{
+				_node = ref._node;
+				return *this;
+			}
+
+			
+			_Self& operator++()
+			{
+				_node = _node->_next;
+				return *this;
+			}
+			
+			_Self operator++(int)
+			{
+				_Self _tmp = *this;
+				++*this;
+				return _tmp;
+			}
+
+			_Self& operator--()
+			{
+				_node = _node->_prev;
+				return *this;
+			}
+
+			_Self operator--(int)
+			{
+				_Self _tmp = *this;
+				_node = _node->_prev;
+				return _tmp;
+			}
+			
+		friend bool
+			operator==(const _Self& __x, const _Self& __y)	{ return __x._node == __y._node; }
+		friend bool operator!=(const _Self& __x, const _Self& __y)	{ return __x._node != __y._node; }
+		public:
+			Tnode * _node;
+	};
+
+
+	template <typename _Tp>
+	class _List_Iterator : public _List_iterator_base<_Tp>
+	{
+		typedef	_List_Iterator<_Tp> _Iter;
+		typedef _Tp*				pointer;
+		typedef _Tp&				reference;
+		typedef Node<_Tp>			Tnode;
+
+		public:
+			_List_Iterator<_Tp>() : _List_iterator_base<_Tp>() {}
+			_List_Iterator<_Tp>(Tnode * src) : _List_iterator_base<_Tp>(src) {}
+			virtual ~_List_Iterator<_Tp>() {}
+
+			_List_Iterator<_Tp>& operator=(const _List_iterator_base<_Tp> & ref)
+			{
+				this->_node = ref._node;
+				return *this;
+			}
+
+		_Iter& operator++(){ _List_iterator_base<_Tp>::operator++(); return *this; }
+		_Iter operator++(int){ _List_iterator_base<_Tp>::operator++(int()); return *this; }
+
+		_Iter& operator--(){ _List_iterator_base<_Tp>::operator--(); return *this; }
+		_Iter operator--(int){ _List_iterator_base<_Tp>::operator--(int()); return *this; }
+
+		friend bool
+		operator==(const _Iter& __x, const _Iter& __y)	{ return _List_iterator_base<_Tp>::operator==(__x, __y);}
+		//friend bool
+		//operator!=(const _Iter& __x, const _Iter& __y)	{ return _List_iterator_base<_Tp>::operator!=(__x, __y);}
+
+		reference		operator*() { return this->_node->_data; }
+		pointer			operator->() { return &(this->_node->_data); }
+	};*/
 
 	template <typename _Tp>
 	class _List_Iterator
@@ -49,10 +135,10 @@ namespace ft
 			typedef	_List_Iterator<_Tp>		_Self;
 			typedef Node<_Tp>				Tnode;
 
-			typedef	_Tp		value_type;
-			typedef	_Tp*	pointer;
-			typedef	_Tp&	reference;
-			typedef _Self	iterator_type;
+			typedef	_Tp				value_type;
+			typedef _Tp*			pointer;
+			typedef _Tp&			reference;
+			typedef _Self			iterator_type;
 			typedef std::bidirectional_iterator_tag iterator_category;
 			//typedef typename std::iterator_traits<_Self>::value_type value_type;
 			typedef ptrdiff_t difference_type;
@@ -60,10 +146,12 @@ namespace ft
 
 			_List_Iterator() : _node(NULL) {}
 
-			_List_Iterator(const Tnode * src) : _node(src) {}
+			_List_Iterator(Tnode * src) : _node(src) {}
+
+			//_List_Iterator(_Self & src) { *this = src; }
 			
 			reference	operator*() { return _node->_data; }
-			pointer		operator->() {return &(_node->_data); }
+			pointer		operator->() { return &(_node->_data); }
 
 			_Self& operator=(const _Self & ref)
 			{
@@ -109,11 +197,76 @@ namespace ft
 			Tnode * _node;
 	};
 
+	/*template <typename _Tp>
+	class _Const_List_Iterator
+	{
+		public:
+			typedef	_Const_List_Iterator<_Tp>		_Self;
+			typedef Node<_Tp>						Tnode;
+
+			typedef	_Tp		value_type;
+			typedef	const _Tp*	pointer;
+			typedef	const _Tp&	reference;
+			typedef _Self	iterator_type;
+			typedef std::bidirectional_iterator_tag iterator_category;
+			//typedef typename std::iterator_traits<_Self>::value_type value_type;
+			typedef ptrdiff_t difference_type;
+			
+
+			_Const_List_Iterator() : _node(NULL) {}
+
+			_Const_List_Iterator(const Tnode * src) : _node(src) {}
+
+			//_Const_List_Iterator(_Self & src) { *this = src; }
+			
+			reference	operator*() { return _node->_data; }
+			pointer		operator->() { return &(_node->_data); }
+
+			_Self& operator=(_Self & ref)
+			{
+				_node = ref._node;
+				return *this;
+			}
+
+			_Self& operator++()
+			{
+				_node = _node->_next;
+				return *this;
+			}
+
+			_Self operator++(int)
+			{
+				_Self _tmp = *this;
+				++*this;
+				return _tmp;
+			}
+
+			_Self& operator--()
+			{
+				_node = _node->_prev;
+				return *this;
+
+			}
+
+			_Self operator--(int)
+			{
+				_Self _tmp = *this;
+				_node = _node->_prev;
+				return _tmp;
+			}
+			
+			friend bool
+			operator==(const _Self& __x, const _Self& __y)	{ return __x._node == __y._node; }
+			friend bool
+			operator!=(const _Self& __x, const _Self& __y)	{ return __x._node != __y._node; }
+
+		public:
+			const Tnode * _node;
+	};*/
+
 	template < class _Tp, class Allocator = std::allocator<_Tp> >
 	class list
 	{
-
-
 	public:
 		typedef	_Tp								value_type;
 		typedef Allocator						allocator_type;
@@ -125,11 +278,11 @@ namespace ft
 		typedef typename allocator_type::const_pointer		const_pointer;
 
 		typedef	_List_Iterator<value_type>					iterator;
-		typedef	const _List_Iterator<value_type>			const_iterator;
+		typedef	_List_Iterator<value_type>					const_iterator;
 
 		typedef	size_t										size_type;
 
-		typedef typename iterator::difference_type  difference_type;
+		typedef ptrdiff_t  difference_type;
 
 		typedef Node<_Tp>	Tnode;
 
@@ -171,7 +324,7 @@ namespace ft
 			insert(_last, n, src);
 		}	
 
-		list(const list& x) : _size(0)
+		list<_Tp>(const list& x) : _size(0)
 		{
 			_last._node = new_node(value_type());
 			_last._node->_next = _last._node;
@@ -202,8 +355,7 @@ namespace ft
 		//TODO
 		const_iterator begin(void) const
 		{
-			iterator begin;
-			begin = _last;
+			const_iterator begin(_last._node);
 			begin++;
 			return begin;
 		}
@@ -246,6 +398,28 @@ namespace ft
 			** Modifier **
 		*/
 		
+		template <class InputIterator>
+  		void assign (InputIterator first, InputIterator last)
+		{
+			clear();
+			while (first != last)
+				push_back(*first++);
+		}
+
+		void assign (size_type n, const value_type& val)
+		{
+			clear();
+			while (n != _size)
+				push_back(val);
+		}
+
+		void assign (int n, const value_type& val)
+		{
+			clear();
+			while (n != _size)
+				push_back(val);
+		}
+
 		void push_front(const value_type & val)
 		{
 			insert(begin(), val);
@@ -421,6 +595,49 @@ namespace ft
 			}
 		}
 
+		void unique()
+		{
+			iterator it;
+
+			for(it = begin(); it != _last; it++)
+			{
+				iterator cmp = it;
+				while (++cmp != _last)
+				{
+					if (*it == *cmp)
+					{
+						erase(cmp);
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		template <class BinaryPredicate>
+  		void unique (BinaryPredicate binary_pred)
+		{
+			iterator it;
+
+			for(it = begin(); it != _last; it++)
+			{
+				iterator cmp = it;
+				while (++cmp != _last)
+				{
+					if (binary_pred(*it, *cmp))
+					{
+						erase(cmp);
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+
 	private:
 		iterator		data;
 		size_t			_size;
@@ -443,8 +660,6 @@ namespace ft
 		}
 	};
 };
-
-
 
 namespace std // work but is good ??
 {
