@@ -10,3 +10,10 @@
 | Modifier   | pop_front()        | delete el at end     | :x: |
 | Modifier   | push_back()       | add el at end     | :x: |
 | Modifier   | pop_back()        | delete el at end     | :x: |
+### note
+##### iterator
+    const_iterator = iterator // OK
+    iterator = const_iterator // KO
+    
+### link
+    https://en.cppreference.com/w/cpp/iterator
