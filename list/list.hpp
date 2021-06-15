@@ -197,6 +197,75 @@ namespace ft
 			Tnode * _node;
 	};
 
+	template <typename _Tp>
+	class _Const_List_Iterator
+	{
+		public:
+			typedef	_Const_List_Iterator<_Tp>		_Self;
+			typedef Node<_Tp>				Tnode;
+
+			typedef	_Tp				value_type;
+			typedef const _Tp*			pointer;
+			typedef const _Tp&			reference;
+			typedef _Self			iterator_type;
+			typedef std::bidirectional_iterator_tag iterator_category;
+			//typedef typename std::iterator_traits<_Self>::value_type value_type;
+			typedef ptrdiff_t difference_type;
+			
+
+			_Const_List_Iterator() : _node(NULL) {}
+
+			_Const_List_Iterator(Tnode * src) : _node(src) {}
+
+			//_List_Iterator(_Self & src) { *this = src; }
+			
+			reference	operator*() { return _node->_data; }
+			pointer		operator->() { return &(_node->_data); }
+
+			_Self& operator=(const _Self & ref)
+			{
+				_node = ref._node;
+				return *this;
+			}
+
+			//Tnode* operator->() {return _node;};
+
+			_Self& operator++()
+			{
+				_node = _node->_next;
+				return *this;
+			}
+
+			_Self operator++(int)
+			{
+				_Self _tmp = *this;
+				++*this;
+				return _tmp;
+			}
+
+			_Self& operator--()
+			{
+				_node = _node->_prev;
+				return *this;
+
+			}
+
+			_Self operator--(int)
+			{
+				_Self _tmp = *this;
+				_node = _node->_prev;
+				return _tmp;
+			}
+			
+			friend bool
+			operator==(const _Self& __x, const _Self& __y)	{ return __x._node == __y._node; }
+			friend bool
+			operator!=(const _Self& __x, const _Self& __y)	{ return __x._node != __y._node; }
+
+		public:
+			Tnode * _node;
+	};
+
 	/*template <typename _Tp>
 	class _Const_List_Iterator
 	{
@@ -278,7 +347,7 @@ namespace ft
 		typedef typename allocator_type::const_pointer		const_pointer;
 
 		typedef	_List_Iterator<value_type>					iterator;
-		typedef	_List_Iterator<value_type>					const_iterator;
+		typedef	_Const_List_Iterator<value_type>					const_iterator;
 
 		typedef	size_t										size_type;
 
