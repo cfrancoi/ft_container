@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 
+#include <iterator.hpp>
+
 
 namespace ft
 {
@@ -38,96 +40,6 @@ namespace ft
 			fuction overload
 	*/
 
-/*	template <class _Tp>
-	class _List_iterator_base
-	{
-		public:
-			typedef	_List_iterator_base<_Tp>			_Self;
-			typedef Node<_Tp>							Tnode;
-			typedef	_Tp									value_type;
-			typedef	std::bidirectional_iterator_tag 	iterator_category;
-			typedef	ptrdiff_t 							difference_type;
-
-			_List_iterator_base<_Tp>() : _node(NULL) {}
-			_List_iterator_base<_Tp>(Tnode * ptr) : _node(ptr) {}
-			virtual ~_List_iterator_base<_Tp>() {}
-
-			virtual
-			_Self& operator=(const _Self & ref)
-			{
-				_node = ref._node;
-				return *this;
-			}
-
-			
-			_Self& operator++()
-			{
-				_node = _node->_next;
-				return *this;
-			}
-			
-			_Self operator++(int)
-			{
-				_Self _tmp = *this;
-				++*this;
-				return _tmp;
-			}
-
-			_Self& operator--()
-			{
-				_node = _node->_prev;
-				return *this;
-			}
-
-			_Self operator--(int)
-			{
-				_Self _tmp = *this;
-				_node = _node->_prev;
-				return _tmp;
-			}
-			
-		friend bool
-			operator==(const _Self& __x, const _Self& __y)	{ return __x._node == __y._node; }
-		friend bool operator!=(const _Self& __x, const _Self& __y)	{ return __x._node != __y._node; }
-		public:
-			Tnode * _node;
-	};
-
-
-	template <typename _Tp>
-	class _List_Iterator : public _List_iterator_base<_Tp>
-	{
-		typedef	_List_Iterator<_Tp> _Iter;
-		typedef _Tp*				pointer;
-		typedef _Tp&				reference;
-		typedef Node<_Tp>			Tnode;
-
-		public:
-			_List_Iterator<_Tp>() : _List_iterator_base<_Tp>() {}
-			_List_Iterator<_Tp>(Tnode * src) : _List_iterator_base<_Tp>(src) {}
-			virtual ~_List_Iterator<_Tp>() {}
-
-			_List_Iterator<_Tp>& operator=(const _List_iterator_base<_Tp> & ref)
-			{
-				this->_node = ref._node;
-				return *this;
-			}
-
-		_Iter& operator++(){ _List_iterator_base<_Tp>::operator++(); return *this; }
-		_Iter operator++(int){ _List_iterator_base<_Tp>::operator++(int()); return *this; }
-
-		_Iter& operator--(){ _List_iterator_base<_Tp>::operator--(); return *this; }
-		_Iter operator--(int){ _List_iterator_base<_Tp>::operator--(int()); return *this; }
-
-		friend bool
-		operator==(const _Iter& __x, const _Iter& __y)	{ return _List_iterator_base<_Tp>::operator==(__x, __y);}
-		//friend bool
-		//operator!=(const _Iter& __x, const _Iter& __y)	{ return _List_iterator_base<_Tp>::operator!=(__x, __y);}
-
-		reference		operator*() { return this->_node->_data; }
-		pointer			operator->() { return &(this->_node->_data); }
-	};*/
-
 	template <typename _Tp>
 	class _List_Iterator
 	{
@@ -144,14 +56,17 @@ namespace ft
 			typedef ptrdiff_t difference_type;
 			
 
-			_List_Iterator() : _node(NULL) {}
+			_List_Iterator<_Tp>() : _node(NULL) {}
 
-			_List_Iterator(Tnode * src) : _node(src) {}
+			_List_Iterator<_Tp>(Tnode * src) : _node(src) {}
 
-			//_List_Iterator(_Self & src) { *this = src; }
-			
+			_List_Iterator<_Tp>(const _List_Iterator & src) { *this = src; }
+
+			~_List_Iterator<_Tp>() {};
+
 			reference	operator*() { return _node->_data; }
 			pointer		operator->() { return &(_node->_data); }
+
 
 			_Self& operator=(const _Self & ref)
 			{
@@ -209,7 +124,6 @@ namespace ft
 			typedef const _Tp&			reference;
 			typedef _Self			iterator_type;
 			typedef std::bidirectional_iterator_tag iterator_category;
-			//typedef typename std::iterator_traits<_Self>::value_type value_type;
 			typedef ptrdiff_t difference_type;
 			
 
@@ -217,7 +131,11 @@ namespace ft
 
 			_Const_List_Iterator(Tnode * src) : _node(src) {}
 
-			//_List_Iterator(_Self & src) { *this = src; }
+			_Const_List_Iterator(const _Self& src) { *this = src; }
+
+			_Const_List_Iterator(const _List_Iterator<_Tp>& src) { *this = src; }
+
+			~_Const_List_Iterator() {}
 			
 			reference	operator*() { return _node->_data; }
 			pointer		operator->() { return &(_node->_data); }
@@ -228,7 +146,11 @@ namespace ft
 				return *this;
 			}
 
-			//Tnode* operator->() {return _node;};
+			_Self& operator=(const _List_Iterator<_Tp> & ref)
+			{
+				_node = ref._node;
+				return *this;
+			}
 
 			_Self& operator++()
 			{
@@ -266,73 +188,6 @@ namespace ft
 			Tnode * _node;
 	};
 
-	/*template <typename _Tp>
-	class _Const_List_Iterator
-	{
-		public:
-			typedef	_Const_List_Iterator<_Tp>		_Self;
-			typedef Node<_Tp>						Tnode;
-
-			typedef	_Tp		value_type;
-			typedef	const _Tp*	pointer;
-			typedef	const _Tp&	reference;
-			typedef _Self	iterator_type;
-			typedef std::bidirectional_iterator_tag iterator_category;
-			//typedef typename std::iterator_traits<_Self>::value_type value_type;
-			typedef ptrdiff_t difference_type;
-			
-
-			_Const_List_Iterator() : _node(NULL) {}
-
-			_Const_List_Iterator(const Tnode * src) : _node(src) {}
-
-			//_Const_List_Iterator(_Self & src) { *this = src; }
-			
-			reference	operator*() { return _node->_data; }
-			pointer		operator->() { return &(_node->_data); }
-
-			_Self& operator=(_Self & ref)
-			{
-				_node = ref._node;
-				return *this;
-			}
-
-			_Self& operator++()
-			{
-				_node = _node->_next;
-				return *this;
-			}
-
-			_Self operator++(int)
-			{
-				_Self _tmp = *this;
-				++*this;
-				return _tmp;
-			}
-
-			_Self& operator--()
-			{
-				_node = _node->_prev;
-				return *this;
-
-			}
-
-			_Self operator--(int)
-			{
-				_Self _tmp = *this;
-				_node = _node->_prev;
-				return _tmp;
-			}
-			
-			friend bool
-			operator==(const _Self& __x, const _Self& __y)	{ return __x._node == __y._node; }
-			friend bool
-			operator!=(const _Self& __x, const _Self& __y)	{ return __x._node != __y._node; }
-
-		public:
-			const Tnode * _node;
-	};*/
-
 	template < class _Tp, class Allocator = std::allocator<_Tp> >
 	class list
 	{
@@ -347,7 +202,10 @@ namespace ft
 		typedef typename allocator_type::const_pointer		const_pointer;
 
 		typedef	_List_Iterator<value_type>					iterator;
-		typedef	_Const_List_Iterator<value_type>					const_iterator;
+		typedef	_Const_List_Iterator<value_type>			const_iterator;
+
+		typedef	ft::reverse_iterator<iterator>					reverse_iterator;
+		typedef	ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 		typedef	size_t										size_type;
 
@@ -358,7 +216,7 @@ namespace ft
 
 		explicit list<_Tp>() : _size(0)
 		{
-			_last._node = new Tnode();
+			_last._node = new_node(value_type());
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
 		}
@@ -366,7 +224,8 @@ namespace ft
 		template < class InputIterator >
 		list<value_type>(InputIterator st, InputIterator end, const allocator_type& alloc = allocator_type()) : _size(0)
 		{
-			_last._node = new Tnode();
+			(void)alloc;
+			_last._node = new_node(value_type());
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
 			while (st != end)
@@ -379,6 +238,7 @@ namespace ft
 		//TODO
 		explicit list<_Tp>(size_t n, const value_type& src = value_type(), const allocator_type& alloc = allocator_type()) : _size(0)
 		{
+			(void)alloc;
 			_last._node = new_node(src);
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
@@ -387,6 +247,7 @@ namespace ft
 		
 		explicit list<_Tp>(int n, const value_type& src = value_type(), const allocator_type& alloc = allocator_type()) : _size(0)
 		{
+			(void)alloc;
 			_last._node = new_node(src);
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
@@ -398,7 +259,7 @@ namespace ft
 			_last._node = new_node(value_type());
 			_last._node->_next = _last._node;
 			_last._node->_prev = _last._node;
-			for (iterator it = x.begin(); it != x.end(); it++)
+			for (const_iterator it = x.begin(); it != x.end(); it++)
 				push_back(*it);
 		}
 
@@ -413,31 +274,52 @@ namespace ft
 			** Iterators **
 		*/
 
+
 		iterator begin(void)
 		{
-			iterator begin;
-			begin = _last;
-			begin++;
+			iterator begin(_last._node->_next);
 			return begin;
 		}
 
 		//TODO
 		const_iterator begin(void) const
 		{
-			const_iterator begin(_last._node);
-			begin++;
+			const_iterator begin(_last._node->_next);
 			return begin;
+		}
+
+		reverse_iterator rbegin()
+		{
+			reverse_iterator it(rend());
+			return it++;
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			const_reverse_iterator it(rend());
+			return it++;
 		}
 
 		iterator end(void) { return _last; }
 
 		const_iterator end(void) const { return _last; }
 
+		reverse_iterator rend()
+		{
+			reverse_iterator it(end());
+			return it;
+		}
+
+		const_reverse_iterator rend() const
+		{
+			const_reverse_iterator it(end());
+			return it;
+		}
+
 
 		/*
 			** Capacity **
 		*/
-
 		size_type	size(void) const { return _size; }
 		
 		// to do
@@ -485,7 +367,7 @@ namespace ft
 		void assign (int n, const value_type& val)
 		{
 			clear();
-			while (n != _size)
+			while ((size_t)n != _size)
 				push_back(val);
 		}
 
@@ -690,7 +572,7 @@ namespace ft
 		{
 			iterator it;
 
-			for(it = begin(); it != _last; it++)
+			for(it = begin(); it != end(); it++)
 			{
 				iterator cmp = it;
 				while (++cmp != _last)
@@ -706,6 +588,72 @@ namespace ft
 				}
 			}
 		}
+
+		/*
+			* Operator
+		*/
+
+		
+	template <class T, class Alloc>
+	friend
+	 bool operator==(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return false;
+			
+		const_iterator its = rhs.begin();
+		for (const_iterator it = lhs.begin(); it != lhs.end(); it++, its++)
+		{
+			if (*it != *its)
+				return false;
+		}
+		return true;
+	}
+
+	template <class T, class Alloc>
+	friend
+	bool operator!=(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <class T, class Alloc>
+	friend
+	bool operator>(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+	{
+		if (lhs.size() > rhs.size())
+			return true;
+		const_iterator its = rhs.begin();
+		for (const_iterator it = lhs.begin(); it != lhs.end() || its != rhs.end(); it++, its++)
+		{
+			if (!(*it < *its))
+				return false;
+		}
+		return true;
+	}
+
+	template <class T, class Alloc>
+	friend
+	bool operator<=(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs) { return !(lhs > rhs); }
+
+	template <class T, class Alloc>
+	friend
+	bool operator<(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs)
+	{
+		if (lhs.size() < rhs.size())
+			return true;
+		const_iterator its = rhs.begin();
+		for (const_iterator it = lhs.begin(); it != lhs.end(); it++, its++)
+		{
+			if (*it <= *its)
+				return false;
+		}
+		return true;
+	}
+
+	template <class T, class Alloc>
+	friend
+	bool operator>=(const list<T,Alloc>& lhs, const list<T,Alloc>& rhs) { return !(lhs < rhs); }
 
 	private:
 		iterator		data;
@@ -739,7 +687,5 @@ namespace std // work but is good ??
 		x.swap(y);
 	}
 };
-
-
 
 #endif // __LIST_H__
