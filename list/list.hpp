@@ -53,7 +53,7 @@ namespace ft
 			typedef _Self			iterator_type;
 			typedef std::bidirectional_iterator_tag iterator_category;
 			//typedef typename std::iterator_traits<_Self>::value_type value_type;
-			typedef ptrdiff_t difference_type;
+			typedef std::ptrdiff_t difference_type;
 			
 
 			_List_Iterator<_Tp>() : _node(NULL) {}
@@ -124,7 +124,7 @@ namespace ft
 			typedef const _Tp&			reference;
 			typedef _Self			iterator_type;
 			typedef std::bidirectional_iterator_tag iterator_category;
-			typedef ptrdiff_t difference_type;
+			typedef std::ptrdiff_t difference_type;
 			
 
 			_Const_List_Iterator() : _node(NULL) {}
@@ -209,7 +209,7 @@ namespace ft
 
 		typedef	size_t										size_type;
 
-		typedef ptrdiff_t  difference_type;
+		typedef std::ptrdiff_t  difference_type;
 
 		typedef Node<_Tp>	Tnode;
 
@@ -506,16 +506,36 @@ namespace ft
 		 * operation
 		*/
 
+	private:
+
+
+	public:
+		/*
+			No element are copied 
+		*/
 		void splice(iterator pos, list& x)
 		{
-			 insert(pos, x.begin(), x.end());
-			 x.clear();
+			iterator it = x.begin();
+			 while (x.size())
+			 {
+				// std::cout << "x.size" << x.size() << std::endl;
+				 splice(pos, x, it++);
+			 }
 		}
 
 		void splice(iterator pos, list& x, iterator it)
 		{
-			insert(pos, *it);
-			x.erase(it);
+
+			it._node->_prev->_next = it._node->_next;
+			it._node->_next->_prev = it._node->_prev;
+			x._size--;
+
+			pos._node->_prev->_next = it._node;
+			it._node->_prev = pos._node->_prev;
+
+			pos._node->_prev = it._node;
+			it._node->_next = pos._node;
+			_size++;
 		}
 
 		void splice(iterator pos, list& x, iterator first, iterator last)
@@ -523,26 +543,29 @@ namespace ft
 			iterator it = first;
 
 			while (it != last)
-				insert(pos, *it++);
-			x.erase(first, last);
+				splice(pos, x, it++);
 		}
 
 		void remove(const value_type& val)
 		{
-			for (iterator it = begin(); it != end(); it++)
+			for (iterator it = begin(); it != end();)
 			{
 				if (*it == val)
-					erase(it);
+					it = erase(it);
+				else
+					it++;
 			}
 		}
 
 		template <class Predicate>
 		void remove_if(Predicate pre)
 		{
-			for (iterator it = begin(); it != end(); it++)
+			for (iterator it = begin(); it != end();)
 			{
 				if (pre(*it))
-					erase(it);
+					it = erase(it);
+				else
+					it++;
 			}
 		}
 
@@ -553,16 +576,13 @@ namespace ft
 			for(it = begin(); it != _last; it++)
 			{
 				iterator cmp = it;
-				while (++cmp != _last)
+				cmp++;
+				while (cmp != _last)
 				{
 					if (*it == *cmp)
-					{
-						erase(cmp);
-					}
+						cmp = erase(cmp);
 					else
-					{
 						break;
-					}
 				}
 			}
 		}
@@ -575,16 +595,41 @@ namespace ft
 			for(it = begin(); it != end(); it++)
 			{
 				iterator cmp = it;
-				while (++cmp != _last)
+				cmp++;
+				while (cmp != _last)
 				{
 					if (binary_pred(*it, *cmp))
-					{
-						erase(cmp);
-					}
+						cmp = erase(cmp);
 					else
-					{
 						break;
-					}
+				}
+			}
+		}
+
+		void sort()
+		{
+			iterator it;
+			iterator tmp;
+			iterator next;
+
+			it = begin();
+			next = it;
+			next++;
+			while (next != end())
+			{
+				if (*next < *it)
+				{
+					tmp = it;
+					while (*next < *it && it != begin())
+						it--;
+					splice(++it, *this, next);
+					it = tmp;
+					next = ++tmp;
+				}
+				else
+				{
+					it++;
+					next++;
 				}
 			}
 		}
