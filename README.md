@@ -18,3 +18,4 @@
 ### link
     https://en.cppreference.com/w/cpp/iterator
     https://gcc.gnu.org/onlinedocs/gcc-11.1.0/libstdc++/api/a18648_source.html#l00450
+    https://www.youtube.com/watch?v=xGl-VBmKr2E
