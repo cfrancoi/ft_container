@@ -516,7 +516,7 @@ namespace ft
 		void splice(iterator pos, list& x)
 		{
 			iterator it = x.begin();
-			 while (x.size())
+			 while (x._size)
 			 {
 				// std::cout << "x.size" << x.size() << std::endl;
 				 splice(pos, x, it++);
@@ -606,34 +606,59 @@ namespace ft
 			}
 		}
 
-		void sort()
-		{
-			iterator it;
-			iterator tmp;
-			iterator next;
 
-			it = begin();
-			next = it;
-			next++;
-			while (next != end())
+	private:
+		void mergeSort(list<value_type> & lst)
+		{
+			list<value_type> f;
+			list<value_type> s;
+			iterator it;
+			size_t len;
+
+
+
+			if (lst.size() > 1)
 			{
-				if (*next < *it)
+				len = lst.size() * 0.5;
+				it = lst.begin();
+				while (len--)
+					it++;
+				f.splice(f.end(), lst, lst.begin(), it);
+				s.splice(s.end(), lst);
+
+				f.mergeSort(f);
+				s.mergeSort(s);
+				
+			}
+			lst.merge(s, f);
+
+		}
+
+		void merge(list<value_type> & first, list<value_type> & second)
+		{
+			iterator fit = first.begin();
+			iterator sit = second.begin();
+
+			while (first._size != 0 || second._size != 0)
+			{
+				if (fit != first._last && (sit == second._last || *fit < *sit))
 				{
-					tmp = it;
-					while (*next < *it && it != begin())
-						it--;
-					splice(++it, *this, next);
-					it = tmp;
-					next = ++tmp;
+					splice(_last, first, fit);
+					fit = first.begin();
 				}
 				else
 				{
-					it++;
-					next++;
+					splice(_last, second, sit);
+					sit = second.begin();
 				}
 			}
 		}
-
+	public:
+		void	sort()
+		{
+			mergeSort(*this);	
+		}
+		
 		/*
 			* Operator
 		*/
