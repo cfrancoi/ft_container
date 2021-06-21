@@ -52,7 +52,6 @@ namespace ft
 			typedef _Tp&			reference;
 			typedef _Self			iterator_type;
 			typedef std::bidirectional_iterator_tag iterator_category;
-			//typedef typename std::iterator_traits<_Self>::value_type value_type;
 			typedef std::ptrdiff_t difference_type;
 			
 
@@ -708,8 +707,6 @@ namespace ft
 
 			it = --end();
 			its = --end();
-
-			// 1 2 3 4 ->  1 2 3 4 -> 1 4 3 2//
 			const_iterator pos = end();
 			while(it != begin())
 			{
@@ -718,7 +715,6 @@ namespace ft
 				splice(end(), *this, its);
 				its = tmp;
 			}
-			std::cerr << std::endl;
 		}
 
 		/*
