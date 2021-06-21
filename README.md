@@ -11,7 +11,9 @@
 | Modifier   | push_back()       | add el at end     | :x: |
 | Modifier   | pop_back()        | delete el at end     | :x: |
 ### note
-##### iterator
+
+#### iterator ####
+
     const_iterator = iterator // OK
     iterator = const_iterator // KO
 
