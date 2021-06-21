@@ -5,7 +5,7 @@
 | element    | prototype         | description       | state |
 | ---------  | ----------------- | ----------------- | ----- |
 |constructor | list()            | default | :heavy_check_mark: |
-| constructor| list(uint n, val) | fill constructor | :heavy_check_mark: |
+| acces|  | -front() -back()| acces to element| :heavy_check_mark: |
 | Modifier   | push_front()       | add el at end     | :x: |
 | Modifier   | pop_front()        | delete el at end     | :x: |
 | Modifier   | push_back()       | add el at end     | :x: |
@@ -14,6 +14,8 @@
 ##### iterator
     const_iterator = iterator // OK
     iterator = const_iterator // KO
+
+    list<type>::sort ~ time to see
     
 ### link
     https://en.cppreference.com/w/cpp/iterator
