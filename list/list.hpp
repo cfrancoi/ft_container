@@ -513,9 +513,9 @@ namespace ft
 		/*
 			No element are copied 
 		*/
-		void splice(iterator pos, list& x)
+		void splice(const_iterator pos, list& x)
 		{
-			iterator it = x.begin();
+			const_iterator it = x.begin();
 			 while (x._size)
 			 {
 				// std::cout << "x.size" << x.size() << std::endl;
@@ -523,7 +523,7 @@ namespace ft
 			 }
 		}
 
-		void splice(iterator pos, list& x, iterator it)
+		void splice(const_iterator pos, list& x, const_iterator it)
 		{
 
 			it._node->_prev->_next = it._node->_next;
@@ -538,9 +538,9 @@ namespace ft
 			_size++;
 		}
 
-		void splice(iterator pos, list& x, iterator first, iterator last)
+		void splice(const_iterator pos, list& x, const_iterator first, const_iterator last)
 		{
-			iterator it = first;
+			const_iterator it = first;
 
 			while (it != last)
 				splice(pos, x, it++);
@@ -658,14 +658,13 @@ namespace ft
 	public:
 		void merge(list<value_type> & first)
 		{
-			if (&x == this)
+			if (&first == this)
 				return;
 			iterator it = begin();
 			
 			
 			while(first._size)
 			{
-				//std::cout << "call :" << first.front() << '|' << *it << "|" << first._size << std::endl;
 				if (it == end() ||first.front() < *it)
 					splice(it, first, first.begin());
 				else
@@ -682,7 +681,6 @@ namespace ft
 			
 			while(x._size)
 			{
-				//std::cout << "call :" << first.front() << '|' << *it << "|" << first._size << std::endl;
 				if (it == end() ||comp(x.front(), *it))
 					splice(it, x, x.begin());
 				else
@@ -701,6 +699,28 @@ namespace ft
 			mergeSort(*this, comp);
 		}
 		
+		void reverse(void)
+		{
+			if (empty() || _size == 1)
+				return ;
+			const_iterator it;
+			const_iterator its;
+
+			it = --end();
+			its = --end();
+
+			// 1 2 3 4 ->  1 2 3 4 -> 1 4 3 2//
+			const_iterator pos = end();
+			while(it != begin())
+			{
+				const_iterator tmp = its;
+				tmp--;
+				splice(end(), *this, its);
+				its = tmp;
+			}
+			std::cerr << std::endl;
+		}
+
 		/*
 			* Operator
 		*/
