@@ -323,7 +323,7 @@ namespace ft
 		size_type	size(void) const { return _size; }
 		
 		// to do
-		size_type	max_size(void) const { return _size; }
+		size_type	max_size(void) const { return std::numeric_limits<difference_type>::max(); }
 
 		bool	 	empty(void) const { return (!_size); }
 
