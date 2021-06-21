@@ -611,7 +611,6 @@ namespace ft
 		void mergeSort(list<value_type> & lst)
 		{
 			list<value_type> f;
-			list<value_type> s;
 			iterator it;
 			size_t len;
 
@@ -624,39 +623,82 @@ namespace ft
 				while (len--)
 					it++;
 				f.splice(f.end(), lst, lst.begin(), it);
-				s.splice(s.end(), lst);
 
 				f.mergeSort(f);
-				s.mergeSort(s);
+				lst.mergeSort(lst);
 				
 			}
-			lst.merge(s, f);
+			lst.merge(f);
 
 		}
-
-		void merge(list<value_type> & first, list<value_type> & second)
+		template < class Compare >
+		void mergeSort(list<value_type> & lst, Compare comp)
 		{
-			iterator fit = first.begin();
-			iterator sit = second.begin();
+			list<value_type> f;
+			iterator it;
+			size_t len;
 
-			while (first._size != 0 || second._size != 0)
+
+
+			if (lst.size() > 1)
 			{
-				if (fit != first._last && (sit == second._last || *fit < *sit))
-				{
-					splice(_last, first, fit);
-					fit = first.begin();
-				}
-				else
-				{
-					splice(_last, second, sit);
-					sit = second.begin();
-				}
+				len = lst.size() * 0.5;
+				it = lst.begin();
+				while (len--)
+					it++;
+				f.splice(f.end(), lst, lst.begin(), it);
+
+				f.mergeSort(f, comp);
+				lst.mergeSort(lst, comp);
+				
 			}
+			lst.merge(f, comp);
+
 		}
 	public:
+		void merge(list<value_type> & first)
+		{
+			if (&x == this)
+				return;
+			iterator it = begin();
+			
+			
+			while(first._size)
+			{
+				//std::cout << "call :" << first.front() << '|' << *it << "|" << first._size << std::endl;
+				if (it == end() ||first.front() < *it)
+					splice(it, first, first.begin());
+				else
+						it++;
+			}
+		}
+
+		template <class Compare>
+		void merge (list<value_type> & x, Compare comp)
+		{
+			if (&x == this)
+				return;
+			iterator it = begin();
+			
+			while(x._size)
+			{
+				//std::cout << "call :" << first.front() << '|' << *it << "|" << first._size << std::endl;
+				if (it == end() ||comp(x.front(), *it))
+					splice(it, x, x.begin());
+				else
+						it++;
+			}
+		}
+
 		void	sort()
 		{
 			mergeSort(*this);	
+		}
+
+		template<class Compare>
+		void sort (Compare comp)
+		{
+			mergeSort(*this, comp);
 		}
 		
 		/*
