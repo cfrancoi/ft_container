@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <iostream>
+#include <limits>
 
 #include <iterator.hpp>
 
