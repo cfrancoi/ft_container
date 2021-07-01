@@ -1,4 +1,5 @@
 #include <memory>
+#include <iterator.hpp>
 
 namespace ft
 {
@@ -21,7 +22,7 @@ namespace ft
 			
 			Random_acc_iter() : _add(NULL) {}
 
-			Random_acc_iter(pointer * src) : _add(src) {}
+			Random_acc_iter(pointer src) : _add(src) {}
 
 			Random_acc_iter(const _Self& src) { *this = src; }
 
@@ -93,7 +94,10 @@ namespace ft
 		typedef typename allocator_type::const_pointer		const_pointer;
 
 		typedef Random_acc_iter<T> 							iterator;
-		//const iterator
+		typedef Random_acc_iter<T> 							const_iterator;
+
+		typedef	ft::reverse_iterator<iterator>				reverse_iterator;
+		typedef	ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 		typedef	size_t										size_type;
 		typedef std::ptrdiff_t								difference_type;
@@ -101,9 +105,9 @@ namespace ft
 		/* pointer end / start / finish */
 	private:
 		allocator_type _alloc; //to do allocation
-		pointer _start;
+		pointer	_start;
 		pointer	_end;
-		pointer _end_of_storage;
+		pointer	_end_of_storage;
 
 		/* allocation and deallocation */
 	private:
@@ -145,6 +149,66 @@ namespace ft
 		}
 
 		~vector() {}
+
+		/*
+			*** Iterators Function ***
+		*/
+
+		iterator begin() {	return _start; }
+		const_iterator begin() const;
+
+		iterator end();
+		const_iterator end() const;
+
+		reverse_iterator rbegin();
+		const_reverse_iterator rbegin() const;
+
+		reverse_iterator rend();
+		const_reverse_iterator rend() const;
+
+		/*
+			*** Capacity Function ***
+		*/
+
+		// return actual size
+		size_type size(void) const;
+
+		// return max size
+		size_type max_size(void) const;
+
+		// return allocated size
+		size_type capacity(void) const;
+
+		void reserve(size_type n);
+
+
+		/*
+			*** Access Function ***
+		*/
+
+		reference operator[](size_type n);
+
+		const_reference operator[](size_type n) const;
+
+		reference at(size_type n);
+		
+		const_reference at(size_type n) const;
+
+		reference front(void);
+		
+		const_reference front(void) const;		
+
+		reference back(void);
+		
+		const_reference back(void) const;
+
+		/*
+			*** Modifier Function ***
+		*/
+
+		void resize (size_type n, value_type & val = value_type());
+
+
 
 
 	};
