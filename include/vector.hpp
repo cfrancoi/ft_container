@@ -33,6 +33,9 @@ namespace ft
 			reference	operator*() { return *_add; }
 			pointer		operator->() { return _add; }
 
+			//reference operator[]();
+			//const_reference operator[](size_type n) const;
+
 			_Self& operator=(const _Self & ref)
 			{
 				_add = ref._add;
@@ -69,7 +72,8 @@ namespace ft
 				--*this;
 				return _tmp;
 			}
-			
+
+
 			friend bool
 			operator==(const _Self& __x, const _Self& __y)	{ return __x._add == __y._add; }
 			friend bool
@@ -179,6 +183,8 @@ namespace ft
 		// return allocated size
 		size_type capacity(void) const;
 
+		bool empty() const;
+
 		void reserve(size_type n);
 
 
@@ -206,7 +212,18 @@ namespace ft
 			*** Modifier Function ***
 		*/
 
-		void resize (size_type n, value_type & val = value_type());
+		
+
+		void assign (size_type n, const value_type& val)
+		{
+
+		}
+
+		//template <class Ite>
+		//void assign (Ite f, Ite l);
+
+
+		void resize (size_type n, const value_type & val = value_type());
 
 
 
