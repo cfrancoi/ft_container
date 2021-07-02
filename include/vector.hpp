@@ -1,5 +1,6 @@
 #include <memory>
 #include <iterator.hpp>
+#include <type_traits>
 
 namespace ft
 {
@@ -43,7 +44,35 @@ namespace ft
 				return *this;
 			}
 
-			friend _Self& operator+(const size_type & i) { _add += i; return *this; }
+			/*friend
+			_Self operator+(const _Self & a, const _Self & i)
+			{
+				_Self n;
+
+				n._add = a._add + i._add;
+
+				return n;
+			}*/
+
+			friend
+			_Self operator+(const _Self & a, const size_type & i)
+			{
+				_Self n;
+
+				n._add = a._add + i;
+
+				return n;
+			}
+
+			friend
+			_Self operator-(const _Self & a, const size_type & i)
+			{
+				_Self n;
+
+				n._add = a._add - i;
+
+				return n;
+			}
             
 		/*	_Self& operator=(const _List_Iterator<_Tp> & ref)
 			{
@@ -281,7 +310,17 @@ namespace ft
 				add_size(n, val);
 		}
 
-		template <class Ite>
+		void assign (int n, const value_type& val)
+		{
+			if (n == 0)
+			return ;
+			if (n + size() > capacity())
+				add_mem((n - size()), val);
+			else
+				add_size(n, val);
+		}
+
+		template < class Ite >
 		void assign (Ite f, Ite l)
 		{
 			while (f != l)
