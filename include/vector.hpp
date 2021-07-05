@@ -1,6 +1,7 @@
 #include <memory>
 #include <iterator.hpp>
 #include <type_traits>
+#include <iostream>
 
 namespace ft
 {
@@ -16,6 +17,7 @@ namespace ft
 				typedef	Random_acc_iter<_Tp>		_Self;
 				typedef	_Tp				value_type;
 				typedef _Tp*			pointer;
+				//typedef typename vector<_Tp>::pointer pointer;
 				typedef _Tp&			reference;
 				typedef _Self			iterator_type;
 				typedef std::random_access_iterator_tag iterator_category;
@@ -73,6 +75,15 @@ namespace ft
 
 				return n;
 			}
+
+			friend
+			_Self operator-( _Self & a, const _Self & b)
+			{
+				a._add -= b._add;
+
+				_Self c(a._add);
+				return c;
+			}
             
 		/*	_Self& operator=(const _List_Iterator<_Tp> & ref)
 			{
@@ -110,6 +121,14 @@ namespace ft
 			operator==(const _Self& __x, const _Self& __y)	{ return __x._add == __y._add; }
 			friend bool
 			operator!=(const _Self& __x, const _Self& __y)	{ return __x._add != __y._add; }
+			friend bool
+			operator<(const _Self& __x, const _Self& __y)	{ return __x._add < __y._add; }
+			friend bool
+			operator>(const _Self& __x, const _Self& __y)	{ return __x._add > __y._add; }
+			friend bool
+			operator<=(const _Self& __x, const _Self& __y)	{ return __x._add <= __y._add; }
+			friend bool
+			operator>=(const _Self& __x, const _Self& __y)	{ return __x._add >=__y._add; }
 
 			private:
 				pointer		_add;
@@ -155,35 +174,37 @@ namespace ft
 
 		void		del_block(pointer to_del, size_type size)
 		{
+			for (int i=0; i<size; i++)
+				_alloc.destroy(&to_del[i]);
 			_alloc.deallocate(to_del, size);
 		}
 
-		void		add_mem(size_type n, const value_type & val)
+		void		add_mem(size_type n)
 		{
 			pointer new_v;
 
-			new_v = new_block(size() + n); // check fail alloc
-
+			new_v = new_block(n); // check fail alloc
 			iterator it = begin();
-			size_type n_size = size() + n;
+			size_type n_size = n;
 			size_type p_size = size();
 			size_type i = 0;
 
+			_end = new_v;
 			while (i != p_size)
 			{
-				new_v[i] = it[i];
+				*_end++ = it[i];
 				++i;
 			}
-			while (i != n_size)
+			_end_of_storage = _end;
+			while (i < n_size)
 			{
-				new_v[i] = val;
+				++_end_of_storage;
 				++i;
 			}
 
 			pointer cpy = _start;
 			_start = new_v;
-			_end = new_v + n_size;
-			_end_of_storage = _end;
+			
 			del_block(cpy, p_size);
 		}
 		void	add_size(size_type n, const value_type & val)
@@ -191,9 +212,14 @@ namespace ft
 			size_type i;
 
 			i = 0;
-			while (i < n && _end <= _end_of_storage)
+			if (_end == NULL)
 			{
-				*++_end = val;
+				_alloc.construct(_end++, val);
+				++i;
+			}
+			while (i < n && (_end) <= _end_of_storage)
+			{
+				_alloc.construct(_end++, val);
 				++i;
 			}
 		}
@@ -204,7 +230,7 @@ namespace ft
 			i = 0;
 			while (i < n && _end >= _start)
 			{
-				--_end;
+				_alloc.destroy(_end--);
 				++i;
 			}
 		}
@@ -240,7 +266,13 @@ namespace ft
 			*this = x;
 		}
 
-		~vector() {}
+		~vector()
+		{
+			if (_start)
+			{
+				del_block(_start, size());
+			}
+		}
 
 		/*
 			*** Iterators Function ***
@@ -288,45 +320,65 @@ namespace ft
 		
 		const_reference at(size_type n) const;
 
-		reference front(void);
+		reference front(void) { return *_start; }
 		
-		const_reference front(void) const;		
+		const_reference front(void) const { return *_start; } 		
 
-		reference back(void);
+		reference back(void) { return *(_end - 1); }
 		
-		const_reference back(void) const;
+		const_reference back(void) const { return *(_end - 1); }
 
 		/*
 			*** Modifier Function ***
 		*/
+		void init_block(size_type n)
+		{
+			if (_start)
+				del_block(_start, size());
+			_start = new_block(n);
+			_end = _start;
+			_end_of_storage = _end;
+			while (n != 0)
+			{
+				++_end_of_storage;
+				--n;
+			}	
+		}
 
 		void assign (size_type n, const value_type& val)
 		{
 			if (n == 0)
-			return ;
-			if (n + size() > capacity())
-				add_mem((n - size()), val);
+				return ;
+			if (n > capacity())
+				init_block(n);
 			else
-				add_size(n, val);
+				rm_size(size()); // size == 0
+			add_size(n, val);
 		}
 
 		void assign (int n, const value_type& val)
 		{
 			if (n == 0)
-			return ;
-			if (n + size() > capacity())
-				add_mem((n - size()), val);
+				return ;
+			if (n > capacity())
+				init_block(n);
 			else
-				add_size(n, val);
+				rm_size(size()); // size == 0
+			add_size(n, val);
 		}
 
 		template < class Ite >
 		void assign (Ite f, Ite l)
 		{
+			size_type s;
+
+			s = &*l - &*f;
+			if (s > capacity())
+				init_block(s);
+			else
+				rm_size(size()); // size == 0
 			while (f != l)
-			{
-				assign(1, *f++);
-			}
+				add_size(1, *f++);
 		}
 
 		void resize (size_type n, const value_type & val = value_type())
@@ -340,16 +392,20 @@ namespace ft
 			else if (n > size())
 			{
 				if (n > capacity())
-					add_mem((n - size()), val);
+				{
+					init_block(n);
+					add_size(n - size(), val);
+				}
 				else
 					add_size(n - size(), val);
 			}
-
 		}
 
 		void push_back(const value_type & val)
 		{
-			assign(1, val);
+			if (1 + size() > capacity())
+				add_mem(capacity() ? capacity() * 2 : 1);
+			add_size(1, val);
 		}
 
 		void pop_back(void)
@@ -358,6 +414,43 @@ namespace ft
 				rm_size(1);
 		}
 		
+		/*
+			n = new size
+		*/
+		iterator exclude(size_type n, iterator first, iterator last)
+		{
+			pointer		_new = new_block(n);
+			iterator	end = begin();
+			size_type	j = 0;
+
+			for (size_type i = 0; i < size(); i++)
+			{
+				if (!(end >= first && end <= last))
+					_alloc.construct(&(_new[j++]), *end);
+				end++;
+			}
+			del_block(_start, size());
+			_start = _new;
+			_end = &(_new[j]);
+			_end_of_storage = _end;
+
+			return (_end);
+		}
+
+
+		iterator erase(iterator pos)
+		{
+			return(exclude(size() -1 , pos, pos+1));
+		}
+
+		iterator erase(iterator first, iterator last)
+		{
+			size_type s;
+
+			iterator tmp; tmp = last - first;
+
+			return(exclude(s, first, last));
+		}
 	};
 	
 } // namespace ft
