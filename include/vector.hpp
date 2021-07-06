@@ -10,29 +10,29 @@ namespace ft
 	{
 	private:
 		template < class _Tp >
-		class Random_acc_iter
+		class viterator
 		{
 			
 			public:
-				typedef	Random_acc_iter<_Tp>		_Self;
+				typedef	viterator<_Tp>		_Self;
 				typedef	_Tp				value_type;
-				typedef _Tp*			pointer;
+				typedef _Tp *			pointer;
 				//typedef typename vector<_Tp>::pointer pointer;
-				typedef _Tp&			reference;
+				typedef _Tp &			reference;
 				typedef _Self			iterator_type;
 				typedef std::random_access_iterator_tag iterator_category;
 				typedef std::ptrdiff_t difference_type;
 				typedef size_t			size_type;
 			
-			Random_acc_iter() : _add(NULL) {}
+			viterator() : _add(NULL) {}
 
-			Random_acc_iter(pointer src) : _add(src) {}
+			viterator(pointer src) : _add(src) {}
 
-			Random_acc_iter(const _Self& src) { *this = src; }
+			viterator(const _Self& src) { *this = src; }
 
-			//Random_acc_iter(const _List_Iterator<_Tp>& src) { *this = src; }
+			//Random_acc_iter(const _Self& src) { *this = src; }
 
-			~Random_acc_iter() {}
+			~viterator() {}
 			
 			reference	operator*() { return *_add; }
 			pointer		operator->() { return _add; }
@@ -45,50 +45,58 @@ namespace ft
 				_add = ref._add;
 				return *this;
 			}
+	
 
-			/*friend
-			_Self operator+(const _Self & a, const _Self & i)
+			/* operator + */
+
+
+			viterator operator+(const difference_type & n) const
 			{
-				_Self n;
+				return viterator(_add + n);
+			}
 
-				n._add = a._add + i._add;
-
-				return n;
+			/*viterator operator+(const viterator & n) const
+			{
+				return viterator(_add + n._add);
 			}*/
 
-			friend
-			_Self operator+(const _Self & a, const size_type & i)
+		/*	difference_type operator+(const viterator & n) const
 			{
-				_Self n;
+				return (_add + n._add);
+			}*/
 
-				n._add = a._add + i;
-
-				return n;
+			/* operator - */
+			
+			viterator operator-(const difference_type & n) const
+			{
+				return viterator(_add - n);
 			}
 
-			friend
-			_Self operator-(const _Self & a, const size_type & i)
+			/*viterator operator-(const viterator & n) const
 			{
-				_Self n;
+				viterator c(_add);
 
-				n._add = a._add - i;
-
-				return n;
+				return c -= n;
+			}*/
+			viterator& operator+=(const difference_type & n)
+			{
+				_add += n;
+				return *this;
 			}
 
-			friend
-			_Self operator-( _Self & a, const _Self & b)
+			viterator& operator-=(const difference_type & n)
 			{
-				a._add -= b._add;
-
-				_Self c(a._add);
-				return c;
+				_add -= n;
+				return *this;
 			}
-            
-		/*	_Self& operator=(const _List_Iterator<_Tp> & ref)
+			
+			/*viterator& operator-=(const viterator & n) const
 			{
+				_add -= n._add;
 				return *this;
 			}*/
+
+			/* operator ++ / -- */
 
 			_Self& operator++()
 			{
@@ -130,7 +138,7 @@ namespace ft
 			friend bool
 			operator>=(const _Self& __x, const _Self& __y)	{ return __x._add >=__y._add; }
 
-			private:
+			public:
 				pointer		_add;
 		};
 		/* data */
@@ -148,8 +156,8 @@ namespace ft
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
 
-		typedef Random_acc_iter<T> 							iterator;
-		typedef Random_acc_iter<T> 							const_iterator;
+		typedef viterator<T> 							iterator;
+		typedef viterator<T> 							const_iterator;
 
 		typedef	ft::reverse_iterator<iterator>				reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>		const_reverse_iterator;
@@ -322,7 +330,7 @@ namespace ft
 
 		reference front(void) { return *_start; }
 		
-		const_reference front(void) const { return *_start; } 		
+		const_reference front(void) const { return *_start; }
 
 		reference back(void) { return *(_end - 1); }
 		
@@ -417,15 +425,16 @@ namespace ft
 		/*
 			n = new size
 		*/
-		iterator exclude(size_type n, iterator first, iterator last)
+	/*	iterator exclude(size_type n, iterator first, iterator last)
 		{
 			pointer		_new = new_block(n);
 			iterator	end = begin();
 			size_type	j = 0;
 
+			std::cerr << n << std::endl;
 			for (size_type i = 0; i < size(); i++)
 			{
-				if (!(end >= first && end <= last))
+				if (!(end >= first && end < last))
 					_alloc.construct(&(_new[j++]), *end);
 				end++;
 			}
@@ -435,21 +444,41 @@ namespace ft
 			_end_of_storage = _end;
 
 			return (_end);
+		}*/
+
+		iterator exclude(size_type n, iterator first, iterator last)
+		{
+			size_type stay = size() - n;
+			iterator stop = end();
+
+			for (iterator it = begin(); it != stop; it++)
+			{
+				if (it >= first)
+				{
+					if (stay)
+					{
+						it[0] = it[n];
+						--stay;
+					}
+				}
+			}
+			rm_size(n);
+			return _end;
 		}
 
-
 		iterator erase(iterator pos)
-		{
-			return(exclude(size() -1 , pos, pos+1));
+		{	
+			return(exclude(1 , pos, pos+1));
 		}
 
 		iterator erase(iterator first, iterator last)
 		{
-			size_type s;
+			size_type si;
 
-			iterator tmp; tmp = last - first;
-
-			return(exclude(s, first, last));
+			si = 0;
+			for (iterator it = first; it != last; it++, si++)
+				;
+			return (exclude(si, first, last));
 		}
 	};
 	
