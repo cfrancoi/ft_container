@@ -176,6 +176,7 @@ namespace ft
 	private:
 		pointer		new_block(size_type n)
 		{
+			
 			pointer ret = _alloc.allocate(n);
 			return ret;
 		}
@@ -191,12 +192,13 @@ namespace ft
 		{
 			pointer new_v;
 
+			
 			new_v = new_block(n); // check fail alloc
 			iterator it = begin();
 			size_type n_size = n;
 			size_type p_size = size();
 			size_type i = 0;
-
+			
 			_end = new_v;
 			while (i != p_size)
 			{
@@ -425,27 +427,6 @@ namespace ft
 		/*
 			n = new size
 		*/
-	/*	iterator exclude(size_type n, iterator first, iterator last)
-		{
-			pointer		_new = new_block(n);
-			iterator	end = begin();
-			size_type	j = 0;
-
-			std::cerr << n << std::endl;
-			for (size_type i = 0; i < size(); i++)
-			{
-				if (!(end >= first && end < last))
-					_alloc.construct(&(_new[j++]), *end);
-				end++;
-			}
-			del_block(_start, size());
-			_start = _new;
-			_end = &(_new[j]);
-			_end_of_storage = _end;
-
-			return (_end);
-		}*/
-
 		iterator exclude(size_type n, iterator first, iterator last)
 		{
 			size_type stay = size() - n;
@@ -479,6 +460,90 @@ namespace ft
 			for (iterator it = first; it != last; it++, si++)
 				;
 			return (exclude(si, first, last));
+		}
+
+		iterator insert(iterator pos, const value_type& val)
+		{
+			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			if (size() + 1 > capacity())
+			{
+				add_mem(capacity() ? capacity() * 2 : 1);
+				pos = begin() + p;
+			}
+			add_size(1, back());
+			for (iterator last = --end(); last != pos; last--)
+			{
+				*last = *(last - 1);
+			}
+			*pos = val;
+			return pos;
+		}
+
+		void insert(iterator pos, size_type n, const value_type& val)
+		{
+			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			size_type to_rplc = size() - p;
+
+			if (size() + n > capacity())
+			{
+				add_mem((size() + n) < capacity() * 2 ? capacity() * 2 : size() + n);
+				pos = begin() + p; // pos after realocation
+			}
+			add_size(n, back());
+			
+			// place old value
+			for (iterator last = --end(); to_rplc != 0; last--, to_rplc--)
+				*last = pos[to_rplc - 1];
+			*pos = val;
+
+			//add new value
+			for (size_type i = 0; i != n; i++)
+				pos[i] = val; 
+			return ;
+		}
+
+		void insert(iterator pos, int n, const value_type& val)
+		{
+			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			size_type to_rplc = size() - p;
+
+			if (size() + n > capacity())
+			{
+				add_mem((size() + n) < capacity() * 2 ? capacity() * 2 : size() + n);
+				pos = begin() + p; // pos after realocation
+			}
+			add_size(n, back());
+			
+			// place old value
+			for (iterator last = --end(); to_rplc != 0; last--, to_rplc--)
+				*last = pos[to_rplc - 1];
+			*pos = val;
+
+			//add new value
+			for (size_type i = 0; i != n; i++)
+				pos[i] = val; 
+			return ;
+		}
+
+		template <class Input>
+		void insert (iterator pos, Input first, Input last)
+		{
+			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			size_type to_rplc = size() - p;
+			size_type diff = 0;
+
+			for (Input it = first; it != last; it++)
+				++diff;
+			if (size() + diff > capacity())
+			{
+				add_mem((size() + diff) < capacity() * 2 ? capacity() * 2 : size() + diff);
+				pos = begin() + p; // pos after realocation
+			}
+			for (iterator last = --end(); to_rplc != 0; last--, to_rplc--)
+				*last = pos[to_rplc - 1];
+
+			for (size_type i = 0; i != diff; i++)
+				pos[i] = *first++;
 		}
 	};
 	
