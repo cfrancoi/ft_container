@@ -192,7 +192,6 @@ namespace ft
 		{
 			pointer new_v;
 
-			
 			new_v = new_block(n); // check fail alloc
 			iterator it = begin();
 			size_type n_size = n;
@@ -211,7 +210,6 @@ namespace ft
 				++_end_of_storage;
 				++i;
 			}
-
 			pointer cpy = _start;
 			_start = new_v;
 			
@@ -233,6 +231,14 @@ namespace ft
 				++i;
 			}
 		}
+
+		template <class Input>
+		void 	add_range(Input f, Input l)
+		{
+			while (f != l)
+				_alloc.construct(_end++, *f++);
+		}
+
 		void	rm_size(size_type n)
 		{
 			size_type i;
@@ -243,6 +249,26 @@ namespace ft
 				_alloc.destroy(_end--);
 				++i;
 			}
+		}
+		
+		iterator exclude(size_type n, iterator first, iterator last)
+		{
+			size_type stay = size() - n;
+			iterator stop = end();
+
+			for (iterator it = begin(); it != stop; it++)
+			{
+				if (it >= first)
+				{
+					if (stay)
+					{
+						it[0] = it[n];
+						--stay;
+					}
+				}
+			}
+			rm_size(n);
+			return _end;
 		}
 
 		/*
@@ -265,9 +291,9 @@ namespace ft
 
 		// Range Constructor
 		template < class InputIterator >
-		vector(const allocator_type& alloc = allocator_type()) : _start(NULL), _end(NULL), _end_of_storage(NULL), _alloc(alloc)
+		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _start(NULL), _end(NULL), _end_of_storage(NULL), _alloc(alloc)
 		{
-
+			assign(first, last);
 		}
 
 		// Copy Constructor
@@ -282,6 +308,12 @@ namespace ft
 			{
 				del_block(_start, size());
 			}
+		}
+
+		vector& operator=(const vector& x)
+		{
+			assign(x.begin(), x.end());
+			return *this;
 		}
 
 		/*
@@ -387,8 +419,7 @@ namespace ft
 				init_block(s);
 			else
 				rm_size(size()); // size == 0
-			while (f != l)
-				add_size(1, *f++);
+			add_range(f, l);
 		}
 
 		void resize (size_type n, const value_type & val = value_type())
@@ -427,25 +458,6 @@ namespace ft
 		/*
 			n = new size
 		*/
-		iterator exclude(size_type n, iterator first, iterator last)
-		{
-			size_type stay = size() - n;
-			iterator stop = end();
-
-			for (iterator it = begin(); it != stop; it++)
-			{
-				if (it >= first)
-				{
-					if (stay)
-					{
-						it[0] = it[n];
-						--stay;
-					}
-				}
-			}
-			rm_size(n);
-			return _end;
-		}
 
 		iterator erase(iterator pos)
 		{	
@@ -486,7 +498,7 @@ namespace ft
 
 			if (size() + n > capacity())
 			{
-				add_mem((size() + n) < capacity() * 2 ? capacity() * 2 : size() + n);
+				add_mem((size() + n) < size() * 2 ? size() * 2 : size() + n);
 				pos = begin() + p; // pos after realocation
 			}
 			add_size(n, back());
@@ -502,14 +514,14 @@ namespace ft
 			return ;
 		}
 
-		void insert(iterator pos, int n, const value_type& val)
+	/*	void insert(iterator pos, int n, const value_type& val)
 		{
 			size_type p = static_cast<size_type>(pos._add - begin()._add);
 			size_type to_rplc = size() - p;
 
 			if (size() + n > capacity())
 			{
-				add_mem((size() + n) < capacity() * 2 ? capacity() * 2 : size() + n);
+				add_mem((size() + n) < size() * 2 ? size() * 2 : size() + n);
 				pos = begin() + p; // pos after realocation
 			}
 			add_size(n, back());
@@ -523,6 +535,34 @@ namespace ft
 			for (size_type i = 0; i != n; i++)
 				pos[i] = val; 
 			return ;
+		}*/
+		
+		pointer			create(size_type n)
+		{
+			pointer new_v;
+
+			new_v = new_block(n); // check fail alloc
+			iterator it = begin();
+			size_type n_size = n;
+			size_type p_size = size();
+			size_type i = 0;
+			
+			_end = new_v;
+			while (i != p_size)
+			{
+				_alloc.construct(_end++, it[i++]);
+			}
+			_end_of_storage = _end;
+			while (i < n_size)
+			{
+				++_end_of_storage;
+				++i;
+			}
+			pointer cpy = _start;
+			_start = new_v;
+			
+			return cpy;
+			//del_block(cpy, p_size);
 		}
 
 		template <class Input>
@@ -531,20 +571,43 @@ namespace ft
 			size_type p = static_cast<size_type>(pos._add - begin()._add);
 			size_type to_rplc = size() - p;
 			size_type diff = 0;
+			pointer		save = 0;
+			size_type	size_save = size();
 
 			for (Input it = first; it != last; it++)
 				++diff;
 			if (size() + diff > capacity())
 			{
-				add_mem((size() + diff) < capacity() * 2 ? capacity() * 2 : size() + diff);
+				save = create((size() * 2) < (size() + diff) ? size() + diff : (size() * 2));
 				pos = begin() + p; // pos after realocation
 			}
+			add_size(diff , back());
 			for (iterator last = --end(); to_rplc != 0; last--, to_rplc--)
 				*last = pos[to_rplc - 1];
-
-			for (size_type i = 0; i != diff; i++)
+			for (size_type i = 0; i!= diff; i++)
 				pos[i] = *first++;
+
+			del_block(save, size_save);
+		}
+
+		void clear(void) { rm_size(size()); }
+
+		void swap(vector & x)
+		{
+			pointer tmp;
+
+			tmp = _start;
+			_start = x._start;
+			x._start = tmp;
+
+			tmp = _end;
+			_end = x._end;
+			x._end = tmp;
+
+			tmp = _end_of_storage;
+			_end_of_storage = x._end_of_storage;
+			x._end_of_storage = tmp;
+			
 		}
 	};
-	
 } // namespace ft
