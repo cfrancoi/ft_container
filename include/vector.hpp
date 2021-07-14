@@ -10,21 +10,22 @@ namespace ft
 	template < class T, class Alloc = std::allocator<T> >
 	class vector
 	{
+
 	private:
 		template < class _Tp >
 		class viterator
 		{
 			
 			public:
-				typedef	viterator<_Tp>		_Self;
-				typedef	_Tp				value_type;
-				typedef _Tp *			pointer;
-				//typedef typename vector<_Tp>::pointer pointer;
-				typedef _Tp &			reference;
-				typedef _Self			iterator_type;
-				typedef std::random_access_iterator_tag iterator_category;
-				typedef std::ptrdiff_t difference_type;
-				typedef size_t			size_type;
+			typedef	viterator<_Tp>		_Self;
+
+			typedef	_Tp								value_type;
+			typedef _Tp *							pointer;
+			typedef _Tp &							reference;
+			typedef _Self							iterator_type;
+			typedef std::random_access_iterator_tag iterator_category;
+			typedef std::ptrdiff_t 					difference_type;
+			typedef size_t							size_type;
 			
 			viterator() : _add(NULL) {}
 
@@ -70,7 +71,7 @@ namespace ft
 			
 			difference_type operator-(const viterator & n) const
 			{
-				return viterator(_add - n._add);
+				return (_add - n._add);
 			}
 
 
@@ -87,12 +88,136 @@ namespace ft
 				return *this;
 			}
 			
-			/*viterator& operator-=(const viterator & n) const
-			{
-				_add -= n._add;
-				return *this;
-			}*/
+			/* operator ++ / -- */
 
+			_Self& operator++()
+			{
+				++_add;
+				return *this;
+			}
+
+			_Self operator++(int)
+			{
+				_Self _tmp = *this;
+				++*this;
+				return _tmp;
+			}
+
+			_Self& operator--()
+			{
+				--_add;
+				return *this;
+			}
+
+			_Self operator--(int)
+			{
+				_Self _tmp = *this;
+				--*this;
+				return _tmp;
+			}
+
+
+			friend bool
+			operator==(const _Self& __x, const _Self& __y)	{ return __x._add == __y._add; }
+			friend bool
+			operator!=(const _Self& __x, const _Self& __y)	{ return __x._add != __y._add; }
+			friend bool
+			operator<(const _Self& __x, const _Self& __y)	{ return __x._add < __y._add; }
+			friend bool
+			operator>(const _Self& __x, const _Self& __y)	{ return __x._add > __y._add; }
+			friend bool
+			operator<=(const _Self& __x, const _Self& __y)	{ return __x._add <= __y._add; }
+			friend bool
+			operator>=(const _Self& __x, const _Self& __y)	{ return __x._add >=__y._add; }
+
+			public:
+				pointer		_add;
+		};
+
+	private:
+		template < class _Tp >
+		class const_viterator
+		{
+			
+			public:
+			typedef	const_viterator<_Tp>		_Self;
+
+			typedef	_Tp									value_type;
+			typedef const _Tp *							pointer;
+			typedef const _Tp &							reference;
+			typedef _Self								iterator_type;
+			typedef std::random_access_iterator_tag		iterator_category;
+			typedef std::ptrdiff_t 						difference_type;
+			typedef size_t								size_type;
+			
+			const_viterator() : _add(NULL) {}
+
+			const_viterator(pointer src) : _add(src) {}
+
+			const_viterator(const _Self& src) { *this = src; }
+			const_viterator(const viterator<_Tp>& src) { *this = src; }
+
+			//Random_acc_iter(const _Self& src) { *this = src; }
+
+			~const_viterator() {}
+			
+			reference	operator*() { return *_add; }
+			pointer		operator->() { return _add; }
+
+			reference operator[](size_type n) { return *(_add + n); }
+			//const_reference operator[](size_type n) const;
+
+			_Self& operator=(const _Self & ref)
+			{
+				_add = ref._add;
+				return *this;
+			}
+
+			_Self& operator=(const viterator<_Tp> & ref)
+			{
+				_add = ref._add;
+				return *this;
+			}
+	
+
+			/* operator + */
+
+			const_viterator operator+(const difference_type & n) const
+			{
+				return const_viterator(_add + n);
+			}
+
+			difference_type operator+(const const_viterator & n) const
+			{
+				return (_add + n._add);
+			}
+
+			/* operator - */
+			
+			const_viterator operator-(const difference_type & n) const
+			{
+				return const_viterator(_add - n);
+			}
+			
+			difference_type operator-(const const_viterator & n) const
+			{
+				return (_add - n._add);
+			}
+
+
+
+			const_viterator& operator+=(const difference_type & n)
+			{
+				_add += n;
+				return *this;
+			}
+
+			const_viterator& operator-=(const difference_type & n)
+			{
+				_add -= n;
+				return *this;
+			}
+			
 			/* operator ++ / -- */
 
 			_Self& operator++()
@@ -153,8 +278,8 @@ namespace ft
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
 
-		typedef viterator<T> 							iterator;
-		typedef viterator<T> 							const_iterator;
+		typedef viterator<T> 								iterator;
+		typedef const_viterator<T> 							const_iterator;
 
 		typedef	ft::reverse_iterator<iterator>				reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>		const_reverse_iterator;
@@ -185,6 +310,10 @@ namespace ft
 			_alloc.deallocate(to_del, size);
 		}
 
+		/*
+			** alloc with size n
+			** copy previous vector
+		*/
 		void		add_mem(size_type n)
 		{
 			pointer new_v;
@@ -317,11 +446,11 @@ namespace ft
 			*** Iterators Function ***
 		*/
 
-		iterator begin() {	return _start; }
-		const_iterator begin() const;
+		iterator begin() {	return iterator(_start); }
+		const_iterator begin() const{ return const_iterator(_start); }
 
-		iterator end() { return _end; }
-		const_iterator end() const;
+		iterator end() { return iterator(_end); }
+		const_iterator end() const { return const_iterator(_end); }
 
 		reverse_iterator rbegin();
 		const_reverse_iterator rbegin() const;
@@ -337,14 +466,18 @@ namespace ft
 		size_type size(void) const { return static_cast<size_type>(_end - _start); }
 
 		// return max size
-		size_type max_size(void) const;
+		size_type max_size(void) const { return std::numeric_limits<size_type>::max() / sizeof(T); };
 
 		// return allocated size
 		size_type capacity(void) const { return static_cast<size_type>(_end_of_storage - _start); };
 
-		bool empty() const;
+		bool empty() const { return (size() == 0); }
 
-		void reserve(size_type n);
+		void reserve(size_type n)
+		{
+			if ( n >  capacity() )
+				add_mem(n);
+		}
 
 
 		/*
@@ -353,11 +486,11 @@ namespace ft
 
 		reference operator[](size_type n) { return this->at(n); }
 
-		const_reference operator[](size_type n) const;
+		const_reference operator[](size_type n) const { return this->at(n); }
 
 		reference at(size_type n) { return *(_start + n); }
 		
-		const_reference at(size_type n) const;
+		const_reference at(size_type n) const { return *(_start + n); }
 
 		reference front(void) { return *_start; }
 		
@@ -395,23 +528,14 @@ namespace ft
 			add_size(n, val);
 		}
 
-		void assign (int n, const value_type& val)
-		{
-			if (n == 0)
-				return ;
-			if (static_cast<size_type>(n) > capacity())
-				init_block(n);
-			else
-				rm_size(size()); // size == 0
-			add_size(n, val);
-		}
-
 		template < class Ite >
-		void assign (Ite f, Ite l)
+		typename ft::enable_if<ft::is_input_iterator<Ite> >::type
+		assign (Ite f, Ite l)
 		{
-			size_type s;
+			size_type s = 0;
 
-			s = &*l - &*f;
+			for (Ite it = f; it != l; it++)
+				++s;
 			if (s > capacity())
 				init_block(s);
 			else
@@ -538,16 +662,7 @@ namespace ft
 			return cpy;
 			//del_block(cpy, p_size);
 		}
-	/*template <typename Input>
-        typename ft::enable_if
-			<
-	        std::is_base_of
-				<std::input_iterator_tag,typename ft::iterator_traits
-					<
-	                Input
-					>::iterator_category
-	            >
-			>::type*/
+
 		template <typename Input>
         typename ft::enable_if
 		<
