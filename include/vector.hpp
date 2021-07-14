@@ -1,7 +1,9 @@
 #include <memory>
 #include <iterator.hpp>
+#include <type_traits.hpp>
 #include <type_traits>
 #include <iostream>
+
 
 namespace ft
 {
@@ -49,21 +51,15 @@ namespace ft
 
 			/* operator + */
 
-
 			viterator operator+(const difference_type & n) const
 			{
 				return viterator(_add + n);
 			}
 
-			/*viterator operator+(const viterator & n) const
-			{
-				return viterator(_add + n._add);
-			}*/
-
-		/*	difference_type operator+(const viterator & n) const
+			difference_type operator+(const viterator & n) const
 			{
 				return (_add + n._add);
-			}*/
+			}
 
 			/* operator - */
 			
@@ -71,13 +67,14 @@ namespace ft
 			{
 				return viterator(_add - n);
 			}
-
-			/*viterator operator-(const viterator & n) const
+			
+			difference_type operator-(const viterator & n) const
 			{
-				viterator c(_add);
+				return viterator(_add - n._add);
+			}
 
-				return c -= n;
-			}*/
+
+
 			viterator& operator+=(const difference_type & n)
 			{
 				_add += n;
@@ -167,10 +164,10 @@ namespace ft
 
 		/* pointer end / start / finish */
 	private:
-		allocator_type _alloc; //to do allocation
 		pointer	_start;
 		pointer	_end;
 		pointer	_end_of_storage;
+		allocator_type _alloc; //to do allocation
 
 		/* allocation and deallocation */
 	private:
@@ -183,7 +180,7 @@ namespace ft
 
 		void		del_block(pointer to_del, size_type size)
 		{
-			for (int i=0; i<size; i++)
+			for (size_type i=0; i<size; i++)
 				_alloc.destroy(&to_del[i]);
 			_alloc.deallocate(to_del, size);
 		}
@@ -251,7 +248,7 @@ namespace ft
 			}
 		}
 		
-		iterator exclude(size_type n, iterator first, iterator last)
+		iterator exclude(size_type n, iterator first)
 		{
 			size_type stay = size() - n;
 			iterator stop = end();
@@ -402,7 +399,7 @@ namespace ft
 		{
 			if (n == 0)
 				return ;
-			if (n > capacity())
+			if (static_cast<size_type>(n) > capacity())
 				init_block(n);
 			else
 				rm_size(size()); // size == 0
@@ -461,7 +458,7 @@ namespace ft
 
 		iterator erase(iterator pos)
 		{	
-			return(exclude(1 , pos, pos+1));
+			return(exclude(1 , pos));
 		}
 
 		iterator erase(iterator first, iterator last)
@@ -471,7 +468,7 @@ namespace ft
 			si = 0;
 			for (iterator it = first; it != last; it++, si++)
 				;
-			return (exclude(si, first, last));
+			return (exclude(si, first));
 		}
 
 		iterator insert(iterator pos, const value_type& val)
@@ -498,7 +495,7 @@ namespace ft
 
 			if (size() + n > capacity())
 			{
-				add_mem((size() + n) < size() * 2 ? size() * 2 : size() + n);
+				add_mem((size() + n) < capacity() * 2 ? capacity() * 2 : size() + n);
 				pos = begin() + p; // pos after realocation
 			}
 			add_size(n, back());
@@ -514,29 +511,6 @@ namespace ft
 			return ;
 		}
 
-	/*	void insert(iterator pos, int n, const value_type& val)
-		{
-			size_type p = static_cast<size_type>(pos._add - begin()._add);
-			size_type to_rplc = size() - p;
-
-			if (size() + n > capacity())
-			{
-				add_mem((size() + n) < size() * 2 ? size() * 2 : size() + n);
-				pos = begin() + p; // pos after realocation
-			}
-			add_size(n, back());
-			
-			// place old value
-			for (iterator last = --end(); to_rplc != 0; last--, to_rplc--)
-				*last = pos[to_rplc - 1];
-			*pos = val;
-
-			//add new value
-			for (size_type i = 0; i != n; i++)
-				pos[i] = val; 
-			return ;
-		}*/
-		
 		pointer			create(size_type n)
 		{
 			pointer new_v;
@@ -564,9 +538,22 @@ namespace ft
 			return cpy;
 			//del_block(cpy, p_size);
 		}
-
-		template <class Input>
-		void insert (iterator pos, Input first, Input last)
+	/*template <typename Input>
+        typename ft::enable_if
+			<
+	        std::is_base_of
+				<std::input_iterator_tag,typename ft::iterator_traits
+					<
+	                Input
+					>::iterator_category
+	            >
+			>::type*/
+		template <typename Input>
+        typename ft::enable_if
+		<
+			ft::is_input_iterator<Input>
+		>::type
+		insert (iterator pos, Input first, Input last)
 		{
 			size_type p = static_cast<size_type>(pos._add - begin()._add);
 			size_type to_rplc = size() - p;
@@ -578,7 +565,7 @@ namespace ft
 				++diff;
 			if (size() + diff > capacity())
 			{
-				save = create((size() * 2) < (size() + diff) ? size() + diff : (size() * 2));
+				save = create((capacity() * 2) < (size() + diff) ? size() + diff : (capacity() * 2));
 				pos = begin() + p; // pos after realocation
 			}
 			add_size(diff , back());
