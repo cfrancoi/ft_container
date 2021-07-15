@@ -1,3 +1,6 @@
+#ifndef __VECTOR_H__
+#define __VECTOR_H__
+
 #include <memory>
 #include <iterator.hpp>
 #include <type_traits.hpp>
@@ -7,13 +10,9 @@
 
 namespace ft
 {
-	template < class T, class Alloc = std::allocator<T> >
-	class vector
-	{
-
-		template < class _Tp >
-		class const_viterator;
-	private:
+	template < class _Tp >
+	class const_viterator;
+	
 		template < class _Tp >
 		class viterator
 		{
@@ -140,7 +139,6 @@ namespace ft
 				pointer		_add;
 		};
 
-	private:
 		template < class _Tp >
 		class const_viterator
 		{
@@ -274,6 +272,12 @@ namespace ft
 			public:
 				pointer		_add;
 		};
+	
+	template < class T, class Alloc = std::allocator<T> >
+	class vector
+	{
+
+	
 		/* data */
 	public:
 		/*
@@ -366,15 +370,15 @@ namespace ft
 			size_type i;
 
 			i = 0;
-			if (_end == NULL)
+
+			if (_end == _start)
 			{
 				_alloc.construct(_end++, val);
 				++i;
 			}
-			while (i < n && (_end) <= _end_of_storage)
+			while (i < n && (_end) < _end_of_storage)
 			{
 				_alloc.construct(_end++, val);
-				//*_end++ = val;
 				++i;
 			}
 		}
@@ -399,9 +403,14 @@ namespace ft
 			i = 0;
 			while (i < n && _end >= _start)
 			{
-				_alloc.destroy(_end--);
+				if (_end == _start)
+					_alloc.destroy(_start);
+				else
+					_alloc.destroy(_end--);	
 				++i;
 			}
+			//if (_end == _start)
+
 		}
 
 		/*
@@ -614,7 +623,7 @@ namespace ft
 
 		void pop_back(void)
 		{
-			if (size())
+			if (!empty())
 				rm_size(1);
 		}
 		
@@ -645,7 +654,7 @@ namespace ft
 				add_mem(capacity() ? capacity() * 2 : 1);
 				pos = begin() + p;
 			}
-			add_size(1, back());
+			add_size(1, val);
 			for (iterator last = --end(); last != pos; last--)
 			{
 				*last = *(last - 1);
@@ -664,7 +673,7 @@ namespace ft
 				add_mem((size() + n) < capacity() * 2 ? capacity() * 2 : size() + n);
 				pos = begin() + p; // pos after realocation
 			}
-			add_size(n, back());
+			add_size(n, val);
 			
 			// place old value
 			for (iterator last = --end(); to_rplc != 0; last--, to_rplc--)
@@ -786,7 +795,6 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
 
-
-	
-
 } // namespace ft
+
+#endif // __VECTOR_H__
