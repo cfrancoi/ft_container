@@ -130,55 +130,110 @@ namespace ft
 			typedef typename Iter::difference_type          difference_type;
             typedef reverse_iterator<Iter>                  _Self;
 
-            reverse_iterator<Iter>() : _it() {}
+            Iter base;
 
-            reverse_iterator<Iter>(const Iter & src) : _it(src) {}
+            reverse_iterator<Iter>() : base() {}
+
+            reverse_iterator<Iter>(const Iter & src) : base(src) {}
 
             reverse_iterator<Iter>(const _Self & src) { *this = src; }
+
+			template < class U >
+			reverse_iterator<Iter>(const reverse_iterator< U > & src) { *this = src; }
 
             ~reverse_iterator<Iter>() {}
 
 
-            reference	operator*() { return *_it; }
-			pointer		operator->() { return _it.operator->(); }
-            
-            _Self& operator=(const _Self & ref)
-			{
-				_it = ref._it;
-				return *this;
-			}
+            reference	operator*() { return *base; }
+			pointer		operator->() { return base.operator->(); }
 
             _Self& operator++()
 			{
-				--_it;
+				--base;
 				return *this;
 			}
 
 			_Self operator++(int)
 			{
-                _it--;
+                base--;
                 return *this;
 			}
 
 			_Self& operator--()
 			{
-                ++_it;
+                ++base;
 				return *this;
 			}
 
 			_Self operator--(int)
 			{
-                _it++;
+                base++;
+				return *this;
+			}
+			
+			template < class U >
+ 			reverse_iterator <Iter>& operator=(const reverse_iterator< U >& u)
+			{
+				base = u.base;
 				return *this;
 			}
 
-			friend
-			bool operator!=(const _Self& __x, const _Self& __y) { return (__x._it != __y._it); }
-			friend
-			bool operator==(const _Self& __x, const _Self& __y) { return (__x._it == __y._it); }
+			template < class U >
+ 			bool	operator!=(const reverse_iterator< U >& x)
+			{
+				return base != x.base;
+			}
 
-            private:
-                Iter _it;
+			template < class U >
+ 			bool	operator==(const reverse_iterator< U >& x)
+			{
+				return base != x.base;
+			}
+
+			/*
+				** operator+
+			*/
+			template < class U >
+ 			reverse_iterator	operator+(const reverse_iterator< U >& x)
+			{
+				return base - x.base;
+			}
+
+ 			reverse_iterator	operator+(const difference_type& x)
+			{
+				return reverse_iterator(base - x);
+			}
+
+			/*
+				** operator-
+			*/
+
+			template < class U >
+ 			difference_type	operator-(const reverse_iterator< U >& x)
+			{
+				return x.base - base;
+			}
+
+ 			reverse_iterator	operator-(const difference_type& x)
+			{
+				return reverse_iterator(Iter(base + x));
+			}
+
+			/*
+				** operator += & -=
+			*/
+
+			reverse_iterator	&operator-=(const difference_type& x)
+			{
+				base += x;
+				return *this;
+			}
+
+			reverse_iterator	&operator+=(const difference_type& x)
+			{
+				base -= x;
+				return *this;
+			}
     };
 
 

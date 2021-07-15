@@ -11,6 +11,8 @@ namespace ft
 	class vector
 	{
 
+		template < class _Tp >
+		class const_viterator;
 	private:
 		template < class _Tp >
 		class viterator
@@ -74,7 +76,11 @@ namespace ft
 				return (_add - n._add);
 			}
 
-
+			difference_type operator-(const const_viterator<_Tp> & n) const
+			{
+				return (_add - n._add);
+			}
+			
 
 			viterator& operator+=(const difference_type & n)
 			{
@@ -154,7 +160,8 @@ namespace ft
 
 			const_viterator(pointer src) : _add(src) {}
 
-			const_viterator(const _Self& src) { *this = src; }
+			const_viterator(const const_viterator& src) { *this = src; }
+
 			const_viterator(const viterator<_Tp>& src) { *this = src; }
 
 			//Random_acc_iter(const _Self& src) { *this = src; }
@@ -167,7 +174,7 @@ namespace ft
 			reference operator[](size_type n) { return *(_add + n); }
 			//const_reference operator[](size_type n) const;
 
-			_Self& operator=(const _Self & ref)
+			_Self& operator=(const const_viterator & ref)
 			{
 				_add = ref._add;
 				return *this;
@@ -192,6 +199,10 @@ namespace ft
 				return (_add + n._add);
 			}
 
+			difference_type operator-(const viterator<_Tp> & n) const
+			{
+				return (_add - n._add);
+			}
 			/* operator - */
 			
 			const_viterator operator-(const difference_type & n) const
@@ -296,13 +307,18 @@ namespace ft
 
 		/* allocation and deallocation */
 	private:
+
+		/*
+			** alloc new block
+		*/
 		pointer		new_block(size_type n)
 		{
-			
 			pointer ret = _alloc.allocate(n);
 			return ret;
 		}
-
+		/*
+			** destroy all el and free block
+		*/
 		void		del_block(pointer to_del, size_type size)
 		{
 			for (size_type i=0; i<size; i++)
@@ -341,6 +357,10 @@ namespace ft
 			
 			del_block(cpy, p_size);
 		}
+
+		/*
+			add n value_type and inc _end
+		*/
 		void	add_size(size_type n, const value_type & val)
 		{
 			size_type i;
@@ -354,17 +374,24 @@ namespace ft
 			while (i < n && (_end) <= _end_of_storage)
 			{
 				_alloc.construct(_end++, val);
+				//*_end++ = val;
 				++i;
 			}
 		}
 
+		/*
+			add_size with range iterator
+		*/
 		template <class Input>
 		void 	add_range(Input f, Input l)
 		{
 			while (f != l)
 				_alloc.construct(_end++, *f++);
 		}
-
+		
+		/*
+			** rm n el and dec _end
+		*/
 		void	rm_size(size_type n)
 		{
 			size_type i;
@@ -376,7 +403,28 @@ namespace ft
 				++i;
 			}
 		}
-		
+
+		/*
+			** init a new_block of n capacity destroy last block if exist
+		*/
+		void init_block(size_type n)
+		{
+			if (_start)
+				del_block(_start, size());
+			_start = new_block(n);
+			_end = _start;
+			_end_of_storage = _end;
+			while (n != 0)
+			{
+				++_end_of_storage;
+				--n;
+			}	
+		}
+
+		/*
+			** rm n el from first 
+			** move needed el
+		*/
 		iterator exclude(size_type n, iterator first)
 		{
 			size_type stay = size() - n;
@@ -423,11 +471,12 @@ namespace ft
 		}
 
 		// Copy Constructor
-		vector(const vector& x)
+		vector(const vector& x) : _start(NULL), _end(NULL), _end_of_storage(NULL), _alloc(x._alloc)
 		{
 			*this = x;
 		}
 
+		// destructor
 		~vector()
 		{
 			if (_start)
@@ -438,6 +487,12 @@ namespace ft
 
 		vector& operator=(const vector& x)
 		{
+			if (_start)
+				del_block(_start, size());
+			_start = NULL;
+			_end = NULL;
+			_end_of_storage = NULL;
+			
 			assign(x.begin(), x.end());
 			return *this;
 		}
@@ -452,11 +507,11 @@ namespace ft
 		iterator end() { return iterator(_end); }
 		const_iterator end() const { return const_iterator(_end); }
 
-		reverse_iterator rbegin();
-		const_reverse_iterator rbegin() const;
+		reverse_iterator rbegin() { iterator it = --end(); return reverse_iterator(it); }
+		const_reverse_iterator rbegin() const { const_iterator it = --end(); return const_reverse_iterator(it); }
 
-		reverse_iterator rend();
-		const_reverse_iterator rend() const;
+		reverse_iterator rend() { iterator it = --begin(); return reverse_iterator(it); };
+		const_reverse_iterator rend() const { const_iterator it = --begin(); return const_reverse_iterator(it); }
 
 		/*
 			*** Capacity Function ***
@@ -470,15 +525,15 @@ namespace ft
 
 		// return allocated size
 		size_type capacity(void) const { return static_cast<size_type>(_end_of_storage - _start); };
-
+		
 		bool empty() const { return (size() == 0); }
 
+		// fixe capicty
 		void reserve(size_type n)
 		{
 			if ( n >  capacity() )
 				add_mem(n);
 		}
-
 
 		/*
 			*** Access Function ***
@@ -503,19 +558,6 @@ namespace ft
 		/*
 			*** Modifier Function ***
 		*/
-		void init_block(size_type n)
-		{
-			if (_start)
-				del_block(_start, size());
-			_start = new_block(n);
-			_end = _start;
-			_end_of_storage = _end;
-			while (n != 0)
-			{
-				++_end_of_storage;
-				--n;
-			}	
-		}
 
 		void assign (size_type n, const value_type& val)
 		{
@@ -660,7 +702,6 @@ namespace ft
 			_start = new_v;
 			
 			return cpy;
-			//del_block(cpy, p_size);
 		}
 
 		template <typename Input>
@@ -712,4 +753,40 @@ namespace ft
 			
 		}
 	};
+
+	/*
+		** function overload
+	*/
+
+	template <class T, class Alloc>
+  	void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y)
+	{
+		x.swap(y);
+	}
+
+	/*
+		** operator overload
+	*/
+
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+
+	
+
 } // namespace ft
