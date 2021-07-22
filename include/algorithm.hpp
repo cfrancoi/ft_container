@@ -1,6 +1,7 @@
 #ifndef __ALGORITHM_H__
 #define __ALGORITHM_H__
 #include <iterator.hpp>
+#include <iostream>
 
 namespace ft
 {
@@ -14,7 +15,7 @@ namespace ft
 				return false;
 			++first1, ++first2;
 		}
-		return (false);
+		return (true);
 	}
 	
 	template <class InputIterator1, class InputIterator2, class BinaryPredicate>
@@ -27,8 +28,10 @@ namespace ft
 				return false;
 			++first1, ++first2;
 		}
-		return (false);
+		return (true);
 	}
+
+
 
 	template <class InputIterator1, class InputIterator2>
 	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
@@ -36,7 +39,7 @@ namespace ft
 	{
 		while (first1!=last1)
 		{
-			if (first2==last2 || *first2<*first1) return false;
+			if (first2==last2 || *first2 < *first1) return false;
 			else if (*first1 < *first2) return true;
 			++first1; ++first2;
 		}
