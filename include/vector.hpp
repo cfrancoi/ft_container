@@ -6,6 +6,7 @@
 #include <type_traits.hpp>
 #include <type_traits>
 #include <iostream>
+#include <algorithm.hpp>
 
 
 namespace ft
@@ -761,6 +762,23 @@ namespace ft
 			x._end_of_storage = tmp;
 			
 		}
+
+	/*	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+		{
+			if (lhs.size() == rhs.size())
+			{
+				iterator itl = lhs.begin();
+				iterator itr = rhs.begin();
+				while (itl != lhs.end())
+				{
+					if(!(*itl++ == *itr++))
+						return (false);
+				}
+				return (true);
+			}
+			return (false);
+		}*/
+
 	};
 
 	/*
@@ -776,24 +794,52 @@ namespace ft
 	/*
 		** operator overload
 	*/
+	#include <functional>
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return false;
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
 
 	template <class T, class Alloc>
-	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs == rhs));
+	}
 
 	template <class T, class Alloc>
-	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		/*if (lhs.size() != rhs.size())
+			return false;*/
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
 
 	template <class T, class Alloc>
-	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs > rhs));
+	}
+
+	template<class T>
+	static bool lower_or_eql(T const & a, T const & b)
+	{
+		return ( a <= b);
+	}
+	
+	template <class T, class Alloc>
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lower_or_eql<T>);
+	}
 
 	template <class T, class Alloc>
-	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-	template <class T, class Alloc>
-	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-	template <class T, class Alloc>
-	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs < rhs);
+	}
 
 } // namespace ft
 
