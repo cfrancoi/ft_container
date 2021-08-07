@@ -1,6 +1,6 @@
 #ifndef __ITERATOR_H__
 #define __ITERATOR_H__
-#include <type_traits.hpp>
+#include <other/type_traits.hpp>
 
 namespace ft
 {

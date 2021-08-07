@@ -1,6 +1,6 @@
 #ifndef __ALGORITHM_H__
 #define __ALGORITHM_H__
-#include <iterator.hpp>
+#include <iterator/iterator.hpp>
 #include <iostream>
 
 namespace ft

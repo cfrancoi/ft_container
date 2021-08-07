@@ -3,17 +3,10 @@
 # include <functional>
 # include <utility>
 # include <memory>
-# include <iterator.hpp>
+# include <iterator/map_iterator.hpp>
 
 namespace ft
 {
-	template < class _Tp >
-	class const_map_iterator;
-
-	template < class _Tp >
-	class map_iterator;
-
-
 
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< std::pair<const Key, T> > >
 	class map

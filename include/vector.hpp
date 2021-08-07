@@ -1,13 +1,14 @@
 #ifndef __VECTOR_H__
 #define __VECTOR_H__
 
-#include <memory>
-#include <iterator.hpp>
-#include <type_traits.hpp>
-#include <type_traits>
-#include <iostream>
-#include <algorithm.hpp>
 
+#include <iterator/iterator.hpp>
+#include <other/type_traits.hpp>
+#include <other/algorithm.hpp>
+
+# include <memory> // std::allocator
+# include <limits> // std::numeric_limits
+# include <functional> // ?
 
 namespace ft
 {
@@ -274,7 +275,7 @@ namespace ft
 				pointer		_add;
 		};
 	
-	template < class T, class Alloc = std::allocator<T> >
+	template < class T, class Alloc = ::std::allocator<T> >
 	class vector
 	{
 
@@ -520,7 +521,7 @@ namespace ft
 		reverse_iterator rbegin() { iterator it = --end(); return reverse_iterator(it); }
 		const_reverse_iterator rbegin() const { const_iterator it = --end(); return const_reverse_iterator(it); }
 
-		reverse_iterator rend() { iterator it = --begin(); return reverse_iterator(it); };
+		reverse_iterator rend() { iterator it = --begin(); return reverse_iterator(it); }
 		const_reverse_iterator rend() const { const_iterator it = --begin(); return const_reverse_iterator(it); }
 
 		/*
@@ -531,10 +532,10 @@ namespace ft
 		size_type size(void) const { return static_cast<size_type>(_end - _start); }
 
 		// return max size
-		size_type max_size(void) const { return std::numeric_limits<size_type>::max() / sizeof(T); };
+		size_type max_size(void) const { return std::numeric_limits<size_type>::max() / sizeof(T); }
 
 		// return allocated size
-		size_type capacity(void) const { return static_cast<size_type>(_end_of_storage - _start); };
+		size_type capacity(void) const { return static_cast<size_type>(_end_of_storage - _start); }
 		
 		bool empty() const { return (size() == 0); }
 
@@ -794,9 +795,9 @@ namespace ft
 	/*
 		** operator overload
 	*/
-	#include <functional>
+
 	template <class T, class Alloc>
-	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator== (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
 		if (lhs.size() != rhs.size())
 			return false;
@@ -804,13 +805,13 @@ namespace ft
 	}
 
 	template <class T, class Alloc>
-	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator!= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
 		return (!(lhs == rhs));
 	}
 
 	template <class T, class Alloc>
-	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator<  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
 		/*if (lhs.size() != rhs.size())
 			return false;*/
@@ -818,7 +819,7 @@ namespace ft
 	}
 
 	template <class T, class Alloc>
-	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
 		return (!(lhs > rhs));
 	}
@@ -830,13 +831,13 @@ namespace ft
 	}
 	
 	template <class T, class Alloc>
-	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
 		return !ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lower_or_eql<T>);
 	}
 
 	template <class T, class Alloc>
-	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator>= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
 		return !(lhs < rhs);
 	}
