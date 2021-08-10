@@ -1,6 +1,7 @@
 #ifndef __MAP_ITERATOR_H__
 #define __MAP_ITERATOR_H__
 
+#include <iostream>
 
 namespace ft
 {
@@ -9,14 +10,14 @@ namespace ft
 	{
 		public:
 			T * key;
-			M_Node *parent;
+			M_Node *top;
 			M_Node *left;
 			M_Node *right;
 
-			M_Node() : key(NULL) , parent(NULL), left(NULL), right(NULL) {};
-			M_Node(const T & k) : key(k) , parent(NULL), left(NULL), right(NULL) {};
+			M_Node() : key(NULL) , top(NULL), left(NULL), right(NULL) {};
+			M_Node(const T & k) : key(k) , top(NULL), left(NULL), right(NULL) {};
 
-			M_Node & operator=(const M_Node & x) { key = x.key; parent = x.parent; left = x.left; right = x.right; return *this; };
+			M_Node & operator=(const M_Node & x) { key = x.key; top = x.top; left = x.left; right = x.right; return *this; };
 
 			~M_Node() {};
 	};
@@ -44,6 +45,66 @@ namespace ft
 
 			reference	operator*() { return *(_it->key); }
 			pointer		operator->() { return _it; }
+
+			map_iterator& operator++()
+			{
+				Node* prev = NULL;
+				Node* ret = _it;
+				Node* next = NULL;
+
+		//		while (ret != NULL)
+		//		{
+					if (next == ret->top)
+					{
+						prev = ret;
+						next = ret->left;
+					}
+					if (next == NULL ||  prev == ret->left)
+					{
+						prev = ret;
+						next = ret->right;
+					}
+					if (next == NULL || prev == ret->right)
+					{
+						prev = ret;
+						next = ret->top;
+					}
+					ret = next;
+				//}
+				_it = ret;
+				return *this;
+			}
+
+			void print()
+			{
+				Node* prev = NULL;
+				Node* ret = _it;
+				Node* next = NULL;
+
+				
+				while (ret != NULL)
+				{
+					//std::cout << "key :" << (*ret->key).first << std::endl;
+					if (prev == ret->top)
+					{
+						prev = ret;
+						next = ret->left;
+					}
+					if (next == NULL ||  prev == ret->left)
+					{
+						prev = ret;
+						next = ret->right;
+					}
+					if (next == NULL || prev == ret->right)
+					{
+						prev = ret;
+						next = ret->top;
+					}
+					ret = next;
+					//std::cout << "key :" << (*ret->key).first << std::endl;
+				}
+
+			}
 
 
 		private:
