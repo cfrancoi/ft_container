@@ -4,11 +4,15 @@
 # include <utility>
 # include <memory>
 # include <iterator/map_iterator.hpp>
+# include <iterator/iterator.hpp>
+# include <other/utility.hpp>
 
+
+#include <iostream>
 namespace ft
 {
 
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< std::pair<const Key, T> > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class map
 	{
 		public:
@@ -16,7 +20,7 @@ namespace ft
 			// Member types
 			typedef Key		key_type;
 			typedef T		mapped_type;
-			typedef std::pair<const Key, T> value_type;
+			typedef ft::pair<const Key, T> value_type;
 			typedef Compare			key_compare;
 			typedef int value_compare;
 
@@ -33,6 +37,8 @@ namespace ft
 
 			typedef std::ptrdiff_t 						difference_type;
 			typedef size_t								size_type;
+
+			typedef M_Node<value_type> Node;
 
 			/*
 				** Constructer & destructor
@@ -87,7 +93,7 @@ namespace ft
 			*/
 			
 			//insert
-			std::pair<iterator, bool> insert(const value_type& val);
+			ft::pair<iterator, bool> insert(const value_type& val);
 			iterator insert(iterator pos, const value_type& val);
 			
 			template<class InputIt>
@@ -140,7 +146,125 @@ namespace ft
 
 			allocator_type get_allocator(void) const;
 
+			//attributs
+			protected:
+				key_compare		_cmp;
+				allocator_type	_alloc;	
+				Node			*_bt;
+				size_type		_size;
+			
+			/*
+				** Allocation
+			*/
+			private:
+				Node	*newNode(void);
+				void	delNode(Node *pt);
+
+				pointer	newVal(const value_type& val);
 	};
+
+
+
+	/*
+		** Constructer & destructor
+	*/
+	template < class Key, class T, class Compare , class Alloc >
+	map<Key, T, Compare, Alloc >::map(const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(NULL), _size(0)
+	{
+		
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	map<K, T, Comp, Alloc >::~map() 
+	{
+		
+	}
+
+	/*
+		** Iterator
+	*/
+
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::iterator map<K, T, Comp, Alloc >::begin() 
+	{
+		Node *pt = _bt;
+
+		while (pt->right != NULL)
+			pt = pt->right;
+
+		return iterator(pt);
+	}
+
+	/*
+		** Modifiers
+	*/
+
+	template < class Key, class T, class Compare , class Alloc >
+	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, bool> map<Key, T, Compare, Alloc >::insert(const value_type& val) 
+	{
+		if (_bt == NULL)
+		{
+			_bt = newNode();
+			_bt->key = newVal(val);
+			_size += 1;
+			return ft::pair<iterator, bool>();
+		}
+
+		Node *pt = _bt;
+
+		while(1)
+		{
+			std::cout << "top:" << pt->key->first << std::endl;
+			if (_cmp(pt->key->first, val.first))
+			{
+				if (pt->left == NULL)
+				{
+					pt->left = newNode();
+					pt->parent = pt;
+					pt->left->key = newVal(val);
+					_size += 1;
+					return ft::pair<iterator, bool>();
+				}
+				else
+					pt = pt->left;
+			}
+			else
+			{
+				if (pt->right == NULL)
+				{
+					pt->right = newNode();
+					pt->parent = pt;
+					pt->right->key = newVal(val);
+					_size += 1;
+					return ft::pair<iterator, bool>();
+				}
+				else
+					pt = pt->right;
+			}
+
+		}
+		
+	}
+
+	/*
+		** Allocation
+	*/
+
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::newNode(void)
+	{
+		return new Node();
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::pointer map<K, T, Comp, Alloc >::newVal(const value_type& val) 
+	{
+		pointer n = _alloc.allocate(1);
+
+		_alloc.construct(n, val);
+		return (n);
+	}
+	
 	
 
 } // namespace ft
