@@ -194,6 +194,17 @@ namespace ft
 
 		return iterator(pt);
 	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::iterator map<K, T, Comp, Alloc >::end() 
+	{
+		Node *pt = _bt;
+
+		while (pt->left != NULL)
+			pt = pt->left;
+
+		return iterator(pt);
+	}
 
 	/*
 		** Modifiers
@@ -220,7 +231,7 @@ namespace ft
 				if (pt->left == NULL)
 				{
 					pt->left = newNode();
-					pt->parent = pt;
+					pt->top = pt;
 					pt->left->key = newVal(val);
 					_size += 1;
 					return ft::pair<iterator, bool>();
@@ -233,7 +244,7 @@ namespace ft
 				if (pt->right == NULL)
 				{
 					pt->right = newNode();
-					pt->parent = pt;
+					pt->top = pt;
 					pt->right->key = newVal(val);
 					_size += 1;
 					return ft::pair<iterator, bool>();
