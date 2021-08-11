@@ -44,67 +44,82 @@ namespace ft
 
 
 			reference	operator*() { return *(_it->key); }
-			pointer		operator->() { return _it; }
+			pointer		operator->() { return _it->key; }
 
 			map_iterator& operator++()
 			{
-				Node* prev = NULL;
-				Node* ret = _it;
-				Node* next = NULL;
+				if (_it == NULL)
+					return *this;
+				if (_it->right != NULL)
+				{
+					_it = _it->right;
+					while (_it->left != NULL)
+						_it = _it->left;		
+				}
+				else if (_it->right == NULL)
+				{
+					Node *top;
 
-		//		while (ret != NULL)
-		//		{
-					if (next == ret->top)
+					top = _it->top;
+					while (top != NULL && top->right == _it)
 					{
-						prev = ret;
-						next = ret->left;
+						_it = top;
+						top = top->top;
 					}
-					if (next == NULL ||  prev == ret->left)
-					{
-						prev = ret;
-						next = ret->right;
-					}
-					if (next == NULL || prev == ret->right)
-					{
-						prev = ret;
-						next = ret->top;
-					}
-					ret = next;
-				//}
-				_it = ret;
+					_it = top;
+				}
 				return *this;
 			}
 
-			void print()
+			map_iterator& operator++(int)
 			{
-				Node* prev = NULL;
-				Node* ret = _it;
-				Node* next = NULL;
-
-				
-				while (ret != NULL)
-				{
-					//std::cout << "key :" << (*ret->key).first << std::endl;
-					if (prev == ret->top)
-					{
-						prev = ret;
-						next = ret->left;
-					}
-					if (next == NULL ||  prev == ret->left)
-					{
-						prev = ret;
-						next = ret->right;
-					}
-					if (next == NULL || prev == ret->right)
-					{
-						prev = ret;
-						next = ret->top;
-					}
-					ret = next;
-					//std::cout << "key :" << (*ret->key).first << std::endl;
-				}
-
+				map_iterator tmp = *this;
+				++(*this);
+				return tmp;
 			}
+
+			map_iterator& operator--()
+			{
+				if (_it == NULL)
+					return *this;
+				if (_it->left != NULL)
+				{
+					_it = _it->left;
+					while (_it->right != NULL)
+						_it = _it->right;		
+				}
+				else if (_it->left == NULL)
+				{
+					Node *top;
+
+					top = _it->top;
+					while (top != NULL && top->left == _it)
+					{
+						_it = top;
+						top = top->top;
+					}
+					_it = top;
+				}
+				return *this;
+			}
+
+			map_iterator& operator--(int)
+			{
+				map_iterator tmp = *this;
+				--(*this);
+				return tmp;
+			}
+
+			friend bool operator==(const map_iterator<_Tp> &lhs, const map_iterator<_Tp> &rhs)
+			{
+				return (lhs._it == rhs._it);
+			}
+			friend bool operator!=(const map_iterator &lhs, const map_iterator & rhs)
+			{
+				return !(lhs == rhs);
+			}
+
+
 
 
 		private:
