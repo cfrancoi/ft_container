@@ -161,6 +161,10 @@ namespace ft
 				void	delNode(Node *pt);
 
 				pointer	newVal(const value_type& val);
+				bool	placeRight(Node * pos, const value_type& val);
+				bool	placeLeft(Node * pos, const value_type& val);
+				bool	placeFirst(const value_type& val);
+
 	};
 
 
@@ -169,7 +173,7 @@ namespace ft
 		** Constructer & destructor
 	*/
 	template < class Key, class T, class Compare , class Alloc >
-	map<Key, T, Compare, Alloc >::map(const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(NULL), _size(0)
+	map<Key, T, Compare, Alloc >::map(const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0)
 	{
 		
 	}
@@ -189,8 +193,8 @@ namespace ft
 	{
 		Node *pt = _bt;
 
-		while (pt->right != NULL)
-			pt = pt->right;
+		while (pt->left != NULL)
+			pt = pt->left;
 
 		return iterator(pt);
 	}
@@ -200,8 +204,8 @@ namespace ft
 	{
 		Node *pt = _bt;
 
-		while (pt->left != NULL)
-			pt = pt->left;
+		while (pt->right != NULL)
+			pt = pt->right;
 
 		return iterator(pt);
 	}
@@ -213,27 +217,21 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, bool> map<Key, T, Compare, Alloc >::insert(const value_type& val) 
 	{
-		if (_bt == NULL)
-		{
-			_bt = newNode();
-			_bt->key = newVal(val);
-			_size += 1;
+		// empty map
+		if (begin() == end())
+		{	
+			placeFirst(val);
 			return ft::pair<iterator, bool>();
 		}
 
 		Node *pt = _bt;
-
 		while(1)
 		{
-			std::cout << "top:" << pt->key->first << std::endl;
-			if (_cmp(pt->key->first, val.first))
+			if (!_cmp(pt->key->first, val.first))
 			{
 				if (pt->left == NULL)
 				{
-					pt->left = newNode();
-					pt->top = pt;
-					pt->left->key = newVal(val);
-					_size += 1;
+					placeLeft(pt, val);
 					return ft::pair<iterator, bool>();
 				}
 				else
@@ -243,18 +241,13 @@ namespace ft
 			{
 				if (pt->right == NULL)
 				{
-					pt->right = newNode();
-					pt->top = pt;
-					pt->right->key = newVal(val);
-					_size += 1;
+					placeRight(pt, val);
 					return ft::pair<iterator, bool>();
 				}
 				else
 					pt = pt->right;
 			}
-
 		}
-		
 	}
 
 	/*
@@ -274,6 +267,46 @@ namespace ft
 
 		_alloc.construct(n, val);
 		return (n);
+	}
+
+	template < class K, class T, class Comp , class Alloc >
+	bool map<K, T, Comp, Alloc >::placeRight(Node * pos, const value_type& val) 
+	{
+		Node * end = NULL;
+
+		iterator it(pos->right);
+		if (it == this->end())
+			end = pos->right;
+
+		pos->right = newNode();
+		pos->right->top = pos;
+		pos->right->key = newVal(val);
+		pos->right->right = end;
+		_size += 1;
+		return true;
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	bool map<K, T, Comp, Alloc >::placeLeft(Node * pos, const value_type& val) 
+	{
+		pos->left = newNode();
+		pos->left->top = pos;
+		pos->left->key = newVal(val);
+		_size += 1;
+		return true;
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	bool map<K, T, Comp, Alloc >::placeFirst(const value_type& val)
+	{
+		Node * end = _bt;
+
+		_bt = newNode();
+		_bt->key = newVal(val);
+		_size += 1;
+		_bt->right = end;
+
+		return true;
 	}
 	
 	
