@@ -169,6 +169,8 @@ namespace ft
 				void 	delCaseOne(Node * pos);
 				void	delCaseTwo(Node * pos);
 
+				void	printNode(Node *pos);
+
 
 	};
 
@@ -395,6 +397,7 @@ namespace ft
 			child = pos->left;
 		else
 			child = pos->right;
+		
 		if (_bt == pos)
 		{
 			_bt = child;
@@ -410,6 +413,9 @@ namespace ft
 			pos->top->left = child;
 			child->top = pos->top;
 		}
+		printNode(pos->top);
+		printNode(pos);
+		printNode(child);
 		_alloc.destroy(pos->key);
 		_alloc.deallocate(pos->key, 1);
 		_size -= 1;
@@ -453,6 +459,29 @@ namespace ft
 		_alloc.destroy(pos->key);
 		_alloc.deallocate(pos->key, 1);
 		_size -= 1;
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	void map<K, T, Comp, Alloc >::printNode(Node * pos)
+	{
+		if (pos != NULL)
+		{
+			if (pos != NULL)
+			{
+				std::cerr << pos->key->first << "\n";
+			}
+			else 
+				std::cerr << "NULL\n";
+			if (pos->left)
+				std::cerr << pos->left->key->first << " _ _";
+			else
+				std::cerr << "NULL _ _";
+			if (pos->right)
+				std::cerr << pos->right->key->first << "\n";
+			else
+				std::cerr << "NULL\n";
+
+		}
 	}
 	
 	
