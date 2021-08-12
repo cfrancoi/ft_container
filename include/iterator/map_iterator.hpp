@@ -32,7 +32,6 @@ namespace ft
 			typedef	_Tp								value_type;
 			typedef _Tp *							pointer;
 			typedef _Tp &							reference;
-			//typedef _Self							iterator_type;
 			typedef std::bidirectional_iterator_tag iterator_category;
 			typedef std::ptrdiff_t 					difference_type;
 			typedef size_t							size_type;
@@ -88,7 +87,6 @@ namespace ft
 					_it = _it->left;
 					while (_it->right != NULL)
 						_it = _it->right;
-					std::cerr << "operator--:\n";	
 				}
 				else
 				{
@@ -102,7 +100,6 @@ namespace ft
 					}
 					_it = top;
 				}
-				std::cerr << "operator--:\n";
 				return *this;
 			}
 
@@ -121,11 +118,7 @@ namespace ft
 			{
 				return !(lhs == rhs);
 			}
-
-
-
-
-		private:
+		
 			Node*	_it;
 	};
 };
