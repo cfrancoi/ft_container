@@ -165,6 +165,11 @@ namespace ft
 				bool	placeLeft(Node * pos, const value_type& val);
 				bool	placeFirst(const value_type& val);
 
+				void	delCaseZero(Node * pos);
+				void 	delCaseOne(Node * pos);
+				void	delCaseTwo(Node * pos);
+
+
 	};
 
 
@@ -250,6 +255,61 @@ namespace ft
 		}
 	}
 
+	template < class Key, class T, class Compare , class Alloc >
+	void map<Key, T, Compare, Alloc >::erase(iterator position)
+	{
+		Node * p = position._it;
+		
+		if (_size == 0)
+			return;
+		// no child
+		if ((!p->right || p->right == end()) && !p->left)
+		{
+			std::cout << "case 0\n";
+			delCaseZero(p);
+			return ;
+		}
+		// one child
+		if (((!p->right || p->right == end()) && p->left) || ((p->right && p->right != end()) && !p->left))
+		{
+			std::cout << "case 1\n";
+			delCaseOne(p);
+			return;
+		}
+		// two child
+		if ((p->right && p->right != end()) && p->left)
+		{
+			std::cout << "case 2\n";
+			delCaseTwo(p);
+			return;
+		}
+	}
+	
+	/*template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::size_type map<Key, T, Compare, Alloc >::erase(const key_type& k) 
+	{
+		
+	}
+	
+*/
+	/*
+		** Operations
+	*/
+
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::iterator map<Key, T, Compare, Alloc >::find(const key_type& k) 
+	{
+		iterator it = begin();
+
+		while (it != end())
+		{
+			if (it->first == k)
+				return it;
+			++it;
+		}
+		return it;
+	}
+
 	/*
 		** Allocation
 	*/
@@ -305,8 +365,94 @@ namespace ft
 		_bt->key = newVal(val);
 		_size += 1;
 		_bt->right = end;
+		_bt->right->top = _bt;
 
 		return true;
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	void map<K, T, Comp, Alloc >::delCaseZero(Node * pos) 
+	{
+		Node * isend = pos->right;
+
+		if (pos->top->right == pos)
+		{
+			pos->top->right = isend;
+		}
+		else if (pos->top->left == pos)
+			pos->top->left = NULL;
+		_alloc.destroy(pos->key);
+		_alloc.deallocate(pos->key, 1);
+		_size -= 1;
+	}
+
+	template < class K, class T, class Comp , class Alloc >
+	void map<K, T, Comp, Alloc >::delCaseOne(Node * pos) 
+	{
+		Node * child;
+
+		if (pos->left)
+			child = pos->left;
+		else
+			child = pos->right;
+		if (_bt == pos)
+		{
+			_bt = child;
+			_bt->top = NULL;
+		}
+		else if (pos->top->right == pos)
+		{
+			pos->top->right = child;
+			child->top = pos->top;
+		}
+		else if (pos->top->left == pos)
+		{
+			pos->top->left = child;
+			child->top = pos->top;
+		}
+		_alloc.destroy(pos->key);
+		_alloc.deallocate(pos->key, 1);
+		_size -= 1;
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	void map<K, T, Comp, Alloc >::delCaseTwo(Node * pos)
+	{
+		Node *near;
+		Node * left;
+		Node * right;
+		{
+			iterator it(pos);
+			it++;
+			if (it != end())
+			{
+				near = it._it;
+				left = pos->left;
+				right = near->right;
+			}
+			else
+			{
+				iterator it(pos);
+				it--;
+				near = it._it;
+				left = near->left;
+				right = pos->right;
+			}
+			if (near->top->right == near)
+				near->top->right = NULL;
+			else if (near->top->left == near)
+				near->top->left = NULL;
+		}
+		near->top = pos->top;
+		near->left = left;
+		if (near->left)
+			near->left->top = near;
+		near->right = right;
+		if (near->right)
+			near->right->top = near;
+		_alloc.destroy(pos->key);
+		_alloc.deallocate(pos->key, 1);
+		_size -= 1;
 	}
 	
 	

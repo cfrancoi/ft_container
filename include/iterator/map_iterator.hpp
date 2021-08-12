@@ -82,13 +82,15 @@ namespace ft
 			{
 				if (_it == NULL)
 					return *this;
+				
 				if (_it->left != NULL)
 				{
 					_it = _it->left;
 					while (_it->right != NULL)
-						_it = _it->right;		
+						_it = _it->right;
+					std::cerr << "operator--:\n";	
 				}
-				else if (_it->left == NULL)
+				else
 				{
 					Node *top;
 
@@ -100,6 +102,7 @@ namespace ft
 					}
 					_it = top;
 				}
+				std::cerr << "operator--:\n";
 				return *this;
 			}
 
