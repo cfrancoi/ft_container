@@ -413,9 +413,6 @@ namespace ft
 			pos->top->left = child;
 			child->top = pos->top;
 		}
-		printNode(pos->top);
-		printNode(pos);
-		printNode(child);
 		_alloc.destroy(pos->key);
 		_alloc.deallocate(pos->key, 1);
 		_size -= 1;
@@ -424,41 +421,26 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	void map<K, T, Comp, Alloc >::delCaseTwo(Node * pos)
 	{
-		Node *near;
-		Node * left;
-		Node * right;
+		Node * near;
+		pointer pt;
 		{
 			iterator it(pos);
 			it++;
 			if (it != end())
 			{
 				near = it._it;
-				left = pos->left;
-				right = near->right;
 			}
 			else
 			{
 				iterator it(pos);
 				it--;
 				near = it._it;
-				left = near->left;
-				right = pos->right;
 			}
-			if (near->top->right == near)
-				near->top->right = NULL;
-			else if (near->top->left == near)
-				near->top->left = NULL;
 		}
-		near->top = pos->top;
-		near->left = left;
-		if (near->left)
-			near->left->top = near;
-		near->right = right;
-		if (near->right)
-			near->right->top = near;
-		_alloc.destroy(pos->key);
-		_alloc.deallocate(pos->key, 1);
-		_size -= 1;
+		pt = near->key;
+		near->key = pos->key;
+		pos->key = pt;
+		erase(iterator(near));
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
