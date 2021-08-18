@@ -121,13 +121,12 @@ namespace ft
     class reverse_iterator
     {       
         public:
-            
-        	typedef	typename Iter::value_type			    value_type;
-			typedef typename Iter::pointer			        pointer;
-			typedef typename Iter::reference		        reference;
-			typedef typename Iter::iterator_type		    iterator_type;
-			typedef typename Iter::iterator_category        iterator_category;
-			typedef typename Iter::difference_type          difference_type;
+            typedef Iter		   							iterator_type;
+        	typedef	typename ft::iterator_traits<Iter>::value_type			    value_type;
+			typedef typename ft::iterator_traits<Iter>::pointer			        pointer;
+			typedef typename ft::iterator_traits<Iter>::reference		        reference;
+			typedef typename ft::iterator_traits<Iter>::iterator_category        iterator_category;
+			typedef typename ft::iterator_traits<Iter>::difference_type          difference_type;
             typedef reverse_iterator<Iter>                  _Self;
 
             Iter base;
