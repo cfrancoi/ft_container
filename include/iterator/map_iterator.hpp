@@ -38,10 +38,11 @@ namespace ft
 			
 			typedef M_Node<_Tp>						Node;
 
-			map_iterator() : _it(NULL) {};
-			map_iterator(Node * n) : _it(n) {};
+			map_iterator() : _it(NULL) {}
+			map_iterator(Node * n) : _it(n) {}
+			map_iterator(const map_iterator &ref) { *this = ref; }
 
-
+			map_iterator& operator=(const map_iterator & ref) { _it = ref._it; return *this;}
 			reference	operator*() { return *(_it->key); }
 			pointer		operator->() { return _it->key; }
 
@@ -70,7 +71,7 @@ namespace ft
 				return *this;
 			}
 
-			map_iterator& operator++(int)
+			map_iterator operator++(int)
 			{
 				map_iterator tmp = *this;
 				++(*this);
@@ -103,7 +104,7 @@ namespace ft
 				return *this;
 			}
 
-			map_iterator& operator--(int)
+			map_iterator operator--(int)
 			{
 				map_iterator tmp = *this;
 				--(*this);
