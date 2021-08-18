@@ -120,6 +120,8 @@ namespace ft
 				return !(lhs == rhs);
 			}
 		
+		template <class, class, class, class> friend class _LIBCPP_TEMPLATE_VIS map; // map can acces to private member
+		private:
 			Node*	_it;
 	};
 };
