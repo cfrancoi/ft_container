@@ -9,6 +9,7 @@
 # include <memory> // std::allocator
 # include <limits> // std::numeric_limits
 # include <functional> // ?
+# include <stdexcept>
 
 namespace ft
 {
@@ -554,7 +555,12 @@ namespace ft
 
 		const_reference operator[](size_type n) const { return this->at(n); }
 
-		reference at(size_type n) { return *(_start + n); }
+		reference at(size_type n) {
+			pointer pos = (_start + n);
+			if (!(n < size()))
+				throw(std::out_of_range("vector"));
+			return *pos;
+		}
 		
 		const_reference at(size_type n) const { return *(_start + n); }
 
