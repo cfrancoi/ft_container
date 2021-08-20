@@ -36,7 +36,7 @@ namespace ft
 		friend bool operator<(const stack<T1, C1>& lhs, const stack<T1, C1>& rhs);
 
 		protected:
-			container_type	_cntr;
+			container_type	c;
 	};
 	
 	
@@ -44,38 +44,38 @@ namespace ft
 	template < class T, class Container >
 	bool stack<T, Container>::empty() const
 	{
-		return _cntr.empty();
+		return c.empty();
 	}
 
 	template < class T, class Container >
 	typename stack<T, Container>::size_type stack<T, Container>::size() const
 	{
-		return _cntr.size();
+		return c.size();
 	}
 	
 	template < class T, class Container >
 	typename stack<T, Container>::value_type& stack<T, Container>::top() 
 	{
-		return _cntr.top();
+		return c.top();
 	}
 
 	template < class T, class Container >
 	const typename stack<T, Container>::value_type& stack<T, Container>::top() const
 	{
-		return _cntr.top();
+		return c.top();
 	}
 	
 	template < class T, class Container >
 	void stack<T, Container>::push(const value_type& val) 
 	{
-		_cntr.push_back(val);
+		c.push_back(val);
 		return;
 	}
 	
 	template < class T, class Container >
 	void stack<T, Container>::pop(void) 
 	{
-		_cntr.pop_back();
+		c.pop_back();
 		return;
 	}
 
@@ -84,7 +84,7 @@ namespace ft
 	*/
 
 	template < class T, class Container >
-	stack<T, Container>::stack(const container_type & ctnr) : _cntr(ctnr)
+	stack<T, Container>::stack(const container_type & ctnr) : c(ctnr)
 	{
 		return;
 	}
@@ -98,19 +98,19 @@ namespace ft
 	template <class T, class Container>
  	bool operator== (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return (lhs._cntr == rhs._cntr);
+		return (lhs.c == rhs.c);
 	}
 
 	template <class T, class Container>
   	bool operator!= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return !(lhs._cntr == rhs._cntr);
+		return !(lhs.c == rhs.c);
 	}
 
 	template <class T, class Container>
 	bool operator<  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return (lhs._cntr < rhs._cntr);
+		return (lhs.c < rhs.c);
 	}
 	
 	template <class T, class Container>
