@@ -8,6 +8,7 @@
 # include <other/utility.hpp>
 # include <other/type_traits.hpp>
 
+#include <chrono>
 
 #include <iostream>
 namespace ft
@@ -172,6 +173,7 @@ namespace ft
 				void 	delCaseOne(Node * pos);
 				void	delCaseTwo(Node * pos);
 
+				Node*	cloneBinaryTree(Node * root);
 			
 				void	printNode(Node * pos);
 
@@ -208,9 +210,15 @@ namespace ft
 	map<K, T, Comp, Alloc>& map<K, T, Comp, Alloc>::operator=(const map<K, T, Comp, Alloc >& x) 
 	{
 		this->erase(begin(), end());
+		delete _end;
 		_cmp = x._cmp;
 		_alloc = x._alloc;
-		this->insert(x.begin(), x.end());
+		std::cerr << "CloneBt:\n";
+		_bt = cloneBinaryTree(x._bt);
+		std::cerr << "Get _end:\n";
+		_end = _bt;
+		while (_end->right != NULL)
+			_end = _end->right;
 		return *this;
 	}
 
@@ -327,13 +335,12 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, bool> map<Key, T, Compare, Alloc >::insert(const value_type& val) 
 	{
-
-		// empty map
 		if (_size == 0)
 			return ft::pair<iterator, bool>(placeFirst(val), true);
 		/*iterator it = find(val.first);
 		if (it != end())
 			return ft::pair<iterator, bool>(it, false);*/
+		//std::cout << val.first << "=>" << val.second << "\n";
 		Node *pt = _bt;
 		while(1)
 		{
@@ -456,6 +463,43 @@ namespace ft
 		}
 		return (iterator(cur));
 
+	}
+	
+	//count
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::size_type map<Key, T, Compare, Alloc >::map::count(const key_type& k) const
+	{
+		if (find(k) != end())
+			return 1;
+		return 0;
+	}
+	
+	//lower_bound
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::iterator map<Key, T, Compare, Alloc >::lower_bound(const key_type& k) 
+	{
+		iterator it;
+
+		it = --end();
+		while (it != begin() && !_cmp(it->first, k))
+		{
+			it--;
+		}
+		return it;
+	}
+	
+	//upper_bound
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::iterator map<Key, T, Compare, Alloc >::upper_bound(const key_type& k) 
+	{
+		iterator it;
+
+		it = begin();
+		while (it != begin() && _cmp(it->first, k))
+		{
+			it++;
+		}
+		return it;
 	}
 
 	/*
@@ -583,6 +627,23 @@ namespace ft
 		near->key = pos->key;
 		pos->key = pt;
 		erase(iterator(near));
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::map::cloneBinaryTree(Node * root) 
+	{
+		if (root == NULL)
+			return NULL;
+		Node * nNode = newNode();
+		if (root->key != NULL)
+			nNode->key = newVal(*root->key);
+		nNode->left = cloneBinaryTree(root->left);
+		if (nNode->left)
+			nNode->left->top = nNode;
+		nNode->right = cloneBinaryTree(root->right);
+		if (nNode->right)
+			nNode->right->top = nNode;
+		return nNode;
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
