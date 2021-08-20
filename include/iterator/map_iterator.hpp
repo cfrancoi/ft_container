@@ -19,6 +19,18 @@ namespace ft
 
 			M_Node & operator=(const M_Node & x) { key = x.key; top = x.top; left = x.left; right = x.right; return *this; };
 
+			size_t	height(void)
+			{
+				size_t h = 0;
+				
+				size_t l_h = (left != NULL) ? left->height() : 0;
+				size_t r_h = (right != NULL) ? right->height() : 0;
+				size_t max = std::max(l_h, r_h);
+				h = max + 1;
+
+				return h;
+			}
+
 			~M_Node() {};
 	};
 
@@ -116,6 +128,106 @@ namespace ft
 				return (lhs._it == rhs._it);
 			}
 			friend bool operator!=(const map_iterator &lhs, const map_iterator & rhs)
+			{
+				return !(lhs == rhs);
+			}
+		
+		template <class, class, class, class> friend class map; // map can acces to private member
+		private:
+			Node*	_it;
+	};
+
+	template < class _Tp >
+	class const_map_iterator
+	{
+		public:
+			typedef	_Tp								value_type;
+			typedef const _Tp *							pointer;
+			typedef const _Tp &							reference;
+			typedef std::bidirectional_iterator_tag iterator_category;
+			typedef std::ptrdiff_t 					difference_type;
+			typedef size_t							size_type;
+			
+			typedef M_Node<_Tp>						Node;
+
+			const_map_iterator() : _it(NULL) {}
+			const_map_iterator(Node * n) : _it(n) {}
+			const_map_iterator(const const_map_iterator &ref) { *this = ref; }
+
+			const_map_iterator& operator=(const const_map_iterator & ref) { _it = ref._it; return *this;}
+			reference	operator*() { return *(_it->key); }
+			pointer		operator->() { return _it->key; }
+
+			const_map_iterator& operator++()
+			{
+				if (_it == NULL)
+					return *this;
+				if (_it->right != NULL)
+				{
+					_it = _it->right;
+					while (_it->left != NULL)
+						_it = _it->left;		
+				}
+				else if (_it->right == NULL)
+				{
+					Node *top;
+
+					top = _it->top;
+					while (top != NULL && top->right == _it)
+					{
+						_it = top;
+						top = top->top;
+					}
+					_it = top;
+				}
+				return *this;
+			}
+
+			const_map_iterator operator++(int)
+			{
+				const_map_iterator tmp = *this;
+				++(*this);
+				return tmp;
+			}
+
+			const_map_iterator& operator--()
+			{
+				if (_it == NULL)
+					return *this;
+				
+				if (_it->left != NULL)
+				{
+					_it = _it->left;
+					while (_it->right != NULL)
+						_it = _it->right;
+				}
+				else
+				{
+					Node *top;
+
+					top = _it->top;
+					while (top != NULL && top->left == _it)
+					{
+						_it = top;
+						top = top->top;
+					}
+					_it = top;
+				}
+				return *this;
+			}
+
+			const_map_iterator operator--(int)
+			{
+				const_map_iterator tmp = *this;
+				--(*this);
+				return tmp;
+			}
+
+			friend bool operator==(const const_map_iterator<_Tp> &lhs, const const_map_iterator<_Tp> &rhs)
+			{
+				return (lhs._it == rhs._it);
+			}
+			friend bool operator!=(const const_map_iterator &lhs, const const_map_iterator & rhs)
 			{
 				return !(lhs == rhs);
 			}
