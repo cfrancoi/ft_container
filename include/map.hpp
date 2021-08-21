@@ -14,7 +14,7 @@
 namespace ft
 {
 
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< ft::pair<Key, T> > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class map
 	{
 		public:
@@ -22,7 +22,7 @@ namespace ft
 			// Member types
 			typedef Key		key_type;
 			typedef T		mapped_type;
-			typedef ft::pair<Key, T> value_type;
+			typedef ft::pair<const Key, T> value_type;
 			typedef Compare			key_compare;
 			typedef int value_compare;
 
@@ -95,7 +95,7 @@ namespace ft
 			*/
 			
 			//insert
-			ft::pair<iterator, bool> insert(const value_type& val);
+			ft::pair<iterator, bool> insert(const value_type & val);
 			iterator insert(iterator pos, const value_type& val);
 			
 			template<class InputIt>
@@ -104,7 +104,7 @@ namespace ft
 			
 			//erase
 			void erase(iterator position);
-			size_type erase(const key_type& k);
+			size_type erase(const key_type & k);
 			void erase(iterator first, iterator last);
 
 			//swap
@@ -165,9 +165,9 @@ namespace ft
 				void	delNode(Node * pos);
 
 				pointer		newVal(const value_type& val);
-				iterator	placeRight(Node * pos, const value_type& val);
-				iterator	placeLeft(Node * pos, const value_type& val);
-				iterator	placeFirst(const value_type& val);
+				Node* 	placeRight(Node * pos, const value_type& val);
+				Node* 	placeLeft(Node * pos, const value_type& val);
+				Node* 	placeFirst(const value_type& val);
 
 				void	delCaseZero(Node * pos);
 				void 	delCaseOne(Node * pos);
@@ -176,6 +176,8 @@ namespace ft
 				Node*	cloneBinaryTree(Node * root);
 			
 				void	printNode(Node * pos);
+
+				Node	*recInsert(Node * root, const value_type& k);
 
 
 	};
@@ -202,7 +204,7 @@ namespace ft
 	template < class K, class T, class Comp, class Alloc >
 	map<K, T, Comp, Alloc >::~map() 
 	{
-		erase(begin(), end());
+		//erase(begin(), end());
 		delete end()._it;
 	}
 	
@@ -333,19 +335,21 @@ namespace ft
 
 	//insert
 	template < class Key, class T, class Compare , class Alloc >
-	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, bool> map<Key, T, Compare, Alloc >::insert(const value_type& val) 
+	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, bool> map<Key, T, Compare, Alloc >::insert(const value_type & val) 
 	{
 		if (_size == 0)
-			return ft::pair<iterator, bool>(placeFirst(val), true);
-		/*iterator it = find(val.first);
-		if (it != end())
-			return ft::pair<iterator, bool>(it, false);*/
-		//std::cout << val.first << "=>" << val.second << "\n";
+			return ft::make_pair<iterator, bool>(placeFirst(val), true);
+
+		/*iterator ret = recInsert(_bt, val);
+		bool isCreated = (ret._it != NULL);
+		return ft::pair<iterator, bool>(ret, isCreated);*/
+		//std::cerr << "insert\n";
+		//return ft::make_pair<iterator, bool>(iterator(recInsert(_bt, val)), true);
 		Node *pt = _bt;
 		while(1)
 		{
-			
-			if (_cmp(pt->key->first, val.first))
+			bool ret = _cmp((*pt->key).first, val.first);
+			if (ret)
 			{
 				if (pt->right == NULL || pt->right == _end)
 				{
@@ -354,8 +358,10 @@ namespace ft
 				else
 					pt = pt->right;
 			}
-			else if (pt->key->first == val.first)
+			else if ((*pt->key).first == val.first)
+			{
 				return ft::pair<iterator, bool>(end(), false);
+			}
 			else
 			{
 				if (pt->left == NULL)
@@ -373,7 +379,45 @@ namespace ft
 	typename map<Key, T, Compare, Alloc >::iterator map<Key, T, Compare, Alloc >::insert(iterator pos, const value_type& val) 
 	{
 		(void)pos;
+		(void)val;
+		//return pos;
 		return insert(val).first;
+		if (_size == 0)
+			return placeFirst(val);
+
+		/*iterator ret = recInsert(_bt, val);
+		bool isCreated = (ret._it != NULL);
+		return ft::pair<iterator, bool>(ret, isCreated);*/
+		//std::cerr << "insert\n";
+		//return ft::make_pair<iterator, bool>(iterator(recInsert(_bt, val)), true);
+		Node *pt = upper_bound(val.first)._it;
+		while(1)
+		{
+			bool ret = _cmp((*pt->key).first, val.first);
+			if (ret)
+			{
+				if (pt->right == NULL || pt->right == _end)
+				{
+					return placeRight(pt, val);
+				}
+				else
+					pt = pt->right;
+			}
+			else if ((*pt->key).first == val.first)
+			{
+				return end();
+			}
+			else
+			{
+				if (pt->left)
+				{
+					pt = pt->left;
+				}
+				else
+					return placeLeft(pt, val);
+					
+			}
+		}
 	}
 	
 	//insert Input iterator
@@ -495,7 +539,7 @@ namespace ft
 		iterator it;
 
 		it = begin();
-		while (it != begin() && _cmp(it->first, k))
+		while (it != end() && _cmp(it->first, k))
 		{
 			it++;
 		}
@@ -522,30 +566,30 @@ namespace ft
 	}
 
 	template < class K, class T, class Comp , class Alloc >
-	typename map<K, T, Comp, Alloc >::iterator map<K, T, Comp, Alloc >::placeRight(Node * pos, const value_type& val) 
+	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::placeRight(Node * pos, const value_type& val) 
 	{
 		Node * end = pos->right;
 
-		pos->right = newNode();
+		pos->right = newNode();//newNode();
 		pos->right->top = pos;
 		pos->right->key = newVal(val);
 		pos->right->right = end;
 		_size += 1;
-		return pos->right;
+		return (pos->right);
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
-	typename map<K, T, Comp, Alloc >::iterator map<K, T, Comp, Alloc >::placeLeft(Node * pos, const value_type& val) 
+	typename map<K, T, Comp, Alloc >::Node*  map<K, T, Comp, Alloc >::placeLeft(Node * pos, const value_type& val) 
 	{
 		pos->left = newNode();
 		pos->left->top = pos;
 		pos->left->key = newVal(val);
 		_size += 1;
-		return pos->left;
+		return (pos->left);
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
-	typename map<K, T, Comp, Alloc >::iterator map<K, T, Comp, Alloc >::placeFirst(const value_type& val)
+	typename map<K, T, Comp, Alloc >::Node*  map<K, T, Comp, Alloc >::placeFirst(const value_type& val)
 	{
 		Node * end = _bt;
 
@@ -554,7 +598,6 @@ namespace ft
 		_size += 1;
 		_bt->right = end;
 		_bt->right->top = _bt;
-
 		return _bt;
 	}
 	
@@ -675,6 +718,58 @@ namespace ft
 			else
 				std::cerr << "NULL\n";
 		}
+	}
+	
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::recInsert(Node * root, const value_type& k) 
+	{
+		/*(void)root;
+		for (iterator it = begin(); it != end(); it++)
+		{
+			bool ret = _cmp((*it).first, k.first);
+			if (ret)
+			{
+				placeLeft(it._it);
+			}
+			else if ((*it).first == k.first)
+			{
+				return NULL;
+			}
+			else
+			{
+
+			}
+		}*/
+		/*if (root == NULL || root == _end)
+		{
+			Node * end = root;
+
+			//if (root == _end)
+			//	std::cerr << "_end will move\n";
+			root = newNode();
+			root->right = end;
+			root->key = newVal(k);
+			_size += 1;
+			return root;
+		}	
+		bool ret = _cmp((*root->key).first, k.first);
+		if (ret)
+		{
+			root->left = recInsert(root->left, k);
+			if (root->left)
+				root->left->top = root;
+		}
+		else if ((*root->key).first == k.first)
+		{
+			return NULL;
+		}
+		else
+		{
+			root->right = recInsert(root->right, k);
+			if (root->right)
+				root->right->top = root;
+		}
+		return root;*/
 	}
 	
 	
