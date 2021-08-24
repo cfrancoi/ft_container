@@ -13,23 +13,112 @@ namespace ft
 			M_Node *top;
 			M_Node *left;
 			M_Node *right;
+			int		h;
 
-			M_Node() : key(NULL) , top(NULL), left(NULL), right(NULL) {};
-			M_Node(const T & k) : key(k) , top(NULL), left(NULL), right(NULL) {};
+			M_Node() : key(NULL) , top(NULL), left(NULL), right(NULL), h(1)   {};
+			M_Node(const T & k) : key(k) , top(NULL), left(NULL), right(NULL), h(1)  {};
 
 			M_Node & operator=(const M_Node & x) { key = x.key; top = x.top; left = x.left; right = x.right; return *this; };
 
-			size_t	height(void)
+			//height
+			int	height(M_Node * p)
 			{
-				size_t h = 0;
-				
-				size_t l_h = (left != NULL) ? left->height() : 0;
-				size_t r_h = (right != NULL) ? right->height() : 0;
-				size_t max = std::max(l_h, r_h);
-				h = max + 1;
-
-				return h;
+				if (p == NULL)
+					return 0;
+				return p->h;
 			}
+
+			int getBalance(M_Node * root)
+			{
+				if (root == NULL)
+					return 0;
+				return height(root->left) - height(root->right);
+			}
+
+			// diff factor
+			size_t diff(M_Node *top)
+			{
+				size_t l_h = top->left->height();
+				size_t r_h = top->right->height();
+
+				return l_h - r_h;
+			}
+
+			/*
+				**	   Top
+				**		|
+				**		A
+				**	   /
+				**	  B
+				**   /
+				**  C
+			*/
+			M_Node * rr_rot(M_Node * parent)
+			{
+			//	std::cerr << "rr_rot\n";
+				M_Node * b;
+				M_Node * top;
+
+				b = parent->left;
+				top = parent->top;
+				if (top != NULL)
+				{
+					if (parent == top->left)
+						top->left = b;
+					else
+						top->right = b;
+				}
+				b->top = top;
+				parent->top = b;
+				parent->left = b->right;
+				if (parent->left)
+					parent->left->top = parent;
+				b->right = parent;
+
+				
+				parent->h = std::max(height(parent->left), height(parent->right));
+				b->h = std::max(height(b->left), height(b->right));
+
+				return b;
+			}
+
+			M_Node * ll_rot(M_Node * parent)
+			{
+				
+				M_Node *b;
+				M_Node *top;
+
+				b = parent->right;
+				top = parent->top;
+				if (top != NULL)
+				{
+					if (parent == top->right)
+					{
+						top->right = b;
+					}
+					else
+					{
+						top->left = b;
+					}
+				}
+				b->top = top;
+				parent->top = b;
+				parent->right = b->left;
+				
+				if (parent->right)
+					parent->right->top = parent;
+				b->left = parent;
+				
+				
+				parent->h = std::max(height(parent->left), height(parent->right));
+				b->h = std::max(height(b->left), height(b->right));
+
+				//std::cerr << "left rotate\n";
+				return b;
+			}
+			M_Node * lr_rot(M_Node * pt);
+			M_Node * rl_rot(M_Node * pt);
+
 
 			~M_Node() {};
 	};

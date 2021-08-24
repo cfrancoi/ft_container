@@ -177,7 +177,7 @@ namespace ft
 			
 				void	printNode(Node * pos);
 
-				Node	*recInsert(Node * root, const value_type& k);
+				Node	*balanceInsert(Node * root, const value_type & val);
 
 
 	};
@@ -263,26 +263,23 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::const_iterator map<K, T, Comp, Alloc >::end() const
 	{
-		Node *pt = _bt;
-
-		while (pt->right != NULL)
-			pt = pt->right;
-
-		return const_iterator(pt);
+		return const_iterator(_end);
 	}
 	
 	//rbegin
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::reverse_iterator map<K, T, Comp, Alloc >::rbegin() 
 	{
-		return (reverse_iterator(--end()));
+		return (reverse_iterator(iterator(_end->top)));
 	}
 	
 	//rend
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::reverse_iterator map<K, T, Comp, Alloc >::rend() 
 	{
-		return (reverse_iterator(iterator(begin()._it->left)));
+		//std::cout << "top is :" << _bt->key->first << "\n";
+		//std::cout << "_bs == _end : " << (_bt == _end) << std::endl;
+		return (reverse_iterator(iterator(NULL)));
 	}
 	
 	/*
@@ -340,11 +337,6 @@ namespace ft
 		if (_size == 0)
 			return ft::make_pair<iterator, bool>(placeFirst(val), true);
 
-		/*iterator ret = recInsert(_bt, val);
-		bool isCreated = (ret._it != NULL);
-		return ft::pair<iterator, bool>(ret, isCreated);*/
-		//std::cerr << "insert\n";
-		//return ft::make_pair<iterator, bool>(iterator(recInsert(_bt, val)), true);
 		Node *pt = _bt;
 		while(1)
 		{
@@ -479,10 +471,14 @@ namespace ft
 	{
 		if(_size == 0)
 			return 0;
+		
 		iterator pos = find(k);
 		if (pos != end())
+		{
 			erase(pos);
-		return (1);
+			return 1;
+		}
+		return 0;
 	}
 	
 	/*
@@ -502,7 +498,7 @@ namespace ft
 			else
 				cur = cur->left;
 			
-			if (cur == NULL)
+			if (cur == NULL || cur == _end)
 				return end();
 		}
 		return (iterator(cur));
@@ -565,6 +561,8 @@ namespace ft
 		return (n);
 	}
 
+
+	// PlaceRight 
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::placeRight(Node * pos, const value_type& val) 
 	{
@@ -574,10 +572,16 @@ namespace ft
 		pos->right->top = pos;
 		pos->right->key = newVal(val);
 		pos->right->right = end;
+		if (pos->right->right)
+			pos->right->right->top = pos->right;
 		_size += 1;
+		
+		balanceInsert(pos, val);
+	
 		return (pos->right);
 	}
 	
+	// PlaceLeft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::Node*  map<K, T, Comp, Alloc >::placeLeft(Node * pos, const value_type& val) 
 	{
@@ -585,6 +589,9 @@ namespace ft
 		pos->left->top = pos;
 		pos->left->key = newVal(val);
 		_size += 1;
+
+		balanceInsert(pos, val);
+
 		return (pos->left);
 	}
 	
@@ -721,55 +728,41 @@ namespace ft
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
-	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::recInsert(Node * root, const value_type& k) 
+	typename map<K, T, Comp, Alloc >::Node* map<K, T, Comp, Alloc >::balanceInsert(Node * root, const value_type & val) 
 	{
-		/*(void)root;
-		for (iterator it = begin(); it != end(); it++)
-		{
-			bool ret = _cmp((*it).first, k.first);
-			if (ret)
-			{
-				placeLeft(it._it);
-			}
-			else if ((*it).first == k.first)
-			{
-				return NULL;
-			}
-			else
-			{
-
-			}
-		}*/
-		/*if (root == NULL || root == _end)
-		{
-			Node * end = root;
-
-			//if (root == _end)
-			//	std::cerr << "_end will move\n";
-			root = newNode();
-			root->right = end;
-			root->key = newVal(k);
-			_size += 1;
-			return root;
-		}	
-		bool ret = _cmp((*root->key).first, k.first);
-		if (ret)
-		{
-			root->left = recInsert(root->left, k);
-			if (root->left)
-				root->left->top = root;
-		}
-		else if ((*root->key).first == k.first)
-		{
+		if (root == NULL)
 			return NULL;
-		}
-		else
+		
+		
+		root->h = 1 + std::max(root->height(root->left), root->height(root->right));
+		
+		if (root->top != NULL)
 		{
-			root->right = recInsert(root->right, k);
-			if (root->right)
-				root->right->top = root;
+			
+			int balance = root->getBalance(root->top);
+
+			if (balance > 1 && root->left && _cmp(val.first, root->left->key->first))
+				root->rr_rot(root);
+
+			if (balance < -1 && root->right && root->right != _end && !_cmp(val.first, root->right->key->first))
+				root->ll_rot(root);
+
+			if (balance > 1 && root->left && root->right != _end && !_cmp(val.first, root->left->key->first))
+			{
+				if (root->left && root->left->right)
+				{	
+					root->ll_rot(root->left);
+				}
+				root->rr_rot(root);
+			}
+			if (balance < -1 && root->left && root->right && _cmp(val.first, root->left->key->first))
+			{
+				if (root->right->left)
+					root->rr_rot(root->left);
+				root->ll_rot(root);
+			}
 		}
-		return root;*/
+		return root;
 	}
 	
 	
