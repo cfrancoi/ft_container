@@ -233,6 +233,9 @@ namespace ft
 				base -= x;
 				return *this;
 			}
+
+			friend bool operator==(const reverse_iterator &x, const reverse_iterator & y) { return (x.base == y.base);}
+			friend bool operator!=(const reverse_iterator &x, const reverse_iterator & y) { return (x.base != y.base);}
     };
 
 
