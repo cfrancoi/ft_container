@@ -200,11 +200,18 @@ namespace ft
 		*this = x;
 	}
 	
+	template < class K, class T, class Comp , class Alloc >
+	template<class InputIterator>
+	map<K, T, Comp, Alloc >::map(InputIterator first, InputIterator last, const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
+	{
+		insert(first, last);
+	}
+	
 	//Destructor
 	template < class K, class T, class Comp, class Alloc >
 	map<K, T, Comp, Alloc >::~map() 
 	{
-		//erase(begin(), end());
+		erase(begin(), end());
 		delete end()._it;
 	}
 	
@@ -215,9 +222,7 @@ namespace ft
 		delete _end;
 		_cmp = x._cmp;
 		_alloc = x._alloc;
-		std::cerr << "CloneBt:\n";
 		_bt = cloneBinaryTree(x._bt);
-		std::cerr << "Get _end:\n";
 		_end = _bt;
 		while (_end->right != NULL)
 			_end = _end->right;
@@ -225,7 +230,7 @@ namespace ft
 	}
 
 	/*
-		** Iterator
+		***** Iterator *****
 	*/
 
 	//begin iterator
@@ -283,7 +288,7 @@ namespace ft
 	}
 	
 	/*
-		** Capacity
+		***** Capacity *****
 	*/
 
 	//empty
@@ -297,9 +302,6 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::size() const
 	{
-		/*std::cerr << "height :" << _bt->height() << "\n";
-		std::cerr << "left height :" << _bt->left->height() << "\n";
-		std::cerr << "right height :" << _bt->right->height() << "\n";*/
 		return _size;
 	}
 	
@@ -320,14 +322,16 @@ namespace ft
 	{
 		iterator it = find(k);
 		if (it != end())
+		{
 			return (it._it->key->second);
-		//return *(this->insert(ft::).first).second);
+		}
 		value_type t = ft::make_pair(k, mapped_type());
-		return(insert(t).first->second);
+		ft::pair<iterator, bool> ret = insert(t);
+		return ret.first->second;
 	}
 
 	/*
-		** Modifiers
+		***** Modifiers *****
 	*/
 
 	//insert
@@ -335,8 +339,7 @@ namespace ft
 	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, bool> map<Key, T, Compare, Alloc >::insert(const value_type & val) 
 	{
 		if (_size == 0)
-			return ft::make_pair<iterator, bool>(placeFirst(val), true);
-
+			return ft::make_pair<iterator, bool>(iterator(placeFirst(val)), true);
 		Node *pt = _bt;
 		while(1)
 		{
@@ -345,20 +348,20 @@ namespace ft
 			{
 				if (pt->right == NULL || pt->right == _end)
 				{
-					return ft::pair<iterator, bool>(placeRight(pt, val), true);
+					return ft::pair<iterator, bool>(iterator(placeRight(pt, val)), true);
 				}
 				else
 					pt = pt->right;
 			}
 			else if ((*pt->key).first == val.first)
 			{
-				return ft::pair<iterator, bool>(end(), false);
+				return ft::pair<iterator, bool>(iterator(pt), false);
 			}
 			else
 			{
 				if (pt->left == NULL)
 				{
-					return ft::pair<iterator, bool>(placeLeft(pt, val), true);
+					return ft::pair<iterator, bool>(iterator(placeLeft(pt, val)), true);
 				}
 				else
 					pt = pt->left;
@@ -372,16 +375,10 @@ namespace ft
 	{
 		(void)pos;
 		(void)val;
-		//return pos;
 		return insert(val).first;
 		if (_size == 0)
 			return placeFirst(val);
 
-		/*iterator ret = recInsert(_bt, val);
-		bool isCreated = (ret._it != NULL);
-		return ft::pair<iterator, bool>(ret, isCreated);*/
-		//std::cerr << "insert\n";
-		//return ft::make_pair<iterator, bool>(iterator(recInsert(_bt, val)), true);
 		Node *pt = upper_bound(val.first)._it;
 		while(1)
 		{
@@ -419,15 +416,12 @@ namespace ft
 	map<Key, T, Compare, Alloc >::insert(InputIt first, InputIt last) 
 	{
 		while (first != last)
-		{
 			insert(*first++);
-			//std::cerr << size() << "\n";
-		}
 	}
 
 	//erase
 	template < class Key, class T, class Compare , class Alloc >
-	void map<Key, T, Compare, Alloc >::erase(iterator position)
+ 	void map<Key, T, Compare, Alloc >::erase(iterator position)
 	{
 		Node * p = position._it;
 		
@@ -469,6 +463,7 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	typename map<Key, T, Compare, Alloc >::size_type map<Key, T, Compare, Alloc >::erase(const key_type& k) 
 	{
+		
 		if(_size == 0)
 			return 0;
 		
@@ -482,7 +477,7 @@ namespace ft
 	}
 	
 	/*
-		** Operations
+		***** Operations *****
 	*/
 
 	//find
@@ -491,7 +486,7 @@ namespace ft
 	{
 		Node * cur = _bt;
 
-		while (cur->key->first != k)
+		while (cur != _end && cur->key->first != k)
 		{
 			if (_cmp(cur->key->first, k))
 				cur = cur->right;
@@ -543,7 +538,7 @@ namespace ft
 	}
 
 	/*
-			**  ** Allocation **  **
+			****** Allocation ******
 	*/
 
 	template < class K, class T, class Comp , class Alloc >
@@ -568,7 +563,7 @@ namespace ft
 	{
 		Node * end = pos->right;
 
-		pos->right = newNode();//newNode();
+		pos->right = newNode();
 		pos->right->top = pos;
 		pos->right->key = newVal(val);
 		pos->right->right = end;
@@ -577,8 +572,7 @@ namespace ft
 		_size += 1;
 		
 		balanceInsert(pos, val);
-	
-		return (pos->right);
+		return (find(val.first)._it);
 	}
 	
 	// PlaceLeft
@@ -592,7 +586,7 @@ namespace ft
 
 		balanceInsert(pos, val);
 
-		return (pos->left);
+		return (find(val.first)._it);
 	}
 	
 	template < class K, class T, class Comp , class Alloc >

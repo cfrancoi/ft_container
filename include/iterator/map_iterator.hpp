@@ -113,7 +113,7 @@ namespace ft
 				parent->h = std::max(height(parent->left), height(parent->right));
 				b->h = std::max(height(b->left), height(b->right));
 
-				//std::cerr << "left rotate\n";
+				
 				return b;
 			}
 			M_Node * lr_rot(M_Node * pt);
@@ -144,7 +144,7 @@ namespace ft
 			map_iterator(const map_iterator &ref) { *this = ref; }
 
 			map_iterator& operator=(const map_iterator & ref) { _it = ref._it; return *this;}
-			reference	operator*() { return *(_it->key); }
+			reference	operator*() { return *_it->key; }
 			pointer		operator->() { return _it->key; }
 
 			map_iterator& operator++()
