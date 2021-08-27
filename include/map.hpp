@@ -436,13 +436,13 @@ namespace ft
 			return ;
 		}
 		// one child
-		if (((!p->right || p->right == end) && p->left) || ((p->right && p->right != end) && !p->left))
+		if ((p->right && !p->left) || (!p->right && p->left))// (((!p->right || p->right == end) && p->left) || ((p->right && p->right != end) && !p->left))
 		{
 			delCaseOne(p);
 			return;
 		}
 		// two child
-		if ((p->right && p->right != end) && p->left)
+		if ((p->right /*&& p->right != end*/) && p->left)
 		{
 			delCaseTwo(p);
 			return;
