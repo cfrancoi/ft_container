@@ -8,12 +8,9 @@
 # include <other/utility.hpp>
 # include <other/type_traits.hpp>
 
-#include <chrono>
-
 #include <iostream>
 namespace ft
-{
-
+{	
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class map
 	{
@@ -200,6 +197,7 @@ namespace ft
 		*this = x;
 	}
 	
+	//Range constructor
 	template < class K, class T, class Comp , class Alloc >
 	template<class InputIterator>
 	map<K, T, Comp, Alloc >::map(InputIterator first, InputIterator last, const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
@@ -215,6 +213,7 @@ namespace ft
 		delete end()._it;
 	}
 	
+	//operator=
 	template < class K, class T, class Comp, class Alloc >
 	map<K, T, Comp, Alloc>& map<K, T, Comp, Alloc>::operator=(const map<K, T, Comp, Alloc >& x) 
 	{
@@ -277,14 +276,26 @@ namespace ft
 	{
 		return (reverse_iterator(iterator(_end->top)));
 	}
+
+	//crbegin
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::const_reverse_iterator map<K, T, Comp, Alloc >::rbegin() const 
+	{
+		return (const_reverse_iterator(const_iterator(_end->top)));
+	}
 	
 	//rend
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::reverse_iterator map<K, T, Comp, Alloc >::rend() 
 	{
-		//std::cout << "top is :" << _bt->key->first << "\n";
-		//std::cout << "_bs == _end : " << (_bt == _end) << std::endl;
 		return (reverse_iterator(iterator(NULL)));
+	}
+
+	//crend
+	template < class K, class T, class Comp , class Alloc >
+	typename map<K, T, Comp, Alloc >::const_reverse_iterator map<K, T, Comp, Alloc >::rend() const
+	{
+		return (const_reverse_iterator(const_iterator(NULL)));
 	}
 	
 	/*
@@ -476,6 +487,49 @@ namespace ft
 		return 0;
 	}
 	
+	//swap
+	template < class Key, class T, class Compare , class Alloc >
+	void map<Key, T, Compare, Alloc >::swap(map& x)
+	{
+		std::swap(this->_cmp, x._cmp);
+
+		Node * swp = _bt;
+		_bt = x._bt;
+		x._bt = swp;
+
+		swp = _end;
+		_end = x._end;
+		x._end = swp;
+
+		size_type len = _size;
+		_size = x._size;
+		x._size = len;
+	}
+	
+	//clear
+	template < class Key, class T, class Compare , class Alloc >
+	void map<Key, T, Compare, Alloc >::clear(void) 
+	{
+		erase(begin(), end());
+	}
+
+	/*
+		***** Observer *****
+	*/
+
+	//key_comp
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::key_compare map<Key, T, Compare, Alloc >::key_comp(void) const
+	{
+		return _cmp;
+	}
+	
+	/*template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::value_compare map<Key, T, Compare, Alloc >::value_comp(void) const
+	{
+		return ;
+	}*/
+	
 	/*
 		***** Operations *****
 	*/
@@ -519,6 +573,22 @@ namespace ft
 		while (it != begin() && !_cmp(it->first, k))
 		{
 			it--;
+			std::cerr << it->first << " vs " << k << std::endl;
+		}
+		std::cerr << it->first << " vs " << k << std::endl;
+		return it;
+	}
+
+	//const_lower_bound
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::const_iterator map<Key, T, Compare, Alloc >::lower_bound(const key_type& k) const
+	{
+		const_iterator it;
+
+		it = --end();
+		while (it != begin() && !_cmp(it->first, k))
+		{
+			it--;
 		}
 		return it;
 	}
@@ -528,6 +598,20 @@ namespace ft
 	typename map<Key, T, Compare, Alloc >::iterator map<Key, T, Compare, Alloc >::upper_bound(const key_type& k) 
 	{
 		iterator it;
+
+		it = begin();
+		while (it != end() && _cmp(it->first, k))
+		{
+			it++;
+		}
+		return it;
+	}
+
+	//const_upper_bound
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::const_iterator map<Key, T, Compare, Alloc >::upper_bound(const key_type& k) const
+	{
+		const_iterator it;
 
 		it = begin();
 		while (it != end() && _cmp(it->first, k))
