@@ -3,6 +3,7 @@
 # include <functional>
 # include <utility>
 # include <memory>
+# include <limits>
 # include <iterator/map_iterator.hpp>
 # include <iterator/iterator.hpp>
 # include <other/utility.hpp>
@@ -225,6 +226,7 @@ namespace ft
 		_end = _bt;
 		while (_end->right != NULL)
 			_end = _end->right;
+		_size = x._size;
 		return *this;
 	}
 
@@ -551,6 +553,26 @@ namespace ft
 				return end();
 		}
 		return (iterator(cur));
+
+	}
+
+	//find
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::const_iterator map<Key, T, Compare, Alloc >::find(const key_type& k) const
+	{
+		Node * cur = _bt;
+
+		while (cur != _end && cur->key->first != k)
+		{
+			if (_cmp(cur->key->first, k))
+				cur = cur->right;
+			else
+				cur = cur->left;
+			
+			if (cur == NULL || cur == _end)
+				return end();
+		}
+		return (const_iterator(cur));
 
 	}
 	
