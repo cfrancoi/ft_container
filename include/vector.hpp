@@ -770,21 +770,10 @@ namespace ft
 			
 		}
 
-	/*	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+		allocator_type get_allocator(void) const
 		{
-			if (lhs.size() == rhs.size())
-			{
-				iterator itl = lhs.begin();
-				iterator itr = rhs.begin();
-				while (itl != lhs.end())
-				{
-					if(!(*itl++ == *itr++))
-						return (false);
-				}
-				return (true);
-			}
-			return (false);
-		}*/
+			return _alloc;
+		}
 
 	};
 
