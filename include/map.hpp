@@ -672,6 +672,13 @@ namespace ft
 		ft::pair<typename map<Key, T, Compare, Alloc >::const_iterator, typename map<Key, T, Compare, Alloc >::const_iterator> ret(lower_bound(k), upper_bound(k));
 		return ret;
 	}
+	
+	//get_allocator
+	template < class Key, class T, class Compare , class Alloc >
+	typename map<Key, T, Compare, Alloc >::allocator_type map<Key, T, Compare, Alloc >::get_allocator(void) const
+	{
+		return _alloc;
+	}
 
 	/*
 			****** Allocation ******
