@@ -22,7 +22,7 @@ namespace ft
 			typedef T		mapped_type;
 			typedef ft::pair<const Key, T> value_type;
 			typedef Compare			key_compare;
-			typedef int value_compare;
+			class value_compare;
 
 			typedef	Alloc	allocator_type;
 			typedef typename allocator_type::reference 		reference;
@@ -138,8 +138,8 @@ namespace ft
 			const_iterator upper_bound(const key_type& k) const;
 
 			//equal_range
-			std::pair<iterator, iterator> equal_range(const key_type& k);
-			std::pair<const_iterator, const_iterator> equal_range(const key_type& k) const;
+			ft::pair<iterator, iterator> equal_range(const key_type& k);
+			ft::pair<const_iterator, const_iterator> equal_range(const key_type& k) const;
 
 			/*
 				** Allocator
@@ -172,12 +172,27 @@ namespace ft
 				void	delCaseTwo(Node * pos);
 
 				Node*	cloneBinaryTree(Node * root);
-			
-				void	printNode(Node * pos);
 
 				Node	*balanceInsert(Node * root, const value_type & val);
 
 
+	};
+
+	template <class Key, class T, class Compare, class Alloc>
+	class map<Key,T,Compare,Alloc>::value_compare
+	{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
+		  friend class map;
+		protected:
+			Compare comp;
+			value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
+		public:
+			typedef bool result_type;
+			typedef value_type first_argument_type;
+			typedef value_type second_argument_type;
+			bool operator() (const value_type& x, const value_type& y) const
+			{
+				return comp(x.first, y.first);
+			}
 	};
 
 	/*
@@ -526,11 +541,11 @@ namespace ft
 		return _cmp;
 	}
 	
-	/*template < class Key, class T, class Compare , class Alloc >
+	template < class Key, class T, class Compare , class Alloc >
 	typename map<Key, T, Compare, Alloc >::value_compare map<Key, T, Compare, Alloc >::value_comp(void) const
 	{
-		return ;
-	}*/
+		return typename map<Key, T, Compare, Alloc >::value_compare(_cmp);
+	}
 	
 	/*
 		***** Operations *****
@@ -592,12 +607,10 @@ namespace ft
 		iterator it;
 
 		it = --end();
-		while (it != begin() && !_cmp(it->first, k))
+		while (it != begin() && !_cmp(it->first, k) && !(it->first == k))
 		{
 			it--;
-			std::cerr << it->first << " vs " << k << std::endl;
 		}
-		std::cerr << it->first << " vs " << k << std::endl;
 		return it;
 	}
 
@@ -608,7 +621,7 @@ namespace ft
 		const_iterator it;
 
 		it = --end();
-		while (it != begin() && !_cmp(it->first, k))
+		while (it != begin() && (!_cmp(it->first, k) && it->first != k))
 		{
 			it--;
 		}
@@ -622,7 +635,7 @@ namespace ft
 		iterator it;
 
 		it = begin();
-		while (it != end() && _cmp(it->first, k))
+		while (it != end() && (_cmp(it->first, k) || it->first == k))
 		{
 			it++;
 		}
@@ -636,11 +649,28 @@ namespace ft
 		const_iterator it;
 
 		it = begin();
-		while (it != end() && _cmp(it->first, k))
+		while (it != end() && (_cmp(it->first, k) || it->first == k))
 		{
 			it++;
+			
 		}
 		return it;
+	}
+	
+	//equal_range
+	template < class Key, class T, class Compare , class Alloc >
+	ft::pair<typename map<Key, T, Compare, Alloc >::iterator, typename map<Key, T, Compare, Alloc >::iterator> map<Key, T, Compare, Alloc >::equal_range(const key_type& k) 
+	{
+		ft::pair<typename map<Key, T, Compare, Alloc >::iterator, typename map<Key, T, Compare, Alloc >::iterator> ret(lower_bound(k), upper_bound(k));
+		return ret;
+	}
+
+	//const_equal_range
+	template < class Key, class T, class Compare , class Alloc >
+	ft::pair<typename map<Key, T, Compare, Alloc >::const_iterator, typename map<Key, T, Compare, Alloc >::const_iterator> map<Key, T, Compare, Alloc >::equal_range(const key_type& k) const 
+	{
+		ft::pair<typename map<Key, T, Compare, Alloc >::const_iterator, typename map<Key, T, Compare, Alloc >::const_iterator> ret(lower_bound(k), upper_bound(k));
+		return ret;
 	}
 
 	/*
@@ -803,28 +833,6 @@ namespace ft
 		_alloc.deallocate(pos->key, 1);
 		delete pos;
 		_size -= 1;
-	}
-	
-	template < class K, class T, class Comp , class Alloc >
-	void map<K, T, Comp, Alloc >::printNode(Node * pos)
-	{
-		if (pos != NULL)
-		{
-			if (pos != NULL)
-			{
-				std::cerr << pos->key->first << "\n";
-			}
-			else 
-				std::cerr << "NULL\n";
-			if (pos->left)
-				std::cerr << pos->left->key->first << " _ _";
-			else
-				std::cerr << "NULL _ _";
-			if (pos->right)
-				std::cerr << pos->right->key->first << "\n";
-			else
-				std::cerr << "NULL\n";
-		}
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
