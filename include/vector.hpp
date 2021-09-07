@@ -562,7 +562,12 @@ namespace ft
 			return *pos;
 		}
 		
-		const_reference at(size_type n) const { return *(_start + n); }
+		const_reference at(size_type n) const
+		{
+			if (!(n < size()))
+				throw(std::out_of_range("vector"));
+			return *(_start + n);
+		}
 
 		reference front(void) { return *_start; }
 		
@@ -808,8 +813,6 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator<  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
-		/*if (lhs.size() != rhs.size())
-			return false;*/
 		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 

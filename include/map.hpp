@@ -607,10 +607,10 @@ namespace ft
 	{
 		iterator it;
 
-		it = --end();
-		while (it != begin() && !_cmp(it->first, k) && !(it->first == k))
+		it = begin();
+		while (it != end() && _cmp(it->first, k))
 		{
-			it--;
+			it++;
 		}
 		return it;
 	}

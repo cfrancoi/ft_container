@@ -44,18 +44,10 @@ namespace ft
 				return l_h - r_h;
 			}
 
-			/*
-				**	   Top
-				**		|
-				**		A
-				**	   /
-				**	  B
-				**   /
-				**  C
-			*/
+		
 			M_Node * rr_rot(M_Node * parent)
 			{
-			//	std::cerr << "rr_rot\n";
+
 				M_Node * b;
 				M_Node * top;
 
@@ -222,6 +214,7 @@ namespace ft
 			}
 		
 		template <class, class, class, class> friend class map; // map can acces to private member
+		template <class> friend class const_map_iterator; // map can acces to private member
 		private:
 			Node*	_it;
 	};
@@ -242,6 +235,7 @@ namespace ft
 			const_map_iterator() : _it(NULL) {}
 			const_map_iterator(Node * n) : _it(n) {}
 			const_map_iterator(const const_map_iterator &ref) { *this = ref; }
+			const_map_iterator(const map_iterator<_Tp> &ref) : _it(ref._it) { }
 
 			const_map_iterator& operator=(const const_map_iterator & ref) { _it = ref._it; return *this;}
 			reference	operator*() { return *(_it->key); }
