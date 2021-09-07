@@ -17,14 +17,15 @@
 const_iterator = iterator // OK
 iterator = const_iterator // KO
 
-list<type>::sort ~ time :    
-| std | ft | nbr | type | cmp | 
+ft::map map_all_rand ~ time :    
+| std | ft | nbr | diff | cmp | 
 | --- | -- | --- | ---- | --- |
-| 30.2 | 39.6 | 3M | int | default |
-| 19.8 | 24.5 | 2M | int | default |
-| 9.34 | 11.5 | 1M | int | default |
-| 0.04 | 0.05 | 100m | int | default |
-| ~0.003 | ~0.003 | 1000 | int | default |
+| 105.44 | 141.08| 25M | x1.34 | default | 
+| 64.51 | 88.56 | 15M | x1.37 | default |
+| 34.8 | 49.8 | 10M | x1.4 | default |
+| 16.5 | 20.3 | 5M | x1.2 | default |
+| 9.34 | 11.5 | 500K | x0.8 | default |
+| 0.17 | 0.13 | 50K | x0.7 | default |
     
 ### link ###
 -https://en.cppreference.com/w/cpp/iterator<br>
