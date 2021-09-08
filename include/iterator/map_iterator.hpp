@@ -136,8 +136,8 @@ namespace ft
 			map_iterator(const map_iterator &ref) { *this = ref; }
 
 			map_iterator& operator=(const map_iterator & ref) { _it = ref._it; return *this;}
-			reference	operator*() { return *_it->key; }
-			pointer		operator->() { return _it->key; }
+			reference	operator*() const { return *_it->key; }
+			pointer		operator->() const { return _it->key; }
 
 			map_iterator& operator++()
 			{
@@ -238,8 +238,8 @@ namespace ft
 			const_map_iterator(const map_iterator<_Tp> &ref) : _it(ref._it) { }
 
 			const_map_iterator& operator=(const const_map_iterator & ref) { _it = ref._it; return *this;}
-			reference	operator*() { return *(_it->key); }
-			pointer		operator->() { return _it->key; }
+			reference	operator*() const { return *(_it->key); }
+			pointer		operator->() const { return _it->key; }
 
 			const_map_iterator& operator++()
 			{
