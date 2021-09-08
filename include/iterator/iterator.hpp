@@ -5,27 +5,6 @@
 namespace ft
 {
 
-
-
-	/*typename enable_if<ft::is_same<std::random_access_iterator_tag,
-				typename ft::iterator_traits<Input>::iterator_category>, bool>::type>
-	is_input_iterator : std::true_type {};*/
-	
-
-	template <class, class Enable = void> struct is_iterator : std::false_type {};
-	
-	template <typename T> 
-	struct is_iterator
-	<T, 
-	 typename std::enable_if<
-	    std::is_base_of<
-			std::random_access_iterator_tag,
-			typename std::iterator_traits<T>::iterator_category
-			>::value,
-		bool
-	 >::type> 
-	 : std::true_type {};
-
 	/*
 		** Iterator_traits
     */
@@ -85,32 +64,32 @@ namespace ft
 		** is_input_iterator
 	*/
 
-	template <class, class Enable = void> struct is_input_iterator : std::false_type {};
+	template <class, class Enable = void> struct is_input_iterator : ft::false_type {};
 	
 	// random acces
 	template<class Input>
 	struct is_input_iterator<Input,
 		typename ft::enable_if<ft::is_same<std::input_iterator_tag,
 		typename ft::iterator_traits<Input>::iterator_category>
-		>::type> : std::true_type {};
+		>::type> : ft::true_type {};
 
 	template<class Input>
 	struct is_input_iterator<Input,
 		typename ft::enable_if<ft::is_same<std::forward_iterator_tag,
 		typename ft::iterator_traits<Input>::iterator_category>
-		>::type> : std::true_type {};
+		>::type> : ft::true_type {};
 
 	template<class Input>
 	struct is_input_iterator<Input,
 		typename ft::enable_if<ft::is_same<std::bidirectional_iterator_tag,
 		typename ft::iterator_traits<Input>::iterator_category>
-		>::type> : std::true_type {};
+		>::type> : ft::true_type {};
 	
 	template<class Input>
 	struct is_input_iterator<Input,
 		typename ft::enable_if<ft::is_same<std::random_access_iterator_tag,
 		typename ft::iterator_traits<Input>::iterator_category>
-		>::type> : std::true_type {};
+		>::type> : ft::true_type {};
 	
 	
 	
