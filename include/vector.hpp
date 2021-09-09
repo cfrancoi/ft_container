@@ -5,6 +5,7 @@
 #include <iterator/iterator.hpp>
 #include <other/type_traits.hpp>
 #include <other/algorithm.hpp>
+#include <iterator/vector_iterator.hpp>
 
 # include <memory> // std::allocator
 # include <limits> // std::numeric_limits
@@ -13,8 +14,8 @@
 
 namespace ft
 {
-	/*template < class _Tp >
-	class const_viterator;*/
+	template < class _Tp >
+	class const_viterator;
 	
 		template < class _Tp >
 		class viterator
@@ -62,10 +63,10 @@ namespace ft
 				return viterator(_add + n);
 			}
 
-			viterator operator+(const viterator & n) const
+		/*	viterator operator+(const viterator & n) const
 			{
 				return viterator(_add + n._add);
-			}
+			}*/
 
 			/* operator - */
 			
@@ -74,16 +75,15 @@ namespace ft
 				return viterator(_add - n);
 			}
 			
-			template < class T >
-			viterator< _Tp> operator-(const viterator<T> & n) const
-			{
-				return viterator<_Tp>(_add - n._add);
-			}
-
-			/*difference_type operator-(const const_viterator<_Tp> & n) const
+			difference_type operator-(const viterator & n) const
 			{
 				return (_add - n._add);
-			}*/
+			}
+
+			difference_type operator-(const const_viterator<_Tp> & n) const
+			{
+				return (_add - n._add);
+			}
 			
 
 			viterator& operator+=(const difference_type & n)
@@ -203,11 +203,6 @@ namespace ft
 				return const_viterator(_add + n);
 			}
 
-			difference_type operator+(const const_viterator & n) const
-			{
-				return (_add + n._add);
-			}
-
 			difference_type operator-(const viterator<_Tp> & n) const
 			{
 				return (_add - n._add);
@@ -303,8 +298,8 @@ namespace ft
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
 
-		typedef viterator<T> 								iterator;
-		typedef const_viterator<T> 							const_iterator;
+		typedef vector_iterator<T, T&, T*> 					iterator;
+		typedef vector_iterator<T, const T&, const T*> 					const_iterator;
 
 		typedef	ft::reverse_iterator<iterator>				reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>		const_reverse_iterator;
@@ -461,7 +456,7 @@ namespace ft
 				}
 			}
 			rm_size(n);
-			return _end;
+			return iterator(_end);
 		}
 
 		/*
