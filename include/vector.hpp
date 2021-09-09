@@ -13,8 +13,8 @@
 
 namespace ft
 {
-	template < class _Tp >
-	class const_viterator;
+	/*template < class _Tp >
+	class const_viterator;*/
 	
 		template < class _Tp >
 		class viterator
@@ -22,7 +22,6 @@ namespace ft
 			
 			public:
 			typedef	viterator<_Tp>		_Self;
-
 			typedef	_Tp								value_type;
 			typedef _Tp *							pointer;
 			typedef _Tp &							reference;
@@ -35,19 +34,21 @@ namespace ft
 
 			viterator(pointer src) : _add(src) {}
 
-			viterator(const _Self& src) { *this = src; }
+			template < class T >
+			viterator(const viterator<T> & src) { *this = src; }
 
 			//Random_acc_iter(const _Self& src) { *this = src; }
 
 			~viterator() {}
 			
-			reference	operator*() { return *_add; }
-			pointer		operator->() { return _add; }
+			reference	operator*() const { return *_add; }
+			pointer		operator->() const { return _add; }
 
 			reference operator[](size_type n) { return *(_add + n); }
 			//const_reference operator[](size_type n) const;
 
-			_Self& operator=(const _Self & ref)
+			template < class T >
+			viterator<_Tp> & operator=(const viterator<T> & ref)
 			{
 				_add = ref._add;
 				return *this;
@@ -61,9 +62,9 @@ namespace ft
 				return viterator(_add + n);
 			}
 
-			difference_type operator+(const viterator & n) const
+			viterator operator+(const viterator & n) const
 			{
-				return (_add + n._add);
+				return viterator(_add + n._add);
 			}
 
 			/* operator - */
@@ -73,15 +74,16 @@ namespace ft
 				return viterator(_add - n);
 			}
 			
-			difference_type operator-(const viterator & n) const
+			template < class T >
+			viterator< _Tp> operator-(const viterator<T> & n) const
 			{
-				return (_add - n._add);
+				return viterator<_Tp>(_add - n._add);
 			}
 
-			difference_type operator-(const const_viterator<_Tp> & n) const
+			/*difference_type operator-(const const_viterator<_Tp> & n) const
 			{
 				return (_add - n._add);
-			}
+			}*/
 			
 
 			viterator& operator+=(const difference_type & n)
@@ -142,6 +144,16 @@ namespace ft
 				pointer		_add;
 		};
 
+		template <class T>
+		viterator<T> operator+(typename viterator<T>::difference_type n, const viterator<T>& rev_it)
+		{
+			viterator<T> ret(rev_it);
+
+			ret += n;
+			return ret;
+		}
+
+
 		template < class _Tp >
 		class const_viterator
 		{
@@ -169,11 +181,10 @@ namespace ft
 
 			~const_viterator() {}
 			
-			reference	operator*() { return *_add; }
-			pointer		operator->() { return _add; }
+			reference	operator*() const { return *_add; }
+			pointer		operator->() const { return _add; }
 
 			reference operator[](size_type n) { return *(_add + n); }
-			//const_reference operator[](size_type n) const;
 
 			_Self& operator=(const const_viterator & ref)
 			{
@@ -186,9 +197,6 @@ namespace ft
 				_add = ref._add;
 				return *this;
 			}
-	
-
-			/* operator + */
 
 			const_viterator operator+(const difference_type & n) const
 			{
@@ -204,7 +212,6 @@ namespace ft
 			{
 				return (_add - n._add);
 			}
-			/* operator - */
 			
 			const_viterator operator-(const difference_type & n) const
 			{
@@ -229,8 +236,6 @@ namespace ft
 				_add -= n;
 				return *this;
 			}
-			
-			/* operator ++ / -- */
 
 			_Self& operator++()
 			{
@@ -275,6 +280,8 @@ namespace ft
 			public:
 				pointer		_add;
 		};
+		
+		
 	
 	template < class T, class Alloc = ::std::allocator<T> >
 	class vector
@@ -469,7 +476,7 @@ namespace ft
 		// Fill Constructor
 		explicit
 		vector(size_type n,
-				const value_type& val,
+				const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _start(NULL), _end(NULL), _end_of_storage(NULL), _alloc(alloc)
 		{
 			assign(n, val);

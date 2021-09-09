@@ -56,13 +56,13 @@ namespace ft
 	template < class T, class Container >
 	typename stack<T, Container>::value_type& stack<T, Container>::top() 
 	{
-		return c.top();
+		return c.back();
 	}
 
 	template < class T, class Container >
 	const typename stack<T, Container>::value_type& stack<T, Container>::top() const
 	{
-		return c.top();
+		return c.back();
 	}
 	
 	template < class T, class Container >
