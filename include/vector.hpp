@@ -443,11 +443,17 @@ namespace ft
 		{
 			size_type stay = size() - n;
 			iterator stop = end();
+			size_type first_s = (first - begin());
+			
+			iterator ret;
 
-			for (iterator it = begin(); it != stop; it++)
+		
+
+			for (iterator it = begin(); it != stop && stay ; it++)
 			{
 				if (it >= first)
 				{
+				
 					if (stay)
 					{
 						it[0] = it[n];
@@ -456,7 +462,8 @@ namespace ft
 				}
 			}
 			rm_size(n);
-			return iterator(_end);
+
+			return begin() + first_s;
 		}
 
 		/*
@@ -488,6 +495,7 @@ namespace ft
 		vector(const vector& x) : _start(NULL), _end(NULL), _end_of_storage(NULL), _alloc(x._alloc)
 		{
 			*this = x;
+			//assign(x.begin(), x.end());
 		}
 
 		// destructor
@@ -501,13 +509,22 @@ namespace ft
 
 		vector& operator=(const vector& x)
 		{
-			if (_start)
+			/*if (_start)
 				del_block(_start, size());
 			_start = NULL;
 			_end = NULL;
 			_end_of_storage = NULL;
 			
-			assign(x.begin(), x.end());
+			assign(x.begin(), x.end());*/
+
+			clear();
+			if (capacity() > x.size())
+			{
+				insert(begin(), x.begin(), x.end());
+			}
+			else
+				assign(x.begin(), x.end());
+			
 			return *this;
 		}
 
@@ -653,12 +670,12 @@ namespace ft
 
 		iterator erase(iterator first, iterator last)
 		{
-			size_type si;
+			/*size_type si;
 
 			si = 0;
 			for (iterator it = first; it != last; it++, si++)
-				;
-			return (exclude(si, first));
+				;*/
+			return (exclude(last - first, first));
 		}
 
 		iterator insert(iterator pos, const value_type& val)
