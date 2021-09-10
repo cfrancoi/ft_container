@@ -83,27 +83,6 @@ namespace ft
 				return _tmp;
 			}
 
-
-			/*friend bool
-			operator==(const _Self& __x, const _Self& __y)	{ return __x._add == __y._add; }
-			friend bool
-			operator!=(const _Self& __x, const _Self& __y)	{ return __x._add != __y._add; }
-			friend bool
-			operator<(const _Self& __x, const _Self& __y)	{ return __x._add < __y._add; }
-			friend bool
-			operator>(const _Self& __x, const _Self& __y)	{ return __x._add > __y._add; }
-			friend bool
-			operator<=(const _Self& __x, const _Self& __y)	{ return __x._add <= __y._add; }
-			friend bool
-			operator>=(const _Self& __x, const _Self& __y)	{ return __x._add >=__y._add; }*/
-
-		/*	bool operator==(const vector_iterator& x) const { return _add == x._add;}
-			bool operator!=(const vector_iterator& x) const { return _add != x._add;}
-			bool operator<(const vector_iterator& x) const { return _add < x._add;}
-			bool operator>(const vector_iterator& x) const { return _add > x._add;}
-			bool operator<=(const vector_iterator& x) const { return _add <= x._add;}
-			bool operator>=(const vector_iterator& x) const { return _add >= x._add;}*/
-
 			bool operator==(const if_const& x) const { return _add == x._add;}
 			bool operator!=(const if_const& x) const { return _add != x._add;}
 			bool operator<(const if_const& x) const { return _add < x._add;}

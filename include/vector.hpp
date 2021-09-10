@@ -538,11 +538,11 @@ namespace ft
 		iterator end() { return iterator(_end); }
 		const_iterator end() const { return const_iterator(_end); }
 
-		reverse_iterator rbegin() { iterator it = --end(); return reverse_iterator(it); }
-		const_reverse_iterator rbegin() const { const_iterator it = --end(); return const_reverse_iterator(it); }
+		reverse_iterator rbegin() { iterator it = end(); return reverse_iterator(it); }
+		const_reverse_iterator rbegin() const { const_iterator it = end(); return const_reverse_iterator(it); }
 
-		reverse_iterator rend() { iterator it = --begin(); return reverse_iterator(it); }
-		const_reverse_iterator rend() const { const_iterator it = --begin(); return const_reverse_iterator(it); }
+		reverse_iterator rend() { iterator it = begin(); return reverse_iterator(it); }
+		const_reverse_iterator rend() const { const_iterator it = begin(); return const_reverse_iterator(it); }
 
 		/*
 			*** Capacity Function ***
