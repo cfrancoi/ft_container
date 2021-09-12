@@ -2,14 +2,6 @@
 
 ## List ##
 
-| element    | prototype         | description       | state |
-| ---------  | ----------------- | ----------------- | ----- |
-|constructor | list()            | default | 4/4 |
-| acces| -front() -back()| acces to element| 2/2 |
-| Modifier   | push_front()       | add el at end     | :x: |
-| Modifier   | pop_front()        | delete el at end     | :x: |
-| Modifier   | push_back()       | add el at end     | :x: |
-| Modifier   | pop_back()        | delete el at end     | :x: |
 ### note ###
 
 #### iterator ####
@@ -30,4 +22,5 @@ ft::map map_all_rand ~ time :
 ### link ###
 -https://en.cppreference.com/w/cpp/iterator<br>
 -https://gcc.gnu.org/onlinedocs/gcc-11.1.0/libstdc++/api/a18648_source.html#l00450<br>
--https://www.youtube.com/watch?v=xGl-VBmKr2E
+-https://www.youtube.com/watch?v=xGl-VBmKr2E<br>
+-https://en.cppreference.com/w/cpp/language/cast_operator<br>
