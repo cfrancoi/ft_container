@@ -638,8 +638,9 @@ namespace ft
 			{
 				if (n > capacity())
 				{
-					init_block(n);
+					add_mem(capacity() * 2 < n ? n : capacity() * 2);
 					add_size(n - size(), val);
+
 				}
 				else
 					add_size(n - size(), val);
@@ -835,22 +836,22 @@ namespace ft
 		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 
-	template <class T, class Alloc>
-	bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
-	{
-		return (!(lhs > rhs));
-	}
-
 	template<class T>
 	static bool lower_or_eql(T const & a, T const & b)
 	{
-		return ( a <= b);
+		return ( a > b);
 	}
 	
 	template <class T, class Alloc>
 	bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
-		return !ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lower_or_eql<T>);
+		return rhs < lhs;/*ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lower_or_eql<T>);*/
+	}
+	
+	template <class T, class Alloc>
+	bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+	{
+		return (!(rhs < lhs));
 	}
 
 	template <class T, class Alloc>
