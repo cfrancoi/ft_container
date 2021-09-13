@@ -338,7 +338,7 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		return std::numeric_limits<size_type>::max() / sizeof(Node);
+		return std::numeric_limits<size_type>::max() / (sizeof(Node));
 	}
 
 
@@ -457,23 +457,26 @@ namespace ft
 		
 		if (_size == 0)
 			return;
+		if(position == iterator(_end) || position._it == NULL)
+			return ;
 
-		Node * end = _end;
+		
 		// no child
-		if ((!p->right || p->right == end) && !p->left)
+		if ((!p->right) && !p->left)
 		{
+			//std::cerr << "case0\n";
 			delCaseZero(p);
 			return ;
 		}
-		// one child
-		if ((p->right && !p->left) || (!p->right && p->left))
+		else if ((p->right && !p->left) || ((!p->right) && p->left))
 		{
+			//std::cerr << "case1\n";
 			delCaseOne(p);
 			return;
 		}
-		// two child
-		if ((p->right) && p->left)
+		else if ((p->right) && p->left)
 		{
+			//std::cerr << "case2\n";
 			delCaseTwo(p);
 			return;
 		}
@@ -485,6 +488,7 @@ namespace ft
 	{
 		while (first != last)
 		{
+			//std::cerr << "next :" << first->first << "\n";
 			erase(first++);
 		}
 	}
@@ -797,10 +801,11 @@ namespace ft
 	void map<K, T, Comp, Alloc >::delCaseTwo(Node * pos)
 	{
 		Node * near;
-		pointer pt;
+		//pointer pt;
 		{
 			iterator it(pos);
 			it++;
+			near = it._it;
 			if (it != end())
 			{
 				near = it._it;
@@ -812,10 +817,51 @@ namespace ft
 				near = it._it;
 			}
 		}
-		pt = near->key;
+		/*pt = near->key;
 		near->key = pos->key;
 		pos->key = pt;
-		erase(iterator(near));
+		erase(iterator(near));*/
+
+		Node * top = pos->top;
+		//Node * left = pos->left;
+		//Node * right = pos->right;
+		/*std::cerr << "top : " << pos->top << "\n";
+		std::cerr << "left : " << pos->left << "";
+		std::cerr << "  rigth : " << pos->right << "\n\n";
+
+		std::cerr << "top : " << near->top << "\n";
+		std::cerr << "left : " << near->left << "";
+		std::cerr << "  rigth : " << near->right << "\n\n";*/
+		//detach node
+		if (pos->left != near)
+			near->left = pos->left;
+		if (pos->right != near)
+			near->right = pos->right;
+		
+		if (near->top->left == near)
+			near->top->left = NULL;
+		else
+			near->top->right = NULL;
+		//fixe top
+		if (top == NULL)
+			_bt = near;
+		else if (top->left == pos)
+			top->left = near;
+		else
+			top->right = near;
+		near->top = top;
+
+	/*	std::cerr << "near " << near << "\n";
+		std::cerr << "_end " << _end << "\n";
+
+		std::cerr << "top : " << near->top << "\n";
+		std::cerr << "left : " << near->left << "";
+		std::cerr << "  rigth : " << near->right << "\n\n";
+		
+		for(iterator it = begin(); it != end(); it++)
+			std::cerr << it->first << "=> " << it->second << "\n";*/
+
+		delNode(pos);
 	}
 	
 	template < class K, class T, class Comp , class Alloc >
