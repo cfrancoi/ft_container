@@ -2,7 +2,8 @@
 # define __MAP_H__
 # include <functional>
 # include <utility>
-# include <memory>
+# include <memory> // std::allocator
+# include <algorithm>
 # include <limits>
 # include <iterator/map_iterator.hpp>
 # include <iterator/iterator.hpp>
@@ -317,7 +318,7 @@ namespace ft
 	}
 	
 	/*
-		***** Capacity *****
+		************************* Capacity *************************
 	*/
 
 	//empty
@@ -338,7 +339,7 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		return std::numeric_limits<size_type>::max() / (sizeof(Node));
+		return std::min(std::numeric_limits<size_type>::max() / sizeof(Node) ,std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
 	}
 
 
@@ -658,7 +659,6 @@ namespace ft
 		while (it != end() && (_cmp(it->first, k) || it->first == k))
 		{
 			it++;
-			
 		}
 		return it;
 	}
