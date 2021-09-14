@@ -441,16 +441,14 @@ namespace ft
 		*/
 		iterator exclude(size_type n, iterator first)
 		{
-			size_type stay = size() - n;
-			iterator stop = end();
 			size_type first_s = (first - begin());
+			size_type stay = size() - n - first_s;
+			iterator stop = end();
 			
-			iterator ret;
-
-		
-
-			for (iterator it = begin(); it != stop && stay ; it++)
+			for (iterator it = begin(); it != end() && stay ; it++)
 			{
+				
+
 				if (it >= first)
 				{
 				
@@ -462,7 +460,6 @@ namespace ft
 				}
 			}
 			rm_size(n);
-
 			return begin() + first_s;
 		}
 
@@ -552,7 +549,14 @@ namespace ft
 		size_type size(void) const { return static_cast<size_type>(_end - _start); }
 
 		// return max size
-		size_type max_size(void) const { return std::numeric_limits<size_type>::max() / sizeof(T); }
+		size_type max_size(void) const 
+		{
+			//linux
+			return std::numeric_limits<difference_type>::max() / sizeof(T);
+			//mac
+			//return std::numeric_limits<difference_type>::max() / sizeof(T);
+		
+		}
 
 		// return allocated size
 		size_type capacity(void) const { return static_cast<size_type>(_end_of_storage - _start); }
@@ -636,6 +640,7 @@ namespace ft
 			}
 			else if (n > size())
 			{
+				
 				if (n > capacity())
 				{
 					add_mem(capacity() * 2 < n ? n : capacity() * 2);
@@ -671,11 +676,6 @@ namespace ft
 
 		iterator erase(iterator first, iterator last)
 		{
-			/*size_type si;
-
-			si = 0;
-			for (iterator it = first; it != last; it++, si++)
-				;*/
 			return (exclude(last - first, first));
 		}
 
