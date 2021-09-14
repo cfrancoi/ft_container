@@ -458,26 +458,27 @@ namespace ft
 		
 		if (_size == 0)
 			return;
-		if(position == iterator(_end) || position._it == NULL)
-			return ;
+		/*if(position == iterator(_end))
+			return ;*/
+		
 
 		
 		// no child
 		if ((!p->right) && !p->left)
 		{
-			//std::cerr << "case0\n";
+			std::cerr << "case0\n";
 			delCaseZero(p);
 			return ;
 		}
 		else if ((p->right && !p->left) || ((!p->right) && p->left))
 		{
-			//std::cerr << "case1\n";
+			std::cerr << "case1\n";
 			delCaseOne(p);
 			return;
 		}
 		else if ((p->right) && p->left)
 		{
-			//std::cerr << "case2\n";
+			std::cerr << "case2\n";
 			delCaseTwo(p);
 			return;
 		}
@@ -487,9 +488,9 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	void map<Key, T, Compare, Alloc >::erase(iterator first, iterator last) 
 	{
-		while (first != last)
+		while (first != last && first._it != NULL)
 		{
-			//std::cerr << "next :" << first->first << "\n";
+			std::cerr << "here\n";
 			erase(first++);
 		}
 	}
@@ -819,29 +820,31 @@ namespace ft
 		}
 		/*pt = near->key;
 		near->key = pos->key;
-		pos->key = pt;
-		erase(iterator(near));*/
+		pos->key = pt;*/
 
 		Node * top = pos->top;
 		//Node * left = pos->left;
 		//Node * right = pos->right;
-		/*std::cerr << "top : " << pos->top << "\n";
-		std::cerr << "left : " << pos->left << "";
-		std::cerr << "  rigth : " << pos->right << "\n\n";
-
-		std::cerr << "top : " << near->top << "\n";
-		std::cerr << "left : " << near->left << "";
-		std::cerr << "  rigth : " << near->right << "\n\n";*/
+		//std::cerr << "************************************\n";
 		//detach node
 		if (pos->left != near)
+		{
 			near->left = pos->left;
+			if(near->left)
+				near->left->top = near;
+		}
 		if (pos->right != near)
+		{
 			near->right = pos->right;
+			if(near->right)
+				near->right->top = near;
+		}
 		
 		if (near->top->left == near)
 			near->top->left = NULL;
 		else
 			near->top->right = NULL;
+
 		//fixe top
 		if (top == NULL)
 			_bt = near;
@@ -851,16 +854,7 @@ namespace ft
 			top->right = near;
 		near->top = top;
 
-	/*	std::cerr << "near " << near << "\n";
-		std::cerr << "_end " << _end << "\n";
-
-		std::cerr << "top : " << near->top << "\n";
-		std::cerr << "left : " << near->left << "";
-		std::cerr << "  rigth : " << near->right << "\n\n";
 		
-		for(iterator it = begin(); it != end(); it++)
-			std::cerr << it->first << "=> " << it->second << "\n";*/
-
 		delNode(pos);
 	}
 	
