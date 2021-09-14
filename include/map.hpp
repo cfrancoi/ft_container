@@ -458,27 +458,23 @@ namespace ft
 		
 		if (_size == 0)
 			return;
-		/*if(position == iterator(_end))
-			return ;*/
-		
-
 		
 		// no child
 		if ((!p->right) && !p->left)
 		{
-			std::cerr << "case0\n";
+			//std::cerr << "case0\n";
 			delCaseZero(p);
 			return ;
 		}
 		else if ((p->right && !p->left) || ((!p->right) && p->left))
 		{
-			std::cerr << "case1\n";
+			//std::cerr << "case1\n";
 			delCaseOne(p);
 			return;
 		}
 		else if ((p->right) && p->left)
 		{
-			std::cerr << "case2\n";
+			//std::cerr << "case2\n";
 			delCaseTwo(p);
 			return;
 		}
@@ -490,7 +486,6 @@ namespace ft
 	{
 		while (first != last && first._it != NULL)
 		{
-			std::cerr << "here\n";
 			erase(first++);
 		}
 	}
@@ -802,7 +797,6 @@ namespace ft
 	void map<K, T, Comp, Alloc >::delCaseTwo(Node * pos)
 	{
 		Node * near;
-		//pointer pt;
 		{
 			iterator it(pos);
 			it++;
@@ -818,14 +812,7 @@ namespace ft
 				near = it._it;
 			}
 		}
-		/*pt = near->key;
-		near->key = pos->key;
-		pos->key = pt;*/
-
 		Node * top = pos->top;
-		//Node * left = pos->left;
-		//Node * right = pos->right;
-		//std::cerr << "************************************\n";
 		//detach node
 		if (pos->left != near)
 		{
