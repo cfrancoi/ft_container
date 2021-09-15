@@ -161,6 +161,7 @@ namespace ft
 				** Allocation
 			*/
 			private:
+				value_type		_key_end;
 				Node	*newNode(void);
 				void	delNode(Node * pos);
 
@@ -182,7 +183,7 @@ namespace ft
 
 	template <class Key, class T, class Compare, class Alloc>
 	class map<Key,T,Compare,Alloc>::value_compare
-	{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
+	{
 		  friend class map;
 		protected:
 			Compare comp;
@@ -205,13 +206,14 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	map<Key, T, Compare, Alloc >::map(const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
 	{
-		
+		_end->key = &_key_end;
 	}
 
 	//Copy constructor
 	template < class K, class T, class Comp , class Alloc >
 	map<K, T, Comp, Alloc >::map(const map<K, T, Comp, Alloc > & x) : _bt(newNode()), _size(0), _end(_bt)
 	{
+		_end->key = &_key_end;
 		*this = x;
 	}
 	
@@ -220,6 +222,7 @@ namespace ft
 	template<class InputIterator>
 	map<K, T, Comp, Alloc >::map(InputIterator first, InputIterator last, const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
 	{
+		_end->key = &_key_end;
 		insert(first, last);
 	}
 	
@@ -339,7 +342,8 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		return std::min(std::numeric_limits<size_type>::max() / sizeof(Node) ,std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
+		return std::min(std::numeric_limits<size_type>::max() / sizeof(value_type) ,std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
+		//return std::numeric_limits<size_type>::max() / sizeof(value_type *);
 	}
 
 
