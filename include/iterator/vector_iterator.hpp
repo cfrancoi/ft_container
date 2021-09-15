@@ -16,7 +16,7 @@ namespace ft
 			typedef std::random_access_iterator_tag iterator_category;
 			typedef std::ptrdiff_t 					difference_type;
 			typedef size_t							size_type;
-			typedef vector_iterator<_Tp, const _Tp&, const _Tp*> 	if_const;
+			typedef vector_iterator<_Tp, const _Tp&, const _Tp*> 	to_const;
 			
 			vector_iterator() : _add(NULL) {}
 
@@ -26,7 +26,7 @@ namespace ft
 
 			~vector_iterator() {}
 
-			operator if_const() const { return if_const(_add); }
+			operator to_const() const { return to_const(_add); }
 			
 			reference	operator*() const { return *_add; }
 			pointer		operator->() const { return _add; }
@@ -49,7 +49,7 @@ namespace ft
 			/* operator - */
 			
 			vector_iterator operator-(const difference_type & n) const { return vector_iterator(_add - n); }
-			difference_type operator-(const vector_iterator & n) const { return (_add - n._add); }
+			difference_type operator-(const to_const & n) const { return (_add - n._add); }
 
 			
 			vector_iterator& operator+=(const difference_type & n) { _add += n;	return *this; }
@@ -83,12 +83,12 @@ namespace ft
 				return _tmp;
 			}
 
-			bool operator==(const if_const& x) const { return _add == x._add;}
-			bool operator!=(const if_const& x) const { return _add != x._add;}
-			bool operator<(const if_const& x) const { return _add < x._add;}
-			bool operator>(const if_const& x) const { return _add > x._add;}
-			bool operator<=(const if_const& x) const { return _add <= x._add;}
-			bool operator>=(const if_const& x) const { return _add >= x._add;}
+			bool operator==(const to_const& x) const { return _add == x._add;}
+			bool operator!=(const to_const& x) const { return _add != x._add;}
+			bool operator<(const to_const& x) const { return _add < x._add;}
+			bool operator>(const to_const& x) const { return _add > x._add;}
+			bool operator<=(const to_const& x) const { return _add <= x._add;}
+			bool operator>=(const to_const& x) const { return _add >= x._add;}
 
 			public:
 				pointer		_add;
