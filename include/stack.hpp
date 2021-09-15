@@ -117,13 +117,13 @@ namespace ft
 	bool operator!=(const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (lhs.c != rhs.c); }
 
 	template <class T, class Container>
-	bool operator<  (const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (lhs.c < rhs.c); }
+	bool operator<(const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (lhs.c < rhs.c); }
 	
 	template <class T, class Container>
-	bool operator>  (const stack<T,Container>& lhs, const stack<T,Container>& rhs){ return (lhs.c > rhs.c); }
+	bool operator>(const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (lhs.c > rhs.c); }
 
 	template <class T, class Container>
-	bool operator<= (const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (rhs.c <= lhs.c); }
+	bool operator<= (const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (lhs.c <= rhs.c); }
 
 	template <class T, class Container>
 	bool operator>= (const stack<T,Container>& lhs, const stack<T,Container>& rhs) { return (lhs.c >= rhs.c ); }
