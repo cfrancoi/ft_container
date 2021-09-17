@@ -342,8 +342,10 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		return std::min(std::numeric_limits<size_type>::max() / sizeof(value_type) ,std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
-		//return std::numeric_limits<size_type>::max() / sizeof(value_type *);
+		//std::cerr << sizeof(value_type) << " " << sizeof(std::pair< K, T >) << std::endl;
+		return std::min<size_type>(std::numeric_limits<size_type>::max() / sizeof(Node) ,std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
+		//return std::numeric_limits<difference_type>::max() / sizeof(value_type);
+		//return _alloc.max_size();
 	}
 
 
@@ -627,10 +629,10 @@ namespace ft
 	{
 		const_iterator it;
 
-		it = --end();
-		while (it != begin() && (!_cmp(it->first, k) && it->first != k))
+		it = begin();
+		while (it != end() && _cmp(it->first, k))
 		{
-			it--;
+			it++;
 		}
 		return it;
 	}
