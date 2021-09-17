@@ -342,8 +342,8 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		//std::cerr << sizeof(value_type) << " " << sizeof(std::pair< K, T >) << std::endl;
-		return std::min<size_type>(std::numeric_limits<size_type>::max() / sizeof(Node) ,std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
+		//std::cerr << sizeof(value_type) << " " << sizeof(std::string) << std::endl;
+		return std::min<size_type>(std::numeric_limits<size_type>::max() / sizeof(Node),std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
 		//return std::numeric_limits<difference_type>::max() / sizeof(value_type);
 		//return _alloc.max_size();
 	}
@@ -411,39 +411,7 @@ namespace ft
 	typename map<Key, T, Compare, Alloc >::iterator map<Key, T, Compare, Alloc >::insert(iterator pos, const value_type& val) 
 	{
 		(void)pos;
-		(void)val;
 		return insert(val).first;
-		if (_size == 0)
-			return placeFirst(val);
-
-		Node *pt = upper_bound(val.first)._it;
-		while(1)
-		{
-			bool ret = _cmp((*pt->key).first, val.first);
-			if (ret)
-			{
-				if (pt->right == NULL || pt->right == _end)
-				{
-					return placeRight(pt, val);
-				}
-				else
-					pt = pt->right;
-			}
-			else if ((*pt->key).first == val.first)
-			{
-				return end();
-			}
-			else
-			{
-				if (pt->left)
-				{
-					pt = pt->left;
-				}
-				else
-					return placeLeft(pt, val);
-					
-			}
-		}
 	}
 	
 	//insert Input iterator
