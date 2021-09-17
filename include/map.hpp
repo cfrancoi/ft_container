@@ -342,10 +342,7 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		//std::cerr << sizeof(value_type) << " " << sizeof(std::string) << std::endl;
 		return std::min<size_type>(std::numeric_limits<size_type>::max() / sizeof(Node),std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
-		//return std::numeric_limits<difference_type>::max() / sizeof(value_type);
-		//return _alloc.max_size();
 	}
 
 
@@ -928,10 +925,13 @@ namespace ft
 
 }; // namespace ft
 
-template< class Key, class T, class Compare, class Alloc >
-void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs )
+namespace std
 {
-	lhs.swap(rhs);
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		lhs.swap(rhs);
+	}
 }
 
 #endif // __MAP_H__
