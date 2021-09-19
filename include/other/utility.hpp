@@ -73,7 +73,12 @@ namespace ft
 	template <class T1, class T2>
 	bool operator<(const pair<T1, T2>& lhs, const pair<T1, T2>& rhs)
 	{
-		return lhs.first < lhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second);
+		//return lhs.first < lhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second);
+		//std::cerr << lhs.first << " " << lhs.second << "\n";
+		if (lhs.first < rhs.first) return true;
+		if (rhs.first < lhs.first) return false;
+		if (lhs.second < rhs.second) return true;
+		return false;
 	}
 
 	template <class T1, class T2>
@@ -91,7 +96,7 @@ namespace ft
 	template <class T1, class T2>
 	bool operator>=(const pair<T1, T2>& lhs, const pair<T1, T2>& rhs)
 	{
-		return !(lhs<rhs);
+		return !(lhs < rhs);
 	}
 
 

@@ -10,6 +10,7 @@
 # include <other/utility.hpp>
 # include <other/type_traits.hpp>
 # include <other/algorithm.hpp>
+#include <ctgmath>
 
 #include <iostream>
 namespace ft
@@ -37,8 +38,8 @@ namespace ft
 			typedef ft::reverse_iterator<iterator> 			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator> 	const_reverse_iterator;
 
-			typedef std::ptrdiff_t 						difference_type;
-			typedef size_t								size_type;
+			typedef typename ft::iterator_traits<iterator>::difference_type		difference_type;
+			typedef size_t														size_type;
 
 			typedef M_Node<value_type> Node;
 
@@ -342,9 +343,10 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		return std::min<size_type>(std::numeric_limits<size_type>::max() / sizeof(Node),std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
+		return std::min<size_type>(std::numeric_limits<size_type>::max(), std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
+		//std::cerr << "sizeof() " << (sizeof(Node)) << std::endl;
+		//return std::numeric_limits<difference_type>::max() / (sizeof(K) + sizeof(T));
 	}
-
 
 	/*
 		** Element access ***********************************************************
@@ -906,16 +908,18 @@ namespace ft
 	}
 	
 	template< class Key, class T, class Compare, class Alloc >
+	bool operator>( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
+	{
+		return (rhs < lhs);
+	}
+	
+	template< class Key, class T, class Compare, class Alloc >
 	bool operator<=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
 		return !(rhs < lhs);
 	}
 
-	template< class Key, class T, class Compare, class Alloc >
-	bool operator>( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
-	{
-		return (rhs < lhs);
-	}
+	
 
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator>=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
