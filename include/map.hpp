@@ -207,14 +207,14 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	map<Key, T, Compare, Alloc >::map(const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
 	{
-		_end->key = &_key_end;
+		//_end->key = &_key_end;
 	}
 
 	//Copy constructor
 	template < class K, class T, class Comp , class Alloc >
 	map<K, T, Comp, Alloc >::map(const map<K, T, Comp, Alloc > & x) : _bt(newNode()), _size(0), _end(_bt)
 	{
-		_end->key = &_key_end;
+		//_end->key = &_key_end;
 		*this = x;
 	}
 	
@@ -223,7 +223,7 @@ namespace ft
 	template<class InputIterator>
 	map<K, T, Comp, Alloc >::map(InputIterator first, InputIterator last, const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
 	{
-		_end->key = &_key_end;
+		//_end->key = &_key_end;
 		insert(first, last);
 	}
 	
@@ -245,6 +245,7 @@ namespace ft
 		_alloc = x._alloc;
 		_bt = cloneBinaryTree(x._bt);
 		_end = _bt;
+		//_end->key = &_key_end;
 		while (_end->right != NULL)
 			_end = _end->right;
 		_size = x._size;
@@ -503,7 +504,7 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	void map<Key, T, Compare, Alloc >::clear(void) 
 	{
-		erase(begin(), end());
+		this->erase(begin(), end());
 	}
 
 	/*
@@ -786,6 +787,14 @@ namespace ft
 			}
 		}
 		Node * top = pos->top;
+
+		Node * stay = NULL;
+		
+		if(near->left)
+			stay = near->left;
+		else if (near->right)
+			stay = near->right;
+
 		//detach node
 		if (pos->left != near)
 		{
@@ -801,9 +810,11 @@ namespace ft
 		}
 		
 		if (near->top->left == near)
-			near->top->left = NULL;
-		else
-			near->top->right = NULL;
+			near->top->left = stay;
+		else if (near->top->right == near)
+			near->top->right = stay;
+		if (stay)
+			stay->top = near->top;
 
 		//fixe top
 		if (top == NULL)
