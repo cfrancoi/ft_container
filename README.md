@@ -4,7 +4,13 @@
 
 ### note ###
 Vector:
-* erase test case size == 0
+* erase test case size == 0 <br>
+
+Map:
+* map constructor InputIt (is_input_it)
+
+Main:
+* Diff print error
 #### iterator ####
 
 const_iterator = iterator // OK
