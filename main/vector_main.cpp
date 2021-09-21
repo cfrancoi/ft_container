@@ -220,9 +220,45 @@ int main()
 		printSize(vct2);
 		printSize(vct3);
 
-
-		
 	}
+ 
+	// iterator compile test
+
+	{
+		ft::vector<int> v(100, 100);
+
+		ft::vector<int>::iterator it, it3; it = v.begin(); //default
+		ft::vector<int>::iterator it2(it); // cpy
+		it3 = it;
+
+		std::cout << (it == it3) << " " << (it2 != it) << std::endl;
+		std::cout << *it << " " << std::endl;
+
+		*it2 = 200;
+		it2++;
+		++it;
+		*it++ = 25;
+
+		it[25] = 756;
+
+		ft::vector<int>::iterator rit = v.begin() + 5;
+		*rit = 15;
+
+		rit = 5 + v.begin();
+		std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+		rit += 15;
+		std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+		rit -= 12;
+		std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+
+		std::cout << "size is : " << v.end() - v.begin() << std::endl;
+
+		cmp(it, it2);
+
+		printSize(v);
+	
+	}
+
 
 	return 0;
 }
