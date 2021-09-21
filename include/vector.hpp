@@ -225,7 +225,7 @@ namespace ft
 			
 			return cpy;
 		}
-		
+
 		/*
 			** Constructor && Destructor **
 		*/
@@ -436,7 +436,7 @@ namespace ft
 
 		iterator insert(iterator pos, const value_type& val)
 		{
-			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			size_type p = static_cast<size_type>(pos - begin());
 			if (size() + 1 > capacity())
 			{
 				add_mem(capacity() ? capacity() * 2 : 1);
@@ -453,7 +453,7 @@ namespace ft
 
 		void insert(iterator pos, size_type n, const value_type& val)
 		{
-			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			size_type p = static_cast<size_type>(pos - begin());
 			size_type to_rplc = size() - p;
 
 			if (size() + n > capacity())
@@ -481,7 +481,7 @@ namespace ft
 		>::type
 		insert (iterator pos, Input first, Input last)
 		{
-			size_type p = static_cast<size_type>(pos._add - begin()._add);
+			size_type p = static_cast<size_type>(pos - begin());
 			size_type to_rplc = size() - p;
 			size_type diff = 0;
 			pointer		save = 0;
