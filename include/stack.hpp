@@ -13,8 +13,6 @@ namespace ft
 			typedef	T value_type;
 			typedef	Container container_type;
 			typedef size_t size_type;
-		/* other typedef */
-			typedef typename container_type::iterator iterator;
 
 
 		explicit stack(const container_type & ctnr = container_type());
@@ -46,8 +44,6 @@ namespace ft
 
 		template < class T1, class C1 >
 		friend bool operator>=(const stack<T1, C1>& lhs, const stack<T1, C1>& rhs);
-
-		
 
 		protected:
 			container_type	c;
