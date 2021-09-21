@@ -162,7 +162,6 @@ namespace ft
 				** Allocation
 			*/
 			private:
-				value_type		_key_end;
 				Node	*newNode(void);
 				void	delNode(Node * pos);
 
@@ -207,14 +206,13 @@ namespace ft
 	template < class Key, class T, class Compare , class Alloc >
 	map<Key, T, Compare, Alloc >::map(const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
 	{
-		//_end->key = &_key_end;
+
 	}
 
 	//Copy constructor
 	template < class K, class T, class Comp , class Alloc >
 	map<K, T, Comp, Alloc >::map(const map<K, T, Comp, Alloc > & x) : _bt(newNode()), _size(0), _end(_bt)
 	{
-		//_end->key = &_key_end;
 		*this = x;
 	}
 	
@@ -223,7 +221,6 @@ namespace ft
 	template<class InputIterator>
 	map<K, T, Comp, Alloc >::map(InputIterator first, InputIterator last, const key_compare & cmp, const allocator_type & alloc) : _cmp(cmp), _alloc(alloc), _bt(newNode()), _size(0), _end(_bt)
 	{
-		//_end->key = &_key_end;
 		insert(first, last);
 	}
 	

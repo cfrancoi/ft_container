@@ -73,8 +73,6 @@ namespace ft
 	template <class T1, class T2>
 	bool operator<(const pair<T1, T2>& lhs, const pair<T1, T2>& rhs)
 	{
-		//return lhs.first < lhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second);
-		//std::cerr << lhs.first << " " << lhs.second << "\n";
 		if (lhs.first < rhs.first) return true;
 		if (rhs.first < lhs.first) return false;
 		if (lhs.second < rhs.second) return true;
@@ -98,7 +96,6 @@ namespace ft
 	{
 		return !(lhs < rhs);
 	}
-
 
 	template <class T1, class T2>
 	pair<T1, T2> make_pair(T1 x, T2 y)

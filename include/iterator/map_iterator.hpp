@@ -300,27 +300,11 @@ namespace ft
 				return tmp;
 			}
 
-			/*friend bool operator==(const const_map_iterator<_Tp> &lhs, const const_map_iterator<_Tp> &rhs)
-			{
-				return (lhs._it == rhs._it);
-			}
-			friend bool operator!=(const const_map_iterator &lhs, const const_map_iterator & rhs)
-			{
-				return !(lhs == rhs);
-			}*/
-
 			bool operator==(const const_map_iterator& x) const { return _it == x._it;}
 			bool operator!=(const const_map_iterator& x) const { return _it != x._it;}
-
-			/*bool operator==(const to_const& x) const { return _add == x._add;}
-			bool operator!=(const to_const& x) const { return _add != x._add;}
-			bool operator<(const to_const& x) const { return _add < x._add;}
-			bool operator>(const to_const& x) const { return _add > x._add;}
-			bool operator<=(const to_const& x) const { return _add <= x._add;}
-			bool operator>=(const to_const& x) const { return _add >= x._add;}*/
-
+			
+			template <class, class, class, class> friend class map; // map can acces to private member
 		
-		template <class, class, class, class> friend class map; // map can acces to private member
 		private:
 			Node*	_it;
 	};

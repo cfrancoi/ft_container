@@ -3,7 +3,6 @@
 
 namespace ft
 {
-
 	template <class T, T val>
 	struct integral_constant
 	{
@@ -30,13 +29,7 @@ namespace ft
 	template <class _Tp, class _Up>
 	struct is_same           : public false_type {};
 	template <class _Tp>
-	struct is_same<_Tp, _Tp> : public true_type {};
-
-
-
-
-
-	
+	struct is_same<_Tp, _Tp> : public true_type {};	
 }
 
 #endif // __TYPE_TRAITS_H__

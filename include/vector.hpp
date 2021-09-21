@@ -199,6 +199,33 @@ namespace ft
 			return begin() + first_s;
 		}
 
+		pointer			create(size_type n)
+		{
+			pointer new_v;
+
+			new_v = new_block(n); // check fail alloc
+			iterator it = begin();
+			size_type n_size = n;
+			size_type p_size = size();
+			size_type i = 0;
+			
+			_end = new_v;
+			while (i != p_size)
+			{
+				_alloc.construct(_end++, it[i++]);
+			}
+			_end_of_storage = _end;
+			while (i < n_size)
+			{
+				++_end_of_storage;
+				++i;
+			}
+			pointer cpy = _start;
+			_start = new_v;
+			
+			return cpy;
+		}
+		
 		/*
 			** Constructor && Destructor **
 		*/
@@ -445,33 +472,6 @@ namespace ft
 			for (size_type i = 0; i != n; i++)
 				pos[i] = val; 
 			return ;
-		}
-
-		pointer			create(size_type n)
-		{
-			pointer new_v;
-
-			new_v = new_block(n); // check fail alloc
-			iterator it = begin();
-			size_type n_size = n;
-			size_type p_size = size();
-			size_type i = 0;
-			
-			_end = new_v;
-			while (i != p_size)
-			{
-				_alloc.construct(_end++, it[i++]);
-			}
-			_end_of_storage = _end;
-			while (i < n_size)
-			{
-				++_end_of_storage;
-				++i;
-			}
-			pointer cpy = _start;
-			_start = new_v;
-			
-			return cpy;
 		}
 
 		template <typename Input>
