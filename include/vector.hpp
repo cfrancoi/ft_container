@@ -9,8 +9,7 @@
 
 # include <memory> // std::allocator
 # include <limits> // std::numeric_limits
-# include <functional> // ?
-# include <stdexcept>
+# include <stdexcept> // std::exception for at() & operator[]
 
 namespace ft
 {
@@ -255,7 +254,6 @@ namespace ft
 		vector(const vector& x) : _start(NULL), _end(NULL), _end_of_storage(NULL), _alloc(x._alloc)
 		{
 			*this = x;
-			//assign(x.begin(), x.end());
 		}
 
 		// destructor

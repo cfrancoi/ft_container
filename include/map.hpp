@@ -1,9 +1,7 @@
 #ifndef __MAP_H__
 # define __MAP_H__
-# include <functional>
 # include <utility>
 # include <memory> // std::allocator
-# include <algorithm>
 # include <limits>
 # include <iterator/map_iterator.hpp>
 # include <iterator/iterator.hpp>
@@ -242,7 +240,6 @@ namespace ft
 		_alloc = x._alloc;
 		_bt = cloneBinaryTree(x._bt);
 		_end = _bt;
-		//_end->key = &_key_end;
 		while (_end->right != NULL)
 			_end = _end->right;
 		_size = x._size;
@@ -430,22 +427,18 @@ namespace ft
 		if (_size == 0)
 			return;
 		
-		// no child
 		if ((!p->right) && !p->left)
 		{
-			//std::cerr << "case0\n";
 			delCaseZero(p);
 			return ;
 		}
 		else if ((p->right && !p->left) || ((!p->right) && p->left))
 		{
-			//std::cerr << "case1\n";
 			delCaseOne(p);
 			return;
 		}
 		else if ((p->right) && p->left)
 		{
-			//std::cerr << "case2\n";
 			delCaseTwo(p);
 			return;
 		}
@@ -892,7 +885,7 @@ namespace ft
 	
 
 	/*
-		***** Non-memer functions *****
+		***** Non-member functions *****
 	*/
 
 	template< class Key, class T, class Compare, class Alloc >

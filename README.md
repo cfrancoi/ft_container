@@ -4,10 +4,13 @@
 
 ### note ###
 Vector:
-* erase test case size == 0 <br>
+* erase test case size == 0
+* make declaration / definition ?
 
 Map:
 * map constructor InputIt (is_input_it)
+* map_iterator remake to one ?
+* max_size()
 
 Main:
 * Diff print error

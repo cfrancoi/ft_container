@@ -108,9 +108,6 @@ namespace ft
 				
 				return b;
 			}
-			M_Node * lr_rot(M_Node * pt);
-			M_Node * rl_rot(M_Node * pt);
-
 
 			~M_Node() {};
 	};
