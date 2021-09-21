@@ -32,7 +32,6 @@ namespace ft
 			pointer		operator->() const { return _add; }
 
 			reference operator[](size_type n) { return *(_add + n); }
-			//const_reference operator[](size_type n) const;
 
 			vector_iterator & operator=(const vector_iterator& ref)
 			{
@@ -49,7 +48,7 @@ namespace ft
 			/* operator - */
 			
 			vector_iterator operator-(const difference_type & n) const { return vector_iterator(_add - n); }
-			difference_type operator-(const to_const & n) const { return (_add - n._add); }
+			difference_type operator-(const to_const & n) const { return (_add - n.operator->()); }
 
 			
 			vector_iterator& operator+=(const difference_type & n) { _add += n;	return *this; }
@@ -83,14 +82,14 @@ namespace ft
 				return _tmp;
 			}
 
-			bool operator==(const to_const& x) const { return _add == x._add;}
-			bool operator!=(const to_const& x) const { return _add != x._add;}
-			bool operator<(const to_const& x) const { return _add < x._add;}
-			bool operator>(const to_const& x) const { return _add > x._add;}
-			bool operator<=(const to_const& x) const { return _add <= x._add;}
-			bool operator>=(const to_const& x) const { return _add >= x._add;}
+			bool operator==(const to_const& x) const { return _add == x.operator->();}
+			bool operator!=(const to_const& x) const { return _add != x.operator->();}
+			bool operator<(const to_const& x) const { return _add < x.operator->();}
+			bool operator>(const to_const& x) const { return _add > x.operator->();}
+			bool operator<=(const to_const& x) const { return _add <= x.operator->();}
+			bool operator>=(const to_const& x) const { return _add >= x.operator->();}
 
-			public:
+			private:
 				pointer		_add;
 		};
 }
