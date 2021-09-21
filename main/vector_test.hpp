@@ -27,6 +27,15 @@ void	erase_rand_el(T_VEC & v, size_t n)
 	}
 }
 
+template<class T_VEC, class T>
+void	insert_rand_el(T_VEC & v, size_t n, const T & x)
+{
+	for (size_t i = 0; i < n; i++)
+	{
+		v.insert(v.begin() + rand() % v.size(), x);
+	}
+}
+
 template<class IT>
 void	print_it(IT first, IT last)
 {
@@ -34,7 +43,7 @@ void	print_it(IT first, IT last)
 	{
 		std::cout << *first << std::endl;
 	}
-	std::cout << "###############################################" << std::endl;
+	std::cout << "###############################################]" << std::endl;
 }
 
 template <typename T_VEC>

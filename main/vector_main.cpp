@@ -183,7 +183,7 @@ int main()
 		ft::vector<std::string> vct1;
 
 		std::string str = "A";
-		size_t len = rand() % 120;
+		size_t len = rand() % 250;
 		for (size_t i = 0; i < len; i++)
 		{
 			str += static_cast<char>(rand() % 127 + 'A');
@@ -203,14 +203,14 @@ int main()
 			vct3.push_back(vct2[rand() % vct2.size()]);
 		}
 
-		vct2.erase(vct2.begin() + rand() % vct2.size());
-		vct2.erase(vct2.begin() + rand() % vct2.size());
-		vct2.erase(vct2.begin() + rand() % vct2.size());
-		vct2.erase(vct2.begin() + rand() % vct2.size());
+		erase_rand_el(vct2, rand() % vct2.size());
 
 		cmp(vct1, vct2);
-		
-		vct2.clear();
+
+		insert_rand_el(vct2, vct1.size() - vct2.size(), "A");
+
+		cmp(vct1, vct2);
+
 
 		cmp(vct1, vct2);
 		cmp(vct1, vct3);
