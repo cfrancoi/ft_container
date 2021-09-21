@@ -3,7 +3,8 @@
 ## List ##
 
 ### note ###
-
+Vector:
+* erase test case size == 0
 #### iterator ####
 
 const_iterator = iterator // OK
