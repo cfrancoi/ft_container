@@ -19,7 +19,7 @@ void	printSize(T_VEC const &mp, bool print_content = 1)
 }
 
 template<class T_VEC>
-void	erase_rand_el(T_VEC & v, std::size_t n)
+void	erase_rand_el(T_VEC & v, size_t n)
 {
 	for (size_t i = 0; i < n; i++)
 	{
@@ -28,7 +28,7 @@ void	erase_rand_el(T_VEC & v, std::size_t n)
 }
 
 template<class T_VEC, class T>
-void	insert_rand_el(T_VEC & v, std::size_t n, const T & x)
+void	insert_rand_el(T_VEC & v, size_t n, const T & x)
 {
 	for (size_t i = 0; i < n; i++)
 	{
@@ -64,5 +64,16 @@ void	cmp(const v &lhs, const v &rhs)
 	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
 }
 
+
+template <class r, class l>
+void	cmp(const r &lhs, const l &rhs)
+{
+	static int i = 0;
+
+	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
+	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
+	std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
+	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
+}
 
 #endif // __VECTOR_TEST_H__

@@ -143,7 +143,7 @@ int main()
 
 		vct3.assign(vct1.begin(), vct1.begin() + (rand() % LEN)); //range
 
-		vct4.assign(rand() % vct3.size(), rand());
+		vct4.assign(rand() % vct3.size(), rand()); //fill
 
 
 		cmp(vct3, vct1);
@@ -163,10 +163,10 @@ int main()
 		ft::swap(vct3, vct4);
 
 
-		printSize(vct1);
-		printSize(vct2);
-		printSize(vct3);
-		printSize(vct4);
+		printSize(vct1, false);
+		printSize(vct2, false);
+		printSize(vct3, false);
+		printSize(vct4, false);
 
 
 		print_it(vct4.rbegin(), vct4.rend());
@@ -240,23 +240,99 @@ int main()
 		*it++ = 25;
 
 		it[25] = 756;
+		{
+			ft::vector<int>::iterator rit = v.begin() + 5;
+			*rit = 15;
 
-		ft::vector<int>::iterator rit = v.begin() + 5;
-		*rit = 15;
-
-		rit = 5 + v.begin();
-		std::cout << (*rit == 15) << ((rit - 5) == v.begin());
-		rit += 15;
-		std::cout << (*rit == 15) << ((rit - 5) == v.begin());
-		rit -= 12;
-		std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+			rit = 5 + v.begin();
+			std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+			rit += 15;
+			std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+			rit -= 12;
+			std::cout << (*rit == 15) << ((rit - 5) == v.begin());
+		}
 
 		std::cout << "size is : " << v.end() - v.begin() << std::endl;
 
 		cmp(it, it2);
 
 		printSize(v);
-	
+
+		// const_it
+
+		ft::vector<int>::const_iterator cit;
+
+		it = v.begin();
+		cit = v.begin();
+
+		std::cout << (it == cit) << std::endl;
+		cit += 5;
+		std::cout << (it != cit) << std::endl;
+		cit -= 3;
+		std::cout << *cit << std::endl;
+
+		cit = 5 + v.begin();
+		std::cout << *cit << std::endl;
+		cit = v.begin() + 3;
+		std::cout << *cit << std::endl;
+		cit = v.end() - 5;
+		std::cout << *cit << std::endl;
+
+
+		ft::vector<int>::const_iterator cit2(v.end());
+		cit = v.begin();
+		std::cout << "size is :" << (cit2 - cit) << std::cout;
+		
+		std::cout << cit[6];
+		
+		//*cit = 5 // error; 
+		cit++;
+		++cit;
+		std::cout << *cit++ << std::endl;
+
+		cit--;
+		--cit;
+		std::cout << *cit-- << std::endl;
+		cit2 = v.end() - 5;
+
+		cmp(cit, cit2);
+
+		// reverse_it;
+
+		ft::vector<int>::reverse_iterator rit(v.rbegin()); //from it
+		ft::vector<int>::reverse_iterator rit2; //default
+
+		rit2 = v.rbegin();
+
+		*rit = 55;
+		std::cout << *rit << std::endl;
+
+		rit = rit2 + 6;
+		std::cout << *rit << std::endl;
+		rit = 5 + rit2;
+
+
+		std::cout << *rit++ << std::endl;
+		std::cout << *rit << std::endl;
+
+		rit2 = v.rend() - 6;
+		std::cout << *rit2-- << std::endl;
+		std::cout << *rit2 << std::endl;
+
+		std::cout << (v.begin())[12] << std::cout;
+		
+		rit += 5;
+		rit -= 3;
+		std::cout << *rit << std::endl;
+
+		cmp(rit, rit2);
+
+		ft::vector<int>::const_reverse_iterator rit3(v.rbegin());
+		
+		cmp(rit, rit3); // cmp const_reverse_it with reverse_it
+
+		std::cout << "size is :" << (v.rend() - v.rbegin()) << std::endl;
+
 	}
 
 
