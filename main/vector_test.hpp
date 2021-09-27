@@ -49,6 +49,11 @@ void	print_it(IT first, IT last)
 template <typename T_VEC>
 void	printfb(T_VEC const &v)
 {
+	if (v.empty())
+	{
+		std::cout << "is empty\n";
+		return;
+	}
 	std::cout << "front :" << v.front() << std::endl;
 	std::cout << "back :" << v.back() << std::endl;
 }

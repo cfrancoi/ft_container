@@ -20,6 +20,19 @@
 
 #include "vector_test.hpp"
 
+template <class V>
+size_t rand_size(const V& v)
+{
+	if (v.size() == 0)
+		return 0;
+	size_t ret = rand() % (v.size());
+
+	//std::cerr << "size:" << ret << std::endl;
+	if ( ret > v.size() )
+		return 0;
+	return ret;
+}
+
 int main()
 {
 	srand(SEED);
@@ -136,14 +149,14 @@ int main()
 			vct1.insert(vct1.end(), rand());
 		}
 
-		ft::vector<int> vct2(vct1.begin(), vct1.begin() + (rand() % LEN)); // range constructor
+		ft::vector<int> vct2(vct1.begin(), vct1.begin() + (rand_size(vct1))); // range constructor
 
 		ft::vector<int> vct3(vct1); // cpy constructor
 		ft::vector<int> vct4;
 
-		vct3.assign(vct1.begin(), vct1.begin() + (rand() % LEN)); //range
+		vct3.assign(vct1.begin(), vct1.begin() + (rand_size(vct1))); //range
 
-		vct4.assign(rand() % vct3.size(), rand()); //fill
+		vct4.assign(vct3.size(), rand()); //fill
 
 
 		cmp(vct3, vct1);
@@ -152,11 +165,11 @@ int main()
 		printfb(vct2);
 		printfb(vct1);
 
-		vct4.erase(vct4.begin() + (rand() % vct4.size())); //erase pos
+		vct4.erase(vct4.begin() + rand_size(vct4)); //erase pos
 
-		vct3.erase(vct3.begin(), vct3.begin() + (rand() % vct3.size())); //erase range
+		vct3.erase(vct3.begin(), vct3.begin() + rand_size(vct3)); //erase range
 
-		vct3.insert(vct3.begin() + (rand() % vct3.size()), rand()); // insert single el 
+		vct3.insert(vct3.begin() + rand_size(vct3), rand()); // insert single el 
 		vct3.insert(vct3.begin() + (rand() % vct3.size()), rand() % 1000, rand()); // insert fill
 		vct3.insert(vct3.end(), vct1.begin(), vct1.begin() + (rand() % vct1.size())); //insert range
 
@@ -177,11 +190,11 @@ int main()
 
 
 	}
-	//other type
-
+	
 	{
 		ft::vector<std::string> vct1;
 
+		
 		std::string str = "A";
 		size_t len = rand() % 250;
 		for (size_t i = 0; i < len; i++)
@@ -200,10 +213,12 @@ int main()
 
 		for (size_t i = 0; i < len; i++)
 		{
-			vct3.push_back(vct2[rand() % vct2.size()]);
-		}
+			size_t index = rand() % vct2.size();
 
-		erase_rand_el(vct2, rand() % vct2.size());
+			std::cout << index << " | " << vct2.size() << std::endl;
+			vct3.push_back(vct2[index]);
+		}
+		erase_rand_el(vct2, rand_size(vct2));
 
 		cmp(vct1, vct2);
 
@@ -225,6 +240,7 @@ int main()
 	// iterator compile test
 
 	{
+		std::cout << "######################it#######################" << std::endl;
 		ft::vector<int> v(100, 100);
 
 		ft::vector<int>::iterator it, it3; it = v.begin(); //default
@@ -298,7 +314,8 @@ int main()
 		cmp(cit, cit2);
 
 		// reverse_it;
-
+		
+		std::cout << "######################reverse it#######################" << std::endl;
 		ft::vector<int>::reverse_iterator rit(v.rbegin()); //from it
 		ft::vector<int>::reverse_iterator rit2; //default
 
