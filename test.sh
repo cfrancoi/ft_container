@@ -1,6 +1,6 @@
 #!/bin/bash -e
 CC=clang++
-CFLAGS="-Wall -Werror -Wextra -std=c++98 -g -fsanitize=address"
+CFLAGS="-Wall -Werror -Wextra -std=c++98"
 FDEF="-D NS=ft"
 INCLUDE=./include
 CMD_DATE=gdate
@@ -52,7 +52,7 @@ function main
 	#ft
 	local ft_time=0
 	local ft_cmpl="OK"
-	local ft_ret=$(start_ft ./main/vector_main.cpp ft "$FDEF")
+	local ft_ret=$(start_ft "$1" "ft" "$FDEF")
 	if [[ "$ft_ret" = "KO" ]]
 	then
 		ft_cmpl="KO"
@@ -62,7 +62,7 @@ function main
 	#std
 	local std_time=0
 	local std_cmpl="OK"
-	local std_ret=$(start_ft ./main/vector_main.cpp std "")
+	local std_ret=$(start_ft "$1" "std" "")
 	if [[ "$std_out" = "KO" ]]
 	then
 		std_cmpl="KO"
@@ -90,4 +90,4 @@ function main
 }
 
 LEN=$1
-main
+main $2

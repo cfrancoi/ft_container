@@ -3,6 +3,15 @@
 
 #include <iostream>
 #include <string>
+#ifndef NS //CREATE A REAL STL EXAMPLE
+	#include <map>
+	#include <utility>
+	namespace ft = std;
+#else
+	#include <map.hpp>
+	#include <other/utility.hpp>
+#endif
+
 
 template<typename Iter>
 std::string	printPair(Iter &it)

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 #ifndef NS //CREATE A REAL STL EXAMPLE
 	#include <map>
@@ -62,4 +63,52 @@ int main(void)
 		printSize(clear_map);
 
 	}
+
+	//iterator compile
+	{
+		std::vector<ft::pair<int, int> > arr;
+
+		for (int i = 0; i != 100; i++)
+			arr.push_back(ft::make_pair(rand(), rand()));
+	
+
+		ft::map<int, int> mymap(arr.begin(), arr.end());
+
+
+		ft::map<int, int>::iterator a; //default
+		
+		a = mymap.begin(); //operator=
+		
+		ft::map<int, int>::iterator b(a++); //copy
+
+		std::cout << "b == a " << (b == a) << std::endl;
+		std::cout << "b != a " << (b != a) << std::endl;
+
+		std::cout << b->first << " => " << (*b).second << std::endl; // a-> *a
+
+		++b;
+		b++;
+
+		std::cout << (*b).first << " => " << (*b++).second << std::endl; 
+		std::cout << b->first << " => " << (*b).second << std::endl;
+
+		--b;
+		b--;
+		std::cout << "b == a " << (*b-- == *a) << std::endl;
+
+		b->second = rand();
+		std::cout << b->first << " => " << (*b).second << std::endl;
+		//*b = ft::make_pair<const int, int>(rand(), rand()); error
+
+
+		ft::map<int, int>::const_iterator ca;
+
+		ca = a;
+
+		ft::map<int, int>::const_iterator cb(b);
+
+		std::cout << cb->first << " => " << (*cb).second << std::endl;
+		
+	}
+	return 0;
 }
