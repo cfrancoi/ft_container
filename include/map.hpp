@@ -338,9 +338,7 @@ namespace ft
 	template < class K, class T, class Comp , class Alloc >
 	typename map<K, T, Comp, Alloc >::size_type map<K, T, Comp, Alloc >::max_size() const
 	{
-		return std::min<size_type>(std::numeric_limits<size_type>::max(), std::numeric_limits<difference_type>::max() / (sizeof(value_type)));
-		//std::cerr << "sizeof() " << (sizeof(Node)) << std::endl;
-		//return std::numeric_limits<difference_type>::max() / (sizeof(K) + sizeof(T));
+		return std::numeric_limits<size_type>::max() / (sizeof(value_type) + sizeof(Node));
 	}
 
 	/*
