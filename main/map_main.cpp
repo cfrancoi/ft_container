@@ -1,13 +1,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include <stdlib.h>
 #ifndef NS //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <utility>
+	#include <vector>
 	namespace ft = std;
 #else
 	#include <map.hpp>
+	#include <vector.hpp>
 	#include <other/utility.hpp>
 #endif
 
@@ -61,6 +63,35 @@ int main(void)
 
 		printSize(mymap);
 		printSize(clear_map);
+
+	}
+
+	{
+		ft::map<char, int> mymap;
+		ft::vector<char> letter;
+
+		for (char i = 'a'; i != 'z' + 1; i++)
+			letter.push_back(i);
+		
+
+		for(ft::vector<char>::iterator it = letter.begin(); it != letter.end(); it++)
+			mymap.insert(ft::make_pair(*it, rand()));
+
+		ft::map<char, int> mymap2;
+
+		//mymap2.insert(mymap.begin(), mymap.end());
+		mymap2 = mymap;
+
+		for (size_t i =0; i < 5; i++)
+			test_bound(mymap, (char)rand());
+		cmp(mymap, mymap2);
+		printSize(mymap2);
+
+		//erase_key(mymap2);
+		erase_key(mymap, 155);
+
+		cmp(mymap, mymap2);
+		printSize(mymap, false);
 
 	}
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 
 #ifndef NS //CREATE A REAL STL EXAMPLE
 	#include <vector>
@@ -27,7 +28,6 @@ size_t rand_size(const V& v)
 		return 0;
 	size_t ret = rand() % (v.size());
 
-	//std::cerr << "size:" << ret << std::endl;
 	if ( ret > v.size() )
 		return 0;
 	return ret;
@@ -297,7 +297,7 @@ int main()
 
 		ft::vector<int>::const_iterator cit2(v.end());
 		cit = v.begin();
-		std::cout << "size is :" << (cit2 - cit) << std::cout;
+		std::cout << "size is :" << (cit2 - cit) << std::endl;
 		
 		std::cout << cit[6];
 		
@@ -336,7 +336,7 @@ int main()
 		std::cout << *rit2-- << std::endl;
 		std::cout << *rit2 << std::endl;
 
-		std::cout << (v.begin())[12] << std::cout;
+		std::cout << (v.begin())[12] << std::endl;
 		
 		rit += 5;
 		rit -= 3;

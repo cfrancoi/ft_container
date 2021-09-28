@@ -8,7 +8,6 @@
 # include <other/utility.hpp>
 # include <other/type_traits.hpp>
 # include <other/algorithm.hpp>
-#include <ctgmath>
 
 #include <iostream>
 namespace ft
@@ -226,8 +225,9 @@ namespace ft
 	template < class K, class T, class Comp, class Alloc >
 	map<K, T, Comp, Alloc >::~map() 
 	{
-		erase(begin(), end());
-		delete end()._it;
+		//erase(begin(), end());
+		clear();
+		delete _end;
 	}
 	
 	//operator=
@@ -754,6 +754,39 @@ namespace ft
 		}
 		delNode(pos);
 	}
+
+	template <class Node>
+	void prtNode(Node * ptr)
+	{
+		if (ptr && ptr->key)
+		{
+			if (ptr->top)
+				std::cerr << "  " << ptr->top->key->first << std::endl;
+			else
+				std::cerr << "  NULL" << std::endl;
+			
+			std::cerr << "  ^\n";
+
+			std::cerr << "  " << ptr->key->first << std::endl;
+
+			if (ptr->left && ptr->left->key)
+				std::cerr << "" << ptr->left->key->first;
+			else
+				std::cerr << "NULL";
+
+			std::cerr << "  ";
+
+			if (ptr->right && ptr->right->key)
+				std::cerr << "" << ptr->right->key->first;
+			else
+				std::cerr << "NULL";
+
+			std::cerr << "\n#################################\n" << std::endl;
+			std::cerr << std::endl;
+
+
+		}
+	}
 	
 	template < class K, class T, class Comp , class Alloc >
 	void map<K, T, Comp, Alloc >::delCaseTwo(Node * pos)
@@ -779,21 +812,27 @@ namespace ft
 		Node * stay = NULL;
 		
 		if(near->left)
+		{
 			stay = near->left;
+			//near->left = NULL;
+		}
 		else if (near->right)
+		{
 			stay = near->right;
+			//near->right = NULL;
+		}
 
 		//detach node
 		if (pos->left != near)
 		{
 			near->left = pos->left;
-			if(near->left)
+			if(near->left != NULL)
 				near->left->top = near;
 		}
 		if (pos->right != near)
 		{
 			near->right = pos->right;
-			if(near->right)
+			if(near->right != NULL)
 				near->right->top = near;
 		}
 		
@@ -809,8 +848,28 @@ namespace ft
 			_bt = near;
 		else if (top->left == pos)
 			top->left = near;
-		else
+		else if (top->right == pos)
 			top->right = near;
+
+		/*if ((pos->left && pos->left->top == pos))
+			std::cerr << near->key->first << " erase: "<< pos->key->first << " " << pos->left->key->first << " ERROR\n";
+		if (pos->right && pos->right->top == pos)
+			std::cerr << near->key->first << " erase: "<< pos->key->first << " " <<  pos->right->key->first << " ERROR\n";
+		prtNode(pos->top);
+		prtNode(pos);
+		prtNode(pos->left);
+		prtNode(pos->right);
+		prtNode(near);*/
+
+		if (near->left)
+			near->left->top = near;
+		if (near->right)
+			near->right->top = near;
+
+
+
+
+
 		near->top = top;
 
 		

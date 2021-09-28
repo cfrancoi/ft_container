@@ -87,7 +87,8 @@ namespace ft
 			_end = new_v;
 			while (i != p_size)
 			{
-				*_end++ = it[i];
+				//*_end++ = it[i];
+				_alloc.construct(_end++, it[i]);
 				++i;
 			}
 			_end_of_storage = _end;
@@ -146,7 +147,7 @@ namespace ft
 				if (_end == _start)
 					_alloc.destroy(_start);
 				else
-					_alloc.destroy(_end--);	
+					_alloc.destroy(--_end);	
 				++i;
 			}
 			//if (_end == _start)

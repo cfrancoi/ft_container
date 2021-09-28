@@ -5,7 +5,7 @@ template <typename T_VEC>
 void	printSize(T_VEC const &mp, bool print_content = 1)
 {
 	std::cout << "size: " << mp.size() << std::endl;
-	std::cout << "max_size: " << mp.max_size() << std::endl;
+	//std::cout << "max_size: " << mp.max_size() << std::endl;
 	std::cout << "capacity :" << mp.capacity() << std::endl;
 	std::cout << "empty : " << mp.empty() << std::endl;
 	if (print_content)
