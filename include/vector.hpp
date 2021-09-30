@@ -177,11 +177,12 @@ namespace ft
 		*/
 		iterator exclude(size_type n, iterator first)
 		{
+			if (n == 0)
+				return begin();
 			size_type first_s = (first - begin());
 			size_type stay = size() - n - first_s;
 			iterator stop = end();
-			if (n == 0)
-				return begin() + first_s;
+			
 			
 			for (iterator it = begin(); it != end() && stay ; it++)
 			{

@@ -20,6 +20,7 @@
 #endif
 
 #include "vector_test.hpp"
+#include "Foo.hpp"
 
 template <class V>
 size_t rand_size(const V& v)
@@ -165,7 +166,8 @@ int main()
 		printfb(vct2);
 		printfb(vct1);
 
-		vct4.erase(vct4.begin() + rand_size(vct4)); //erase pos
+		if (!vct4.empty())
+			vct4.erase(vct4.begin() + rand_size(vct4)); //erase pos
 
 		vct3.erase(vct3.begin(), vct3.begin() + rand_size(vct3)); //erase range
 
@@ -173,13 +175,16 @@ int main()
 		vct3.insert(vct3.begin() + (rand() % vct3.size()), rand() % 1000, rand()); // insert fill
 		vct3.insert(vct3.end(), vct1.begin(), vct1.begin() + (rand() % vct1.size())); //insert range
 
+		vct3.insert(vct3.end() , vct3.begin(), vct3.end()); // from self
+
 		ft::swap(vct3, vct4);
 
 
 		printSize(vct1, false);
 		printSize(vct2, false);
-		printSize(vct3, false);
+		printSize(vct3, true);
 		printSize(vct4, false);
+		
 
 
 		print_it(vct4.rbegin(), vct4.rend());
@@ -190,7 +195,59 @@ int main()
 
 
 	}
-	
+
+
+		{
+		ft::vector<Foo> vct1;
+
+		for(int i =0; i < LEN; i++)
+		{
+			vct1.insert(vct1.end(), rand());
+		}
+
+		ft::vector<Foo> vct2(vct1.begin(), vct1.begin() + (rand_size(vct1))); // range constructor
+
+		ft::vector<Foo> vct3(vct1); // cpy constructor
+		ft::vector<Foo> vct4;
+
+		vct3.assign(vct1.begin(), vct1.begin() + (rand_size(vct1))); //range
+
+		vct4.assign(vct3.size(), rand()); //fill
+
+
+		cmp(vct3, vct1);
+		cmp(vct3, vct2);
+		cmp(vct2, vct1);
+		printfb(vct2);
+		printfb(vct1);
+
+		
+		vct4.erase(vct4.begin() + rand_size(vct4)); //erase pos
+
+		vct3.erase(vct3.begin(), vct3.begin() + rand_size(vct3)); //erase range
+
+		vct3.insert(vct3.begin() + rand_size(vct3), rand()); // insert single el 
+		vct3.insert(vct3.begin() + (rand() % vct3.size()), rand() % 1000, rand()); // insert fill
+		vct3.insert(vct3.end(), vct1.begin(), vct1.begin() + (rand() % vct1.size())); //insert range
+
+		vct3.insert(vct3.end() , vct3.begin(), vct3.end()); // from self
+
+		ft::swap(vct3, vct4);
+
+
+		printSize(vct1, false);
+		printSize(vct2, false);
+		printSize(vct3, false);
+		printSize(vct4, false);
+		
+
+
+		//print_it(vct4.rbegin(), vct4.rend());
+		
+
+
+	}
+
 	{
 		ft::vector<std::string> vct1;
 

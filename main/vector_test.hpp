@@ -1,6 +1,8 @@
 #ifndef __VECTOR_TEST_H__
 #define __VECTOR_TEST_H__
 
+
+
 template <typename T_VEC>
 void	printSize(T_VEC const &mp, bool print_content = 1)
 {
@@ -8,7 +10,7 @@ void	printSize(T_VEC const &mp, bool print_content = 1)
 	//std::cout << "max_size: " << mp.max_size() << std::endl;
 	std::cout << "capacity :" << mp.capacity() << std::endl;
 	std::cout << "empty : " << mp.empty() << std::endl;
-	if (print_content)
+	if (print_content && !mp.empty())
 	{
 		typename T_VEC::const_iterator it = mp.begin(), ite = mp.end();
 		std::cout << std::endl << "Content is:" << std::endl;
