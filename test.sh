@@ -1,9 +1,9 @@
-#!/bin/bash -e
+#!/bin/bash
 CC=clang++
-CFLAGS="-Wall -Werror -Wextra -std=c++98"
+CFLAGS="-Wall -Werror -Wextra -std=c++98 -g3 -fsanitize=address"
 FDEF="-D NS=ft"
 INCLUDE=./include
-CMD_DATE=gdate
+CMD_DATE=date
 
 vector="./main/vector_main.cpp"
 map="./main/map_main.cpp"
@@ -75,7 +75,13 @@ function main
 
 	echo "Seed is : $SEED"
 	echo "compile : ft[$ft_cmpl] std[$std_cmpl]"
-	echo "time : ft[$ft_time] std[$std_time]"
+	if [[ $ft_cmpl = "KO" ]] || [[ $std_cmpl = "KO" ]]
+	then
+		echo KO
+		return ;
+	fi
+	echo "time : ft[$ft_time] std[$std_time] diff[$(echo "scale=3; $ft_time / $std_time" | bc)]"
+	
 	
 	diff ft_out std_out > result
 
@@ -84,6 +90,7 @@ function main
 		echo "diff : OK"
 	else
 		echo "diff : KO"
+		cat result
 	fi
 	
 
